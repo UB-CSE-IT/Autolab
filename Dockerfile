@@ -59,7 +59,7 @@ USER app
 
 # precompile the Rails assets
 ENV SECRET_KEY_BASE=dummy_secret_key_base
-RUN RAILS_ENV=development bundle exec rails assets:precompile
+RUN RAILS_ENV=production bundle exec rails assets:precompile
 
 # Clean up APT when done.
 USER root
