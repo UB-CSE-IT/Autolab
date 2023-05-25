@@ -1,14 +1,14 @@
 production:
-  school_name: "My School"
-  school_short_name: "MS"
-  support_email: "autolab@myschool.edu"
-  tech_email: "autolab-tech@myschool.edu"
+  school_name: "University at Buffalo"
+  school_short_name: "UB"
+  support_email: "cse-consult@buffalo.edu"
+  tech_email: "cse-consult@buffalo.edu"
 
 development:
-  school_name: "Carnegie Mellon University"
-  school_short_name: "CMU"
-  support_email: "autolab@myschool.edu"
-  tech_email: "autolab-tech@myschool.edu"
+  school_name: "Dev University"
+  school_short_name: "DU"
+  support_email: "cse-consult@buffalo.edu"
+  tech_email: "cse-consult@buffalo.edu"
 
 test:
   school_name: "Carnegie Mellon University"
