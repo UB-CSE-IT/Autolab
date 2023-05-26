@@ -69,7 +69,7 @@ h3 {
 div.main-header {
   background-color: $autolab-red;
   width: 100%;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.9);
+  border-bottom: 1px solid #005bbb; /* Remove the ugly border line without potentially disrupting the page layout */
 }
 
 div.main-header .logo {
@@ -1325,7 +1325,7 @@ div.center {
 
 /* Restore hover functionality on Materialize buttons with color classes */
 .btn:hover {
-  background-color: rgba(140, 0, 0, 0.95) !important;
+  background-color: #002f56 !important;
 }
 
 .drag-drop-handin {

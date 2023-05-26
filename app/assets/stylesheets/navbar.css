@@ -1,5 +1,5 @@
 nav {
-  background: #a31919;
+  background: #005bbb; /* UB Blue */
   line-height: 50px;
   height: 50px;
 }
@@ -16,7 +16,7 @@ nav ul li{
   font-weight: 500;
 }
 .dropdown-content li>a{
-  color: #a31919;
+  color: #005bbb; /* UB Blue */
   font-weight:500;
 }
 
@@ -27,7 +27,7 @@ nav ul li{
   color:white;
   text-align:center;
   cursor:default;
-  background:#a31919;
+  background: #005bbb; /* UB Blue */
 }
 #mobile-demo li{
   cursor:pointer;

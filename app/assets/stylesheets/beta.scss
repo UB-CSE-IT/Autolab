@@ -25,7 +25,7 @@ body {
 
 #cmuHeader {
   position: relative;
-  background-color: #990000;
+  background-color: #005bbb;
   width: 100%;
   height: 35px;
   margin: 0;
@@ -47,7 +47,7 @@ body {
 }
 
 #courseTitle {
-  color: #990000;
+  color: #005bbb;
 }
 
 #pageBody {
@@ -59,7 +59,7 @@ h1 {
   font-family: Helvetica, sans-serif;
   font-size: 19px;
   font-weight: bold;
-  color: #990000;
+  color: #005bbb;
   padding: 0px;
   margin: 10px 0px 10px 0px;
 }
@@ -67,7 +67,7 @@ h2 {
   font-family: Helvetica, sans-serif;
   font-size: 16px;
   font-weight: normal;
-  color: #990000;
+  color: #005bbb;
   padding: 0px;
   margin: 10px 0;
   max-width: 600px;
@@ -206,7 +206,7 @@ table.announcements th {
   border: 1px solid $autolab-highlight-gray;
   font-family: Verdana, Arial, Helvetica, sans-serif;
   font-size: 13px;
-  color: #990000;
+  color: #005bbb;
   padding-left: 6px;
   padding-top: 7px;
   padding-bottom: 3px;
@@ -532,45 +532,45 @@ div.navLinks .navbutton,
   float: left;
   margin: 0;
   text-decoration: none;
-  border-right: 1px solid #800;
+  border-right: 1px solid #005bbb;
 
-  background-color: #990000;
+  background-color: #005bbb;
   background: -webkit-gradient(
     linear,
     left top,
     left bottom,
-    from(#aa0000),
-    to(#990000)
+    from(#0082ff),
+    to(#005bbb)
   );
-  background: -moz-linear-gradient(top, #aa0000, #990000);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#AA0000', endColorstr='#990000'); /* ie7 */
-  -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#AA0000', endColorstr='#990000'); /* ie8 */
+  background: -moz-linear-gradient(top, #005bbb, #005bbb);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#005bbb', endColorstr='#005bbb'); /* ie7 */
+  -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#005bbb', endColorstr='#005bbb'); /* ie8 */
 }
 div.navLinks .navbutton:hover,
 #coursetitle:hover {
-  background-color: #800;
+  background-color: #002f56;
   background: -webkit-gradient(
     linear,
     left top,
     left bottom,
-    from(#990000),
-    to(#900000)
+    from(#002f56),
+    to(#002f56)
   );
-  background: -moz-linear-gradient(top, #990000, #900000);
+  background: -moz-linear-gradient(top, #002f56, #002f56);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#990000', endColorstr='#900000'); /* ie7 */
   -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#990000', endColorstr='#900000'); /* ie8 */
 }
 div.navLinks .navbutton:active,
 #coursetitle:active {
-  background-color: #700;
+  background-color: #002748;
   background: -webkit-gradient(
     linear,
     left top,
     left bottom,
-    from(#770000),
-    to(#880000)
+    from(#002f56),
+    to(#002748)
   );
-  background: -moz-linear-gradient(top, #770000, #880000);
+  background: -moz-linear-gradient(top, #002f56, #002748);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#770000', endColorstr='#880000'); /* ie7 */
   -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#770000', endColorstr='#880000'); /* ie8 */
 }
