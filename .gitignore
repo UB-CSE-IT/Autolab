@@ -59,3 +59,4 @@ node_modules/
 # Rails credentials
 config/master.key
 config/credentials.yml.enc
+/vendor
