@@ -53,7 +53,8 @@ USER root
 RUN mkdir -p /home/app/webapp/log && \
   touch /home/app/webapp/log/production.log && \
   chmod 0664 /home/app/webapp/log/production.log && \
-  chown -R app:app .
+  chown -R app:app . && \
+  chmod ug+x /home/app/webapp/vendor/mossnet
 
 USER app
 
