@@ -1,27 +1,60 @@
 <div class="sign-in-panel home">
-<br>
+  <br>
 
-<%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
-  
-  <img src="/images/autolab.svg" alt="" class="valign login-logo">
-  <h5>Login to Autolab</h5>
+  <% if Rails.env == "development" %>
+    <p class="red darken-3 white-text">Autolab is running in a development environment. You should not see this in
+      production!</p>
+  <% end %>
 
-  <div><%= f.email_field :email, :autofocus => true, :placeholder=> "Email Address"%></div>
-  <div><%= f.password_field :password, :placeholder=> "Password"%></div>
+  <img src="/images/autolab.svg" alt="Autolab logo" class="valign login-logo">
+  <h5>Sign into Autolab</h5>
+  <br/>
 
-  <% if devise_mapping.rememberable? -%>
-  <label>
-      <%= f.check_box :remember_me %>
-      <span> <%= f.label :remember_me %> </span> <br />
-  </label>
-  <p></p>
-  <% end -%>
-  <div><%= f.submit "Sign in", :class=>"btn primary" %></div>
-<% end %>
-<br>
-<% if Rails.env == "development" %>
-<%= link_to "Developer Login", "/home/developer_login" %><br />
-<% end %>
-<%= render "devise/shared/links" %>
+  <p><b>Students and Faculty:</b></p>
+  <%= render "devise/shared/links" %>
 
+  <p>CSE IT Staff:</p>
+  <button id="cse-it-login-button" class="btn">More Options</button>
+  <br/>
+  <br/>
+
+  <script>
+      function toggleItLogin() {
+          const div = document.getElementById("cse-it-login-form");
+          div.style.display = div.style.display === "" ? "none" : "";
+      }
+
+      const button = document.getElementById("cse-it-login-button");
+      button.addEventListener("click", toggleItLogin);
+  </script>
+
+  <div id="cse-it-login-form" style="display: none; border: 2px solid #005bbb; border-radius: 10px; max-width: 370px;
+    padding: 10px; margin: 0 auto;">
+    <h4>CSE IT Login Options</h4>
+
+    <h5>Developer Login</h5>
+    <% if Rails.env == "development" %>
+      <p>Sign in as anybody without a password:</p>
+      <%= button_to "Sign in with Developer Login", "/home/developer_login", { class: 'btn red darken-3' } %>
+    <% else %>
+      <p>Autolab isn't running in a development environment, so you can't use the developer login here.</p>
+    <% end %>
+    <br/>
+
+    <h4>Local Login</h4>
+    <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+      <div><%= f.email_field :email, :autofocus => true, :placeholder => "Email Address" %></div>
+      <div><%= f.password_field :password, :placeholder => "Password" %></div>
+      <% if devise_mapping.rememberable? -%>
+        <label>
+          <%= f.check_box :remember_me %>
+          <span> <%= f.label :remember_me %> </span> <br/>
+        </label>
+        <p></p>
+      <% end -%>
+      <div><%= f.submit "Submit local login", :class => "btn primary" %></div>
+    <% end %>
+  </div>
+
+  <br>
 </div>

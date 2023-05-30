@@ -1,12 +1,12 @@
 <%= f.text_field :semester, size: 3,
-  help_text: "The current semester. Examples: f12, s13, m13" %>
+  help_text: "The current semester. Examples: f23, w24, s24, u24 - (fall, winter, spring, summer)" %>
 
 <%= f.text_field :display_name,
-  help_text: "Descriptive course name for displaying. Example: 15-213: Intro to
-  Computer Systems" %>
+  help_text: "Descriptive course name for displaying. Example: CSE116: Intro to
+  Computer Science II, CSE486/586: Distributed Systems" %>
 
 <%= f.text_field :website,
-  help_text: "Official course website. Example: https://www.cs.cmu.edu/~213/" %>
+  help_text: "Official course website. Example: https://cse116.com" %>
 
 <%= f.text_field :late_slack,
   help_text: "This is the number of seconds after a deadline that the server
