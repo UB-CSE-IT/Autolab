@@ -233,7 +233,6 @@ Devise.setup do |config|
                                  :info_fields => { :email => 'uid', :name => 'givenName', :last_name => 'sn', :person_number => 'pn' },
                                  :request_type => :header, # Use HTTP headers instead of environment variables
                                  # This has additional security considerations! See https://github.com/toyokazu/omniauth-shibboleth
-                                 :debug => true
   }
 
   # ==> Warden configuration
