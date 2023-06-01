@@ -28,7 +28,7 @@ namespace :admin do
 
   desc "Create a new root user"
   task :create_root_user, [:email, :password, :first_name, :last_name] => [:environment] do |t, args|
-    u = User.new(email: args.email, first_name: args.first_name, last_name: args.last_name, password: args.password, administrator: true, school: "ADMIN", major: "???", year: "9")
+    u = User.new(email: args.email, first_name: args.first_name, last_name: args.last_name, password: args.password, administrator: true, school: "UB (Autolab Admin)", major: "Unknown", year: "0")
     u.skip_confirmation!
     u.save!
     puts "Successfully created root user with email #{args.email}"
@@ -36,7 +36,7 @@ namespace :admin do
 
   desc "Create a new user"
   task :create_user, [:email, :password, :first_name, :last_name] => [:environment] do |t, args|
-    u = User.new(email: args.email, first_name: args.first_name, last_name: args.last_name, password: args.password, administrator: false, school: "UB", major: "???", year: "1")
+    u = User.new(email: args.email, first_name: args.first_name, last_name: args.last_name, password: args.password, administrator: false, school: "UB", major: "Unknown", year: "0")
     u.skip_confirmation!
     u.save!
     puts "Successfully created user with email #{args.email}"

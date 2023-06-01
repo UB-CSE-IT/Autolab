@@ -5,13 +5,14 @@
 <%= f.text_field :last_name, placeholder: "Doe" %>
 
 <% if current_user.administrator? %>
+	<p>(School and major are hidden on this screen to non-admins, but they may appear in other locations.)</p>
 	<%= f.text_field :school, placeholder: "School of Computer Science" %>
 
 	<%= f.text_field :major, placeholder: "Computer Science" %>
 
 	<%= f.check_box :administrator, help_text: "Administrators have total access to change anything in the system." %>
 <% else %>
-	<%= f.text_field :school, disabled: true, placeholder: "School of Computer Science" %>
+	<%#= f.text_field :school, disabled: true, placeholder: "School of Computer Science" %>
 
-	<%= f.text_field :major, disabled: true, placeholder: "Computer Science" %>
+	<%#= f.text_field :major, disabled: true, placeholder: "Computer Science" %>
 <% end %>
