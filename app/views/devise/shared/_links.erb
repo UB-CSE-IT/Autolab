@@ -2,7 +2,7 @@
   <%- resource_class.omniauth_providers.each do |provider| %>
     <% if provider.to_s.titleize == "Shibboleth" %>
       <b><%= button_to "Sign in with Shibboleth",
-                       user_shibboleth_omniauth_authorize_path(provider),
+                       user_shibboleth_omniauth_callback_url,
                        {class: 'btn btn-large primary'}%></b>
       <br/>
     <% end %>
