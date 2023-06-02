@@ -1,6 +1,9 @@
 Autolab3::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
+  # Specify which hosts are allowed
+  config.hosts << "autolab.cse.buffalo.edu"
+
   # Code is not reloaded between requests
   config.cache_classes = true
 
