@@ -41,7 +41,8 @@
 <% if @user == current_user %>
   <hr>
   <h4>Private Settings</h4>
-  <%= link_to raw('<span class="btn primary">Change Password</span>'), edit_user_registration_path %>
+  <a class="btn primary" target="_blank" href="https://www.buffalo.edu/ubit/service-guides/accounts/your-ubitname-account/managing-your-ubitname-and-password/change-password.html">Change Password</a>
+  <%#= link_to raw('<span class="btn primary">Change Password</span>'), edit_user_registration_path %>
   <% if GithubIntegration.connected %>
     <% if @user.github_integration && @user.github_integration.is_connected %>
       <%= link_to raw('<span class="btn primary">Revoke Github Token</span>'), github_revoke_user_path(@user), data: {method: "post"} %>
