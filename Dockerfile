@@ -50,11 +50,16 @@ ADD . /home/app/webapp
 USER root
 
 # Create the log files
-RUN mkdir -p /home/app/webapp/log && \
-  touch /home/app/webapp/log/production.log && \
-  chmod 0664 /home/app/webapp/log/production.log && \
-  chown -R app:app . && \
-  chmod ug+x /home/app/webapp/vendor/mossnet
+# This messes with the mounted volume, so don't create them here.
+#RUN mkdir -p /home/app/webapp/log && \
+#  touch /home/app/webapp/log/production.log && \
+#  chmod 0664 /home/app/webapp/log/production.log && \
+
+# Set app to owner of everything
+RUN chown -R app:app .
+
+# Make MOSS executable
+RUN chmod ug+x /home/app/webapp/vendor/mossnet
 
 USER app
 
