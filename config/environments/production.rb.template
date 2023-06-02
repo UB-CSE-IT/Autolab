@@ -2,7 +2,10 @@ Autolab3::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
   # Specify which hosts are allowed
+  # Both the "Host" (localhost) and the X-Forwarded-Host (autolab.cse.buffalo.edu) need to be whitelisted
+  # for this to work behind a reverse proxy
   config.hosts << "autolab.cse.buffalo.edu"
+  config.hosts << "localhost"
 
   # Code is not reloaded between requests
   config.cache_classes = true
