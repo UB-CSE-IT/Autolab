@@ -561,6 +561,13 @@ class AssessmentsController < ApplicationController
 
     @repos = GithubIntegration.find_by(user_id: @cud.user.id)&.repositories
 
+    return unless @assessment.invalid?
+
+    # On the off-chance that the assessment has validation errors, let the user know
+    # as otherwise submissions would silently fail
+    flash.now[:error] = "This assessment is invalid due to the following error(s):<br/>"
+    flash.now[:error] += @assessment.errors.full_messages.join("<br/>")
+    flash.now[:html_safe] = true
   end
 
   action_auth_level :history, :student
