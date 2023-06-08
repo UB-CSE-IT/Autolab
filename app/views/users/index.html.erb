@@ -4,9 +4,11 @@
 
 <% if @users.count >= 1 %>
   <h3>Users List</h3>
-  <p>For improved privacy, you can only see users enrolled in courses that you're an instructor for, and &mdash; of course &mdash; yourself.</p>
+  <p>For improved privacy, you can only see users enrolled in courses that you're an instructor for, and &mdash; of
+    course &mdash; yourself.</p>
   <% if current_user.administrator? %>
-    <p>As an Autolab administrator, you can see everybody.</p>
+    <p>Since you're an Autolab administrator, you can see everybody, and other administrators will be tagged with
+      <i>(Autolab Admin)</i>.</p>
   <% end %>
 
   <table class="noStyle navigatable">
@@ -20,7 +22,11 @@
     <tbody>
     <% @users.each do |user| %>
       <tr>
-        <td><%= link_to user.email, user_path(user) %></td>
+        <td><%= link_to user.email, user_path(user) %>
+          <% if current_user.administrator? && user.administrator? %>
+            (Autolab Admin)
+          <% end %>
+        </td>
         <td><%= user.first_name %></td>
         <td><%= user.last_name %></td>
       </tr>
