@@ -189,7 +189,7 @@ class JobsController < ApplicationController
     @upcoming_asmt.sort! { |a, b| a.due_at <=> b.due_at }
   end
 
-  action_auth_level :tango_data, :instructor
+  action_auth_level :tango_data, :administrator
   def tango_data
     @data = tango_plot_data
     render(json: @data) && return

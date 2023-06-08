@@ -73,8 +73,12 @@ class UsersController < ApplicationController
 
   # GET users/new
   # only administrator and instructors are allowed
-  action_auth_level :new, :instructor
+  action_auth_level :new, :administrator
   def new
+    unless current_user.administrator?
+      flash[:error] = "Permission denied."
+      redirect_to(users_path) && return
+    end
     if current_user.administrator? || current_user.instructor?
       @user = User.new
     else
@@ -87,8 +91,12 @@ class UsersController < ApplicationController
   # POST users/create
   # create action for instructors or above.
   # send out an email to new user on success
-  action_auth_level :create, :instructor
+  action_auth_level :create, :administrator
   def create
+    unless current_user.administrator?
+      flash[:error] = "Permission denied."
+      redirect_to(users_path) && return
+    end
     if current_user.administrator?
       @user = User.new(admin_new_user_params)
     elsif current_user.instructor?

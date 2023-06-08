@@ -19,52 +19,64 @@
 <h3>Currently Running Jobs</h3>
 <table class="navigatable prettyBorder sortable">
   <thead>
-    <tr>
-      <th>Job ID:</th>
-      <th>Job Name:</th>
-      <th>VM Name:</th>
-      <th>Submitted At:</th>
-      <th>Elapsed (s):</th>
-    </tr>
+  <tr>
+    <th>Job ID:</th>
+    <th>Job Name:</th>
+    <th>VM Name:</th>
+    <th>Submitted At:</th>
+    <th>Elapsed (s):</th>
+  </tr>
   </thead>
   <tbody>
-    <% @tango_live_jobs.each do |j| %>
-    <%   next unless j["assigned"] %>
+  <% @tango_live_jobs.each do |j| %>
+    <% next unless j["assigned"] %>
     <tr>
       <td><%= j["id"] %></td>
-      <td><%= j["name"] %></td>
+      <% if @cud.user.administrator? %>
+        <td><%= j["name"] %></td>
+      <% else %>
+        <td><%= j["name"].gsub(/_[a-zA-Z0-9-]*?@buffalo.edu$/, "_<redacted email address>") %></td>
+      <% end %>
       <td><%= j["vm"]["name"] %>:<%= j["vm"]["id"] %></td>
       <td><%= j["trace"].first.split("|")[0] %></td>
       <td><%= Time.now.to_i - ActiveSupport::TimeZone["UTC"].parse(j["trace"].first.split("|")[0]).to_i %></td>
     </tr>
-    <% end %>
+  <% end %>
   </tbody>
 </table>
 
 <h3>Jobs Waiting to Run</h3>
 <table class="navigatable prettyBorder sortable">
   <thead>
-    <tr>
-      <th>Job ID:</th>
-      <th>Job Name:</th>
-      <th>VM Name:</th>
-      <th>Submitted At:</th>
-      <th>Elapsed (s):</th>
-    </tr>
+  <tr>
+    <th>Job ID:</th>
+    <th>Job Name:</th>
+    <th>VM Name:</th>
+    <th>Submitted At:</th>
+    <th>Elapsed (s):</th>
+  </tr>
   </thead>
   <tbody>
-    <% @tango_live_jobs.each do |j| %>
-    <%   next if j["assigned"] %>
+  <% @tango_live_jobs.each do |j| %>
+    <% next if j["assigned"] %>
     <tr>
       <td><%= j["id"] %></td>
-      <td><%= j["name"] %></td>
+      <% if @cud.user.administrator? %>
+        <td><%= j["name"] %></td>
+      <% else %>
+        <td><%= j["name"].gsub(/_[a-zA-Z0-9-]*?@buffalo.edu$/, "_<redacted email address>") %></td>
+      <% end %>
       <td><%= j["vm"]["name"] %>:<%= j["vm"]["id"] %></td>
       <td><%= j["trace"].first.split("|")[0] %></td>
       <td><%= Time.parse(j["trace"].last.split("|")[0]).to_i - Time.parse(j["trace"].first.split("|")[0]).to_i %></td>
     </tr>
-    <% end %>
+  <% end %>
   </tbody>
 </table>
+<% if @cud.user.administrator? %>
+  <p>You can see email addresses because you're an Autolab administrator. Most users will see
+    course-semester_assignment_#_&lt;redacted email address&gt;.</p>
+<% end %>
 
 <h3>Global Statistics</h3>
 <p> In current Tango session:</p>
@@ -78,60 +90,62 @@
 <h3>VM Pools</h3>
 <table class="navigatable prettyBorder sortable">
   <thead>
-    <tr>
-      <th>Pool Name:</th>
-      <th>VM List:</th>
-      <th>Free VM List:</th>
-      <th>VM Availability Rate:</th>
-    </tr>
+  <tr>
+    <th>Pool Name:</th>
+    <th>VM List:</th>
+    <th>Free VM List:</th>
+    <th>VM Availability Rate:</th>
+  </tr>
   </thead>
   <tbody>
-    <% @vm_pool_list.each do |k, p| %>
+  <% @vm_pool_list.each do |k, p| %>
     <tr>
       <td><%= k %></td>
       <td><%= p["total"].join(", ") %></td>
       <td><%= p["free"].join(", ") %></td>
       <td><%= p["total"].length == 0 ? number_to_percentage(0, precision: 1)
-                                     : number_to_percentage(p["free"].length.to_f / p["total"].length * 100, precision: 1) %></td>
+                : number_to_percentage(p["free"].length.to_f / p["total"].length * 100, precision: 1) %></td>
     </tr>
-    <% end %>
+  <% end %>
   </tbody>
 </table>
 <h3>Autograding Images in Use</h3>
 <table class="navigatable prettyBorder sortable">
   <thead>
-    <tr>
-      <th>VM Image Name:</th>
-      <th>Courses Using VM Image:</th>
-    </tr>
+  <tr>
+    <th>VM Image Name:</th>
+    <th>Courses Using VM Image:</th>
+  </tr>
   </thead>
   <tbody>
-    <% @img_to_course.each do |img, courses| %>
+  <% @img_to_course.each do |img, courses| %>
     <tr>
       <td><%= img %></td>
       <td><%= courses.to_a.join(", ") %></td>
     </tr>
-    <% end %>
+  <% end %>
   </tbody>
 </table>
 <h3>Global Job History</h3>
 <p>
-  <i>Zoom/pan to adjust the timeframe below. Hover over an event to view details. Each dot in the diagram represent an event, including:</i><br />
-  &mdash; New Job Requests: any new jobs submitted to Tango;<br />
-  &mdash; Job Errors: non-fatal errors in Tango jobs;<br />
-  &mdash; Job Failures: jobs terminated with failure.<br />
+  <i>Zoom/pan to adjust the timeframe below. Hover over an event to view details. Each dot in the diagram represent an
+    event, including:</i><br/>
+  &mdash; New Job Requests: any new jobs submitted to Tango;<br/>
+  &mdash; Job Errors: non-fatal errors in Tango jobs;<br/>
+  &mdash; Job Failures: jobs terminated with failure.<br/>
 <div id="tango_event_plot"></div>
 
-<p><i>Following are VM pools with at least one job &mdash; select the pool to view the time-series chart of jobs lengths for that pool.</i>
+<p><i>Following are VM pools with at least one job &mdash; select the pool to view the time-series chart of jobs lengths
+  for that pool.</i>
 <div id="pool_selection" class="center">
   <% pool_list = []
-    @plot_data.each { |e|
-      if e[:name] == "New Job Requests" then
-        pool_list = e[:vm_pool].uniq.sort!
-        break
-      end
-    }
-    %>
+     @plot_data.each { |e|
+       if e[:name] == "New Job Requests" then
+         pool_list = e[:vm_pool].uniq.sort!
+         break
+       end
+     }
+  %>
   <%= button_tag "All VM Pools", name: "vmpool", value: "", class: 'btn btn-info small' %>
   <% pool_list.each { |p| %>
     <%= button_tag(p, name: "vmpool", value: p, class: 'btn btn-info small') %>
@@ -154,17 +168,17 @@
 <h3>Current &amp; Upcoming Autograded Assessments</h3>
 <table class="navigatable prettyBorder sortable">
   <thead>
-    <tr>
-      <th>Due Date:</th>
-      <th>Start Date:</th>
-      <th>Course Name:</th>
-      <th>Assessment Name:</th>
-      <th>VM Pool:</th>
-      <th># of Students:</th>
-    </tr>
+  <tr>
+    <th>Due Date:</th>
+    <th>Start Date:</th>
+    <th>Course Name:</th>
+    <th>Assessment Name:</th>
+    <th>VM Pool:</th>
+    <th># of Students:</th>
+  </tr>
   </thead>
   <tbody>
-    <% @upcoming_asmt.each do |asmt| %>
+  <% @upcoming_asmt.each do |asmt| %>
     <tr>
       <td><%= asmt.due_at %></td>
       <td><%= asmt.start_at %></td>
@@ -173,6 +187,6 @@
       <td><%= asmt.autograder.autograde_image %></td>
       <td><%= asmt.course.course_user_data.count %></td>
     </tr>
-    <% end %>
+  <% end %>
   </tbody>
 </table>

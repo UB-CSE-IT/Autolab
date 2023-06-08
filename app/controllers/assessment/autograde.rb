@@ -200,7 +200,7 @@ module AssessmentAutograde
         end
       when :tango_open
         link = "<a href=\"#{url_for(controller: 'jobs')}\">Jobs</a>"
-        flash[:error] = "There was an error submitting your autograding job. We are likely down for maintenance if issues persist, please contact #{Rails.configuration.school['support_email']}"
+        flash[:error] = "There was an error connecting to Tango (the autograding backend). We are likely down for maintenance. If issues persist, please contact #{Rails.configuration.school['support_email']}"
       when :tango_upload
         flash[:error] = "There was an error uploading the submission file."
       when :tango_add_job

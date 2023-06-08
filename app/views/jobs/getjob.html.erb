@@ -40,7 +40,7 @@
           Status
         </td>
         <td>
-          <%= @job[:status] %>
+          <%= @job[:status].gsub(ENV['RESTFUL_KEY'], "<api key>") %>
         </td>
       </tr>
       <tr>
@@ -89,7 +89,7 @@
           Output File
         </td>
         <td>
-          <%= @job[:rjob]["outputFile"].sub(/\/afs\/cs\.cmu\.edu\/academic\/autolab\/autolab2/, "[autolab]") %>
+          <%= @job[:rjob]["outputFile"].sub(/\/afs\/cs\.cmu\.edu\/academic\/autolab\/autolab2/, "[autolab]").gsub(ENV['RESTFUL_KEY'], "<api key>") %>
         </td>
       </tr>
       <tr>
@@ -106,7 +106,8 @@
             notifyURL
           </td>
           <td>
-            <%= @job[:rjob]["notifyURL"] %>
+            <%#= @job[:rjob]["notifyURL"] %>
+            [Removed from webpage for security, available in logs]
           </td>
         </tr>
       <% end %>
@@ -131,7 +132,7 @@
       <tr>
         <td>
           <code>
-            <%= item["localFile"].sub(/\/afs\/cs\.cmu\.edu\/academic\/autolab\/autolab2\/courses/, "[autolab courses]")%>
+            <%= item["localFile"].sub(/\/afs\/cs\.cmu\.edu\/academic\/autolab\/autolab2\/courses/, "[autolab courses]").gsub(ENV['RESTFUL_KEY'], "<api key>")%>
           </code>
         </td>
         <td>
@@ -154,7 +155,7 @@
         <% for item in @job[:rjob]["trace"] do %>
           <% trace_line = item.split("|") %>
           <li>
-            <span class="moment-date-time"><%= DateTime.parse(trace_line[0]).to_time.in_time_zone.to_s %></span> | <%= trace_line[1] %>
+            <span class="moment-date-time"><%= DateTime.parse(trace_line[0]).to_time.in_time_zone.to_s %></span> | <%= trace_line[1].gsub(ENV['RESTFUL_KEY'], "<api key>") %>
           </li>
         <% end %>
       </ul>
