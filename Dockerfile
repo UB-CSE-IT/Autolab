@@ -58,6 +58,10 @@ USER root
 # Set app to owner of everything
 RUN chown -R app:app .
 
+# Disable Nginx log rotation within the container because it interferes with
+# log rotation on the host with the mounted volume
+RUN mv /etc/logrotate.d/nginx /etc/logrotate.d/nginx.disabled
+
 # Make MOSS executable
 RUN chmod ug+x /home/app/webapp/vendor/mossnet
 
