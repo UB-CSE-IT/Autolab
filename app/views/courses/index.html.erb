@@ -1,3 +1,5 @@
+<%= render partial: "home/topannounce" rescue nil %>
+
 <h2>Courses</h2>
 
 <% @listing.each do |category, list| %>
@@ -55,4 +57,4 @@
   <% end %>
 <% end %>
 
-<%= render partial: "home/topannounce" rescue nil %>
+<%#= render partial: "home/topannounce" rescue nil %>

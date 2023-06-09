@@ -1,0 +1,134 @@
+<%#
+  Use this file as an opportunity to broadcast a permanent message on
+  the root '/' path at the TOP of the page. This is normally the page
+  with a list of all courses.
+
+  For example, at CMU we use it to provide students and instructors with
+  a convenient link to an older deployment of Autolab that exists solely
+  for archival purposes. Uncomment the below, rename this file to drop
+  the `.template` suffix, and navigate to Autolab in your browser to see
+  the effect.
+%>
+
+<%# REMOVE THIS LINE TO UNCOMMENT
+
+REMOVE THIS LINE TO UNCOMMENT %>
+
+<style>
+    #cse-it-announcement-wrapper {
+        position: relative;
+    }
+
+    #cse-it-announcement-wrapper h1,
+    #cse-it-announcement-wrapper h2,
+    #cse-it-announcement-wrapper h3,
+    #cse-it-announcement-wrapper p,
+    #cse-it-announcement-wrapper ul {
+        margin-top: 5px;
+        margin-bottom: 10px;
+    }
+
+    #cse-it-announcement-content {
+        overflow: hidden;
+        border-bottom: 2px solid #005bbb;
+        padding-bottom: 10px;
+    }
+
+    #cse-it-announcement-content .title {
+        color: #005bbb;
+    }
+
+    #cse-it-announcement-content .date {
+        margin-top: -10px;
+        color: gray;
+    }
+
+    #cse-it-announcement-content ul > li {
+        list-style-type: square;
+        list-style-position: inside;
+        margin-left: 20px;
+    }
+
+    #cse-it-announcement-toggle-button {
+        position: absolute;
+        left: 50%;
+        bottom: -10px;
+        translate: -50% 7px;
+    }
+</style>
+
+<div id="cse-it-announcement-wrapper">
+  <div id="cse-it-announcement-content" style="height: 150px;">
+    <button id="cse-it-announcement-toggle-button" class="btn">Show Full Announcement</button>
+    <h2 class="title">Welcome to the new UB Autolab!</h2>
+    <p class="date">June 9th, 2023</p>
+    <p>Autolab is an open source project being developed at Carnegie Mellon University. It's used at universities all
+      around the world. It was originally introduced at UB <b>over 5 years ago</b> when we created our own
+      <a target="_blank" href="https://github.com/UBAutograding/Autolab">fork</a> of it. We modified it to fit our
+      needs, but CMU has greatly improved it in that time&mdash;so much so that it wasn't feasible to merge their
+      updates into our fork.</p>
+    <p>It's time to start fresh! Over the summer, CSE IT worked on rebuilding
+      <a target="_blank" href="https://github.com/UB-CSE-IT/Autolab">UB's variant of Autolab</a> from the latest
+      stable CMU version. Now, we plan to keep ours up to date with CMU's upstream branch each semester so we can
+      benefit from all the latest features.</p>
+    <h3>What's new?</h3>
+    <p>In addition to general <b>security, privacy, and hardware updates</b>, there are numerous beneficial new
+      features:</p>
+    <p><b>For everybody:</b></p>
+    <ul>
+      <li><b>Submissions can be made directly from a GitHub repository!</b> (Instructors must enable this on a
+        per-assignment basis.)
+      </li>
+      <li>The <b>code preview page</b> has been completely revamped. It <b>no longer cuts off after 80 characters</b>,
+        and it's easier to navigate between submissions.
+      </li>
+      <li>Students will be warned when uploading a file with an <b>unexpected extension</b>.</li>
+      <li>Submissions can be made by <b>dragging a file</b> from your file browser to the page, instead of needing to
+        browse.
+      </li>
+      <li>There is a <b>student-accessible API</b> and an optional
+        <b>command-line <a target="_blank" href="https://docs.autolabproject.com/command-line-interface/">client</a></b>
+        for students (and instructors) interested in automation.
+      </li>
+    </ul>
+    <p><b>For instructors:</b></p>
+    <ul>
+      <li><b>Assessments can be imported</b> from a tarball instead of needing to create them from scratch.</li>
+      <li>The new <i>Student Metrics</i> feature allows instructors to <b>monitor students' performance</b> in an easier
+        way.
+      </li>
+      <li><b>Deadline extensions</b> can be applied to multiple students at once.</li>
+      <li><b>Manually graded assignments</b> can benefit from the optional <i>negative grading</i> mode, where points
+        are subtracted from the max score instead of added from zero.
+      </li>
+      <li><b>Category and course averages</b> can be calculated however you'd like by uploading a custom Ruby script.
+      </li>
+    </ul>
+    <h3>Where are my previous courses?</h3>
+    <p>Due to major data layout changes over the past 5 years, we were unable to migrate previous course data to the new
+      Autolab. <b>The previous version of Autolab is still accessable at
+      <a target="_blank" href="https://autograder.cse.buffalo.edu/">autograder.cse.buffalo.edu</a></b>. It will still
+      serve as an archive, but new courses will not be created there.</p>
+  </div><!-- End announcement content -->
+</div> <!-- End announcement wrapper -->
+
+
+<script>
+    const cseItAnnouncement = document.getElementById("cse-it-announcement-content");
+    const cseItAnnouncementToggleButton = document.getElementById("cse-it-announcement-toggle-button");
+    const cseItAnnouncementShrinkHeight = cseItAnnouncement.style.height;
+
+    function toggleCseItAnnouncement(e) {
+        const shrink = cseItAnnouncement.style.height === "";
+        if (shrink) {
+            cseItAnnouncement.style.height = cseItAnnouncementShrinkHeight;
+            cseItAnnouncementToggleButton.innerText = "Show Full Announcement";
+        } else {
+            cseItAnnouncement.style.height = "";
+            cseItAnnouncementToggleButton.innerText = "Hide Full Announcement";
+        }
+    }
+
+    cseItAnnouncementToggleButton.addEventListener("click", toggleCseItAnnouncement);
+
+</script>

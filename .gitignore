@@ -20,7 +20,7 @@ config/lti_tool_jwk.json
 config/lti_platform_jwk.json
 
 # autolab user documents
-app/views/home/_topannounce.html.erb
+#app/views/home/_topannounce.html.erb
 attachments/
 doc/
 out.txt
@@ -46,7 +46,6 @@ tags
 .DS_Store
 .idea/
 .yardoc
-app/views/home/_topannounce.html.erb
 attachments/
 doc/
 out.txt
