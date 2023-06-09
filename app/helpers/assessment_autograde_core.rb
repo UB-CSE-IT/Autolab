@@ -99,7 +99,7 @@ module AssessmentAutogradeCore
   def get_callback_url(course, assessment, submission, dave)
     # Use https, unless explicitly specified not to
     prefix = "https://"
-    if ENV["DOCKER_SSL"] == "false"
+    if ENV["DOCKER_SSL"] == "false" && ENV['BEHIND_SSL_PROXY'] == false
       prefix = "http://"
     end
 

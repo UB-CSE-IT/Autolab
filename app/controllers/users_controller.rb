@@ -274,7 +274,7 @@ class UsersController < ApplicationController
     end
     # Use https, unless explicitly specified not to
     prefix = "https://"
-    if ENV["DOCKER_SSL"] == "false"
+    if ENV["DOCKER_SSL"] == "false" && ENV['BEHIND_SSL_PROXY'] == false
       prefix = "http://"
     end
 
