@@ -290,6 +290,8 @@ ActiveRecord::Schema.define(version: 2023_08_31_204558) do
     t.integer "course_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "until", default: -> { "CURRENT_TIMESTAMP" }
+    t.boolean "disabled", default: false
   end
 
   create_table "score_adjustments", force: :cascade do |t|
