@@ -1,32 +1,38 @@
 <h2>Import Course Roster</h2>
 <% if params[:upload] then %>
-  <%= render partial: 'updateRosterPreview', locals: { cuds: @cuds, sorted_cuds: @sorted_cuds} %>
+  <%= render partial: 'updateRosterPreview', locals: { cuds: @cuds, sorted_cuds: @sorted_cuds } %>
 <% else %>
-<p>
-This page will take a CSV file from the HUB and modify your course's users based
-on it.  You can either upload a partial roster and add/modify all users, or
-upload a complete roster and drop students that have dropped the course.  <br>
-<br>
-The file should be in the following formats: <br><br>
-<i>General Autolab Format</i>
-<pre>Semester,email,last_name,first_name,school,major,year,grading_policy,courseNumber,courseLecture,section</pre>
-<i>CMU Roster Format</i>
-<pre>"Semester","Course","Section","Lecture","Mini","Last Name","Preferred/First Name","MI","AndrewID","Email","College","Department",...</pre>
+  <p>
+    This page will take a CSV file and modify your course's users based
+    on it. You can either upload a partial roster and add/modify all users, or
+    upload a complete roster and drop students that have dropped the course.</p>
+  <p>Each line in the file should be in the following format:<br></p>
+  <pre>semester,email,last_name,first_name,school,major,year,grading_policy,course_number,course_lecture,section</pre>
+  <p class="smallText">Note that this ends with "section." You'll need to scroll horizontally on narrow viewports.</p>
+  <i>Example:</i>
+  <pre>f23,student@buffalo.edu,<a target="_blank" href="https://en.wikipedia.org/wiki/Dent_(surname)">Dent</a>,<a target="_blank" href="https://en.wikipedia.org/wiki/Stu">Stu</a>,University at Buffalo,BCS012R0A,2023,GRD,CSE 116LLB A,A,A</pre>
 
-<p>
-The CMU Roster file should include a header.  Editing accounts will occur as a <a href="http://en.wikipedia.org/wiki/Database_transaction#Transactional_databases">transaction</a>, if there is an error we will cancel all changes and allow you to correct the error and re-submit. </p>
-<%= form_for :upload, :url=>{:action=>"upload_roster"}, :html=>{:multipart=>true} do |f| %>
-<%= f.file_field :file %>
-<p></p>
-<label for="upload_dropMissing">
-    <%= f.check_box :dropMissing, class: "filled-in-box" %>
-    <span>Mark students not included in this roster as 'Dropped'?</span> <br />
-    <font class="smallText">Dropped students can view grades but cannot submit
-      assignments or download new assignments</font>
-</label>
-<p></p>
-<%= f.submit 'Upload!' , {:class=>"btn primary"} %>
-<% end %>
+  <p>
+    The roster file should NOT include a header. Editing accounts will occur as a
+    <a target="_blank" href="https://en.wikipedia.org/wiki/Database_transaction#Transactional_databases">transaction</a>;
+    if there is an error, we will cancel all changes and allow you to correct the error and re-submit. </p>
+
+  <p style="border-left: 5px solid #005bbb; background-color: rgba(0,91,187,0.1); padding: 4px 4px 4px 8px;">Faculty can use
+    <a target="_blank" href="https://cse.buffalo.edu/apps/classlists">CSE IT's Classlists
+      tool</a> to download their roster as a CSV already formatted for Autolab.</p>
+
+  <%= form_for :upload, :url => { :action => "upload_roster" }, :html => { :multipart => true } do |f| %>
+    <%= f.file_field :file %>
+    <p></p>
+    <label for="upload_dropMissing">
+      <%= f.check_box :dropMissing, class: "filled-in-box" %>
+      <span>Mark students not included in this roster as 'Dropped'?</span> <br/>
+      <p class="smallText">Dropped students can view grades but cannot submit
+        assignments or download new assignments</p>
+    </label>
+    <p></p>
+    <%= f.submit 'Upload!', { :class => "btn primary" } %>
+  <% end %>
 
 <% end %>
 
