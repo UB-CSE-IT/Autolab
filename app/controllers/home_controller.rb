@@ -2,6 +2,9 @@
 # The Home Controller houses (ha) any action that's available to the general public.
 #
 class HomeController < ApplicationController
+  # If we wanted to require logging in to view the contact page, we could do this:
+  # skip_before_action :authenticate_user!, except: [:publicSignUp, :contact]
+  # But the info is already public on Github for the most part
   skip_before_action :authenticate_user!, except: [:publicSignUp]
   skip_before_action :set_course
   skip_before_action :authorize_user_for_course
