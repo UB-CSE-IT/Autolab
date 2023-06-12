@@ -19,6 +19,7 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_for_action
   before_action :update_persistent_announcements
   before_action :set_breadcrumbs
+  after_action :log_request_user
 
   rescue_from ActionView::MissingTemplate do |_exception|
     redirect_to("/home/error_404")
@@ -139,6 +140,19 @@ protected
     # enable/disable maintenance mode with this switch:
     return unless ENV["AUTOLAB_MAINTENANCE"]
     render(:maintenance) && return unless user_signed_in? && current_user.administrator?
+  end
+
+  def log_request_user
+    # Log the username for the requester in the log file to make identification easier
+    begin
+      if current_user.nil?
+        Rails.logger.info("USER - Request finished (no authenticated user)")
+      else
+        Rails.logger.info("USER - Request finished for authenticated user: #{current_user.full_name_with_email}")
+      end
+    rescue
+      Rails.logger.info("USER - Request finished (failed to determine user)")
+    end
   end
 
   def set_course
