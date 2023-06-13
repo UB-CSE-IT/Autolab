@@ -56,6 +56,9 @@ class Api::V1::CoursesController < Api::V1::BaseApiController
     if params.has_key?(:end_date)
       newCourse.end_date = safe_parse_date(params[:end_date])
     end
+    if params.has_key?(:display_name)
+      newCourse.display_name = params[:display_name]
+    end
 
     # attempt save
     if not newCourse.save
