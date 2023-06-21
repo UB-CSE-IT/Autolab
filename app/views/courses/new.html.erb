@@ -1,21 +1,23 @@
 <h2>Create New Course</h2>
 
+<p>Note: it's better to use the <a href="/portal">self-service portal</a> if possible.</p>
+
 <%= form_for :newCourse, url: courses_path, builder: FormBuilderWithDateTimeInput do |f| %>
   <%= f.error_messages %>
 
   <%= f.text_field :name, required: true,
-  help_text: "The course ID used in URLs and DB keys. This field must be unique
-  and URL-able. Typically includes the course number and semester. Examples:
-  cse116-f23, cse4586-s24" %>
+                   help_text: "The course ID used in URLs and DB keys. This field must be unique
+  and URL-able. If a course is cross-listed, use the lowest numbered one. Typically includes the course number and semester. Examples:
+  cse116-f23, cse486-s24" %>
 
   <%= f.text_field :semester, size: 3,
-  help_text: "The current semester. Examples: f23, w24, s24, u24 - (fall, winter, spring, summer)" %>
+                   help_text: "The current semester. Examples: f23, w24, s24, u24 - (fall, winter, spring, summer)" %>
 
   <div class="input-field">
     <label class="control-label" for="instructor_email">Instructor Email</label>
     <%= email_field_tag :instructor_email, nil, class: "validate", placeholder: "", required: true %>
-	<p class="help-block">Email of an Instructor, they will set up the course from here!</p>
+    <p class="help-block">Email of an Instructor, they will set up the course from here!</p>
   </div>
 
-  <%= f.submit "Create" , {:class=>"btn primary"} %>
+  <%= f.submit "Create", { :class => "btn primary" } %>
 <% end %>
