@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   namespace :api, { defaults: { format: :json } } do
     namespace :v1 do
       get "user", to: "user#show"
+      get "admin_check", to: "ub_cse_it#admin_check"
 
       resources :courses, param: :name, only: [:index, :create] do
         resources :course_user_data, only: [:index, :create, :show, :update, :destroy],
