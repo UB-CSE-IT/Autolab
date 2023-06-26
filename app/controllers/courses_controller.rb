@@ -30,12 +30,13 @@ class CoursesController < ApplicationController
     @listing = categorize_courses_for_listing courses_for_user
     # if only enrolled in one course (currently), go to that course
     # only happens when first loading the site, not when user goes back to courses
-    if @listing[:current].one?
-      course_name = @listing[:current][0].name
-      redirect_to course_assessments_url(course_name)
-    else
-      redirect_to(action: :index)
-    end
+    # if @listing[:current].one?
+    #   course_name = @listing[:current][0].name
+    #   redirect_to course_assessments_url(course_name)
+    # else
+    # UB update: don't redirect to the one course. We want students to visit the homepage first.
+    redirect_to(action: :index)
+    # end
   end
 
   action_auth_level :show, :student
