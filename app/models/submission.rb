@@ -112,6 +112,22 @@ class Submission < ApplicationRecord
       self.mime_type = "application/x-tgz"
     end
     save!
+
+    # Create the settings.json metadata file
+
+    settings_path = settings_json_file_path
+
+    settings = {
+      "ubit" => course_user_datum.user.email.split("@")[0],
+      "ip" => self.submitter_ip,
+      "lecture" => course_user_datum.lecture,
+      "section" => course_user_datum.section,
+      "timestamp" => created_at,
+      "version" => version,
+    }
+
+    File.open(settings_path, "wb") { |f| f.write(settings.to_json) }
+
   end
 
   def archive_handin
@@ -175,6 +191,12 @@ class Submission < ApplicationRecord
     end
 
     old_handin_file_path
+  end
+
+  def settings_json_file_path
+    return nil unless filename
+    File.join(assessment.handin_directory_path, course_user_datum.email,
+              filename + ".settings.json")
   end
 
   def create_user_directory_and_return_handin_file_path
