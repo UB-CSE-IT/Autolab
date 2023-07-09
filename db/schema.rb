@@ -82,8 +82,6 @@ ActiveRecord::Schema.define(version: 2023_09_20_164407) do
     t.integer "late_penalty_id"
     t.integer "version_penalty_id"
     t.datetime "grading_deadline", null: false
-    t.boolean "has_autograde_old"
-    t.boolean "has_scoreboard_old"
     t.boolean "has_svn"
     t.boolean "quiz", default: false
     t.text "quizData"
