@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 2023_09_20_164407) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "grade_type", default: 0, null: false
-    t.string "repository"
+    t.string "repository", limit: 255
     t.integer "group_id"
     t.integer "membership_status", limit: 1, default: 0
     t.index ["assessment_id"], name: "index_assessment_user_data_on_assessment_id"
@@ -271,6 +271,7 @@ ActiveRecord::Schema.define(version: 2023_09_20_164407) do
     t.datetime "updated_at"
     t.float "max_score", default: 0.0
     t.boolean "optional", default: false
+    t.index ["assessment_id", "name"], name: "problem_uniq", unique: true
   end
 
   create_table "risk_conditions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -334,7 +335,7 @@ ActiveRecord::Schema.define(version: 2023_09_20_164407) do
     t.string "submitter_ip", limit: 40
     t.integer "tweak_id"
     t.boolean "ignored", default: false, null: false
-    t.string "dave"
+    t.string "dave", limit: 255
     t.text "embedded_quiz_form_answer"
     t.integer "submitted_by_app_id"
     t.string "group_key", default: ""
