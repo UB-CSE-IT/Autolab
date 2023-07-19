@@ -27,6 +27,26 @@ module AssessmentHandin
       return false
     end
 
+    # UB Feature: This prevents students from submitting too quickly, which prevents race conditions that result in
+    # multiple submissions having the same version number.
+    max_seconds_ago = 5
+    @cud.with_lock do
+      last_handin = @assessment.submissions
+                                    .where(course_user_datum_id: @cud.id)
+                                    .order(version: :DESC)
+                                    .first
+      if last_handin
+        last_handin_time = last_handin.created_at
+      else
+        last_handin_time = Time.at(0)
+      end
+      if last_handin_time > Time.now - max_seconds_ago
+        flash[:error] = "Please wait #{max_seconds_ago} seconds between handins."
+        redirect_to(action: :show)
+        return false
+      end
+    end
+
     if @assessment.embedded_quiz
       contents = params[:submission]["embedded_quiz_form_answer"].to_s
       out_file = Tempfile.new('out.txt-')
