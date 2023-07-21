@@ -184,6 +184,10 @@ class Submission < ApplicationRecord
     "#{version}_#{assessment.handin_filename}"
   end
 
+  def handin_file_long_filename
+    "#{course_user_datum.email}_#{version}_#{assessment.handin_filename}"
+  end
+
   def handin_file_path
     return nil unless filename
 
