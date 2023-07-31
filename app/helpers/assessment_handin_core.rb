@@ -70,12 +70,14 @@ module AssessmentHandinCore
   #            default is nil, meaning no application was used (handed in directly from 
   #            webpage, either by student or by an instructor).
   # Returns a list of the submissions created by this handin (aka a "logical submission").
-  def saveHandin(sub, app_id = nil)
+  def saveHandin(sub, app_id = nil, form_params = nil)
+    flash[:success] = "Debug: form_params in saveHandin: #{form_params}"
+
     unless @assessment.has_groups?
       submission = @assessment.submissions.create(course_user_datum_id: @cud.id,
                                                   submitter_ip: request.remote_ip,
                                                   submitted_by_app_id: app_id)
-      submission.save_file(sub)
+      submission.save_file(sub, form_params)
       return [submission]
     end
 
@@ -85,7 +87,7 @@ module AssessmentHandinCore
       submission = @assessment.submissions.create(course_user_datum_id: @cud.id,
                                                   submitter_ip: request.remote_ip,
                                                   submitted_by_app_id: app_id)
-      submission.save_file(sub)
+      submission.save_file(sub, form_params)
       return [submission]
     end
 
@@ -101,7 +103,7 @@ module AssessmentHandinCore
                                                     submitter_ip: request.remote_ip,
                                                     submitted_by_app_id: app_id,
                                                     group_key: group_key)
-        submission.save_file(sub)
+        submission.save_file(sub, form_params)
         submissions << submission
       end
     end

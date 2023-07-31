@@ -1,7 +1,7 @@
 <h2>Edit <%= @submission.course_user_datum.email %>'s Submission
 #<%= @submission.version %> for <%= link_to @assessment.display_name, course_assessment_path(@submission.course_user_datum.course, @assessment) %></h2>
 
-<%= form_for @submission, url: [@submission.course_user_datum.course, @assessment, @submission], method: :patch do |f| %>
+<%= form_for @submission, url: [@submission.course_user_datum.course, @assessment, @submission], method: :patch, multipart: true do |f| %>
 <%= f.error_messages %>
 <table class="verticalTable">
   <tr>

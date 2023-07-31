@@ -78,7 +78,7 @@ class Submission < ApplicationRecord
   # and cache it in the AUD (assessment_user_data).
   delegate :update_latest_submission, to: :aud
 
-  def save_file(upload)
+  def save_file(upload, form_params = nil)
     self.filename = handin_file_filename
 
     if upload["file"]
@@ -125,6 +125,10 @@ class Submission < ApplicationRecord
       "timestamp" => created_at,
       "version" => version,
     }
+
+    settings = form_params.merge(settings) if form_params
+    # Merge form params into the root of the settings hash to maintain backwards compatibility
+    # The order matters here, we want our settings to override the form params
 
     File.open(settings_path, "wb") { |f| f.write(settings.to_json) }
 
