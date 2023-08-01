@@ -47,11 +47,23 @@ module AssessmentHandin
       end
     end
 
+    embedded_quiz_with_file = params[:submission_file].present?
+    embedded_quiz_form_data = nil
+
     if @assessment.embedded_quiz
-      contents = params[:submission]["embedded_quiz_form_answer"].to_s
-      out_file = Tempfile.new('out.txt-')
-      out_file.puts(contents)
-      params[:submission]["file"] = out_file
+      contents = params.except(:controller, :action, :submission, :utf8, :authenticity_token, :submission_file,
+                               :integrity_checkbox, :course_name, :name)
+      if embedded_quiz_with_file
+        params[:submission]["file"] = params[:submission_file]
+        embedded_quiz_form_data = contents.clone # We'll pass the form data to the save_file function to add it to settings.json
+        redirect_to(action: :show) && return unless validateHandin_forHTML
+      else
+        # Just a regular embedded form with no file upload
+        out_file = Tempfile.new('out.txt-')
+        out_file.puts(contents.to_json)
+        params[:submission]["file"] = out_file
+      end
+
     elsif @assessment.github_submission_enabled && params["github_submission"].present?
       # get code from Github
       github_integration = current_user.github_integration
@@ -76,7 +88,7 @@ module AssessmentHandin
 
     # save the submissions
     begin
-      submissions = saveHandin(params[:submission])
+      submissions = saveHandin(params[:submission], nil, embedded_quiz_form_data)
       if git_tarfile_cleanup_path
         system *%W(rm #{git_tarfile_cleanup_path})
       end
@@ -92,7 +104,7 @@ module AssessmentHandin
       submissions = nil
     end
 
-    if @assessment.embedded_quiz
+    if @assessment.embedded_quiz && !embedded_quiz_with_file
       out_file.close
       out_file.unlink
     end

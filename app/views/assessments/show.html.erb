@@ -283,7 +283,7 @@
       <div class = "row">
         <div class = "col s10 offset-s1">
           <hr>
-          <%= form_for @submission, url: {action: :handin}, :html => {:id => "quiz_form", :onclick => "return validateIntegrity();"}, method: :post do |f| %>
+          <%= form_for @submission, url: {action: :handin}, :html => {:id => "submissionForm", :onclick => "return validateIntegrity();", multipart: true}, method: :post, multipart: true do |f| %>
 
               <%= f.hidden_field :embedded_quiz_form_answer, value: "" %>
 

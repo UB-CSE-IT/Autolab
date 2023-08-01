@@ -22,7 +22,7 @@
     <div class="row">
       <div class="col s12">
         <% if @assessment.has_svn then %>
-          <%= form_for @submission, url: {action: :handin}, :html => {:name => "submissionForm", :onclick => "return validateIntegrity();"}, method: :post do |f| %>
+          <%= form_for @submission, url: {action: :handin}, :html => {:name => "submissionForm", :onclick => "return validateIntegrity();"}, method: :post, multipart: true do |f| %>
 
             <!-- Academic integrity checkbox -->
             <%= label_tag(:integrity_checkbox) do %>
