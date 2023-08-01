@@ -71,8 +71,6 @@ module AssessmentHandinCore
   #            webpage, either by student or by an instructor).
   # Returns a list of the submissions created by this handin (aka a "logical submission").
   def saveHandin(sub, app_id = nil, form_params = nil)
-    flash[:success] = "Debug: form_params in saveHandin: #{form_params}"
-
     unless @assessment.has_groups?
       submission = @assessment.submissions.create(course_user_datum_id: @cud.id,
                                                   submitter_ip: request.remote_ip,
