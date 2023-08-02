@@ -44,7 +44,7 @@ class Rack::Attack
   #
   # Key: "rack::attack:#{Time.now.to_i/:period}:api/general:#{req.user_id}"
   throttle('api/general', :limit => 10, :period => 30.seconds) do |req|
-    if req.path.start_with?("/api/")
+    if req.path.start_with?("/api/") and not req.path.start_with?("/api/ubcseit/") # Don't throttle our custom CSE IT API
       req.user_id
     end
   end
