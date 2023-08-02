@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     namespace :ubcseit do
       get "admin_check", to: "admin_check#admin_check"
       get "user_courses", to: "grading_assignments#get_user_courses"
+      get "assessment_submissions", to: "grading_assignments#get_assessment_submissions"
     end
 
     namespace :v1 do
