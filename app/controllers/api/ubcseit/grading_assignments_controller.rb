@@ -71,7 +71,7 @@ class Api::Ubcseit::GradingAssignmentsController < Api::Ubcseit::AdminBaseApiCon
     #       "display_name": "First Last"
     #       "version": 22
     #       "url": "https://autolab.cse.buffalo.edu/courses/cse-it-test-course/assessments/pdftest/submissions/22/view",
-    #       "graded": true, # For future use, not implemented yet.
+    #       "annotation_count": 3, # TODO Maybe for future use, not implemented yet. Would be useful to know if a submission has "been graded" this way.
     #     }, ...
     #   ],
     # }
@@ -79,23 +79,46 @@ class Api::Ubcseit::GradingAssignmentsController < Api::Ubcseit::AdminBaseApiCon
 
     course = get_course_from_param
     assessment = get_assessment_from_param(course)
-    latest_submissions = assessment.assessment_user_data
-                                   .includes(course_user_datum: :user)
-                                   .where(course_user_data: { instructor: false, course_assistant: false })
-                                   .order("users.email ASC")
-                                   .map(&:latest_submission)
-                                   .reject(&:nil?)
+
+    # SELECT submissions.id, u.email, u.first_name, u.last_name, submissions.version
+    # FROM submissions
+    #          INNER JOIN assessment_user_data aud
+    #                     on submissions.assessment_id = aud.assessment_id # Needed for latest_submission_id
+    #          INNER JOIN course_user_data cud
+    #                     on submissions.course_user_datum_id = cud.id # Needed for instructor, course_assistant
+    #          INNER JOIN users u on cud.user_id = u.id # Needed for email, first_name, last_name
+    # WHERE latest_submission_id = submissions.id # Only latest submission
+    #   AND instructor = 0                        # Not an instructor or CA
+    #   AND course_assistant = 0
+    #   AND submissions.assessment_id = 6         # For a particular assessment (AutoPopulated/assessments/homework5)
+    # ORDER BY email;
+
+    latest_submissions = Submission
+                           .joins("INNER JOIN assessment_user_data aud ON submissions.assessment_id = aud.assessment_id") # Needed for latest_submission_id
+                           .joins("INNER JOIN course_user_data cud ON submissions.course_user_datum_id = cud.id") # Needed for instructor, course_assistant
+                           .joins("INNER JOIN users u ON cud.user_id = u.id") # Needed for email, first_name, last_name
+                           .where("latest_submission_id = submissions.id")
+                           .where("instructor = 0")
+                           .where("course_assistant = 0")
+                           .where("submissions.assessment_id = ?", assessment.id)
+                           .order("u.email ASC")
+                           .pluck("submissions.id", "u.email", "u.first_name", "u.last_name", "submissions.version")
 
     ret_submissions = []
 
     latest_submissions.each do |submission|
+      # pluck is more efficient than select, but it returns an array, so we need to unpack it manually
+      submission_id = submission[0]
+      email = submission[1]
+      first_name = submission[2]
+      last_name = submission[3]
+      version = submission[4]
 
       submission_hash = {
-        email: submission.course_user_datum.user.email,
-        display_name: submission.course_user_datum.user.display_name,
-        version: submission.version,
-        url: view_course_assessment_submission_url(course, assessment, submission),
-        graded: false, # TODO implement this; needs more planning. Probably check if there are any annotations
+        email: email,
+        display_name: "#{first_name} #{last_name}", # Need to manually set this since we don't have a full user instance
+        version: version,
+        url: view_course_assessment_submission_url(course, assessment, submission_id),
       }
 
       ret_submissions << submission_hash
