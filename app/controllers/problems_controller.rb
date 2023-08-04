@@ -19,7 +19,14 @@ class ProblemsController < ApplicationController
   def create
     @problem = @assessment.problems.new(problem_params)
 
-    redirect_to(problems_index) && return if @problem.save
+    create_another = params[:commit] == "Save and Create Another"
+
+    if create_another
+      redirect_to(new_course_assessment_problem_path(@course, @assessment)) && return if @problem.save
+    else
+      redirect_to(problems_index) && return if @problem.save
+    end
+
 
     # error case
     flash[:error] = "An error occurred while creating the new problem"
