@@ -193,13 +193,31 @@ class Api::Ubcseit::GradingAssignmentsController < Api::Ubcseit::AdminBaseApiCon
 
     ret_users = []
 
-    course.course_user_data.joins(:user).order("users.email ASC").each do |cud|
-      user = cud.user
+    course.course_user_data
+          .joins(:user)
+          .order("users.email ASC")
+          .pluck("users.email", "users.first_name", "users.last_name", "course_user_data.instructor", "course_user_data.course_assistant")
+          .each do |cud|
+      # pluck is more efficient than select, but it returns an array, so we need to unpack it manually
+      email = cud[0]
+      first_name = cud[1]
+      last_name = cud[2]
+      instructor = cud[3]
+      course_assistant = cud[4]
+
       user_hash = {
-        email: user.email,
-        display_name: user.display_name,
-        role: cud.auth_level_string,
+        email: email,
+        display_name: "#{first_name} #{last_name}", # Need to manually set this since we don't have a full user instance
       }
+
+      user_hash[:role] = if instructor == 1
+                           "instructor"
+                         elsif course_assistant == 1
+                           "course_assistant"
+                         else
+                           "student"
+                         end
+
       ret_users << user_hash
     end
 
