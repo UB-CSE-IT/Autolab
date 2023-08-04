@@ -14,21 +14,35 @@ class Api::Ubcseit::GradingAssignmentsController < Api::Ubcseit::AdminBaseApiCon
     #       "name": "course1",  # The technical name of the course
     #       "display_name": "Course 1",  # The display name of the course
     #       "semester": "f23", # The semester code of the course
-    #       "auth_level": "student",  # or "instructor" or "course_assistant"
+    #       "role": "student",  # or "instructor" or "course_assistant"
     #     }, ...
     #   ],
     # }
     # Courses are sorted by end_date, so the most recent course is last.
 
     user = get_user_from_email_param
-    uid = user.id
-    courses_for_user = User.courses_for_user(user)
     courses = []
 
-    courses_for_user.order(:end_date).each do |course|
-      course_hash = course.as_json(only: [:name, :display_name, :semester])
-      cud = CourseUserDatum.find_cud_for_course(course, uid)
-      course_hash[:role] = cud.auth_level_string
+    Course
+      .joins("INNER JOIN `course_user_data` ON `courses`.`id` = `course_user_data`.`course_id`")
+      .where("course_user_data.user_id = ?", user.id)
+      .select("courses.name", "courses.display_name", "courses.semester", "course_user_data.instructor", "course_user_data.course_assistant")
+      .order(:end_date)
+      .each do |course|
+
+      course_hash = {
+        name: course.name,
+        display_name: course.display_name,
+        semester: course.semester
+      }
+
+      course_hash[:role] = if course.instructor == 1
+                             "instructor"
+                           elsif course.course_assistant == 1
+                             "course_assistant"
+                           else
+                             "student"
+                           end
       courses << course_hash
     end
 
