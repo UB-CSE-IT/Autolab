@@ -1,9 +1,9 @@
 <div class="problemGrades collection">
   <% p_scores = @submission.problems_to_scores %>
-  <% @assessment.problems.each_with_index do |p,i| %>
+  <% @assessment.problems.each_with_index do |p, i| %>
     <% p_score = p_scores[p.id] %>
     <div class="problem-grade-item collection-item">
-      <div class="problem_name"> <%= p.name.capitalize %>: </div>
+      <div class="problem_name"> <%= p.name.capitalize %>:</div>
       <div class="problem_score">
         <% if @cud.instructor? or @cud.course_assistant? or p_score&.released %>
           <b class="student_score" data-problem-id="<%= p.id %>" data-submission-id="<%= @submission.id %>"> <%= p_score&.score ? sprintf("%.2f", p_score.score) : raw("&ndash;") %> </b>
@@ -11,6 +11,15 @@
           <b> &ndash; </b>
         <% end %>
         <b> / <%= p.max_score ? sprintf("%.2f", p.max_score.round(2)) : raw("&ndash;") %></b>
+        <% if (@cud.instructor? || @cud.course_assistant?) && p.max_score && p_score&.score && p_score.score > p.max_score %>
+          <span style="border-bottom: white dotted 2px"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="The assigned score is greater than the maximum score. This will not prevent saving. This warning is only visible to graders."
+                class="red white-text">
+            (Extra credit)
+          </span>
+        <% end %>
       </div>
     </div>
   <% end %>
