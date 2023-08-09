@@ -210,9 +210,9 @@ class Api::Ubcseit::GradingAssignmentsController < Api::Ubcseit::AdminBaseApiCon
         display_name: "#{first_name} #{last_name}", # Need to manually set this since we don't have a full user instance
       }
 
-      user_hash[:role] = if instructor == 1
+      user_hash[:role] = if instructor
                            "instructor"
-                         elsif course_assistant == 1
+                         elsif course_assistant
                            "course_assistant"
                          else
                            "student"
