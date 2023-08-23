@@ -65,6 +65,7 @@ class Api::Ubcseit::GradingAssignmentsController < Api::Ubcseit::AdminBaseApiCon
     # {
     #   "course_name": "course1",  # The technical name of the course
     #   "assessment_name": "assessment1",  # The technical name of the assessment
+    #   "assessment_display_name": "Assessment 1",  # The display name of the assessment
     #   "submissions": [
     #     {
     #       "email": "somebody@buffalo.edu",
@@ -127,6 +128,7 @@ class Api::Ubcseit::GradingAssignmentsController < Api::Ubcseit::AdminBaseApiCon
     ret = {
       course_name: course.name,
       assessment_name: assessment.name,
+      assessment_display_name: assessment.display_name,
       submissions: ret_submissions
     }
 
