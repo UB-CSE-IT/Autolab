@@ -16,9 +16,17 @@ Rails.application.routes.draw do
   end
 
   namespace :api, { defaults: { format: :json } } do
+
+    namespace :ubcseit do
+      get "admin_check", to: "admin_check#admin_check"
+      get "user_courses", to: "grading_assignments#get_user_courses"
+      get "assessment_submissions", to: "grading_assignments#get_assessment_submissions"
+      get "course_assessments", to: "grading_assignments#get_course_assessments"
+      get "course_users", to: "grading_assignments#get_course_users"
+    end
+
     namespace :v1 do
       get "user", to: "user#show"
-      get "admin_check", to: "ub_cse_it#admin_check"
 
       resources :courses, param: :name, only: [:index, :create] do
         resources :course_user_data, only: [:index, :create, :show, :update, :destroy],
