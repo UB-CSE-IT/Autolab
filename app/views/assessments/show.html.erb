@@ -31,6 +31,12 @@
 <% @list.delete("submission") %>
 <% @list.delete("reload") %>
 
+<% if @assessment.has_autograder? && @assessment.problems.length == 0 %>
+  <div id="flash_error" class="error">
+    This assessment has an autograder, but no problems exist. Submissions will not be automatically graded until a problem is created.
+  </div>
+<% end %>
+
 <div class="">
 <div class="row">
   <div class="col s12 m12">
