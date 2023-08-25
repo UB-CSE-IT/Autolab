@@ -181,7 +181,7 @@ class UsersController < ApplicationController
       flash[:success] = "User was successfully updated."
       redirect_to(users_path) && return
     else
-      flash[:error] = "User update failed. Check all fields"
+      flash[:error] = "User update failed. Check all fields. First name and last name must be fewer than 32 characters. Combined, they must be at least one character."
       redirect_to(edit_user_path(user)) && return
     end
   end

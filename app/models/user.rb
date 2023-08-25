@@ -19,6 +19,8 @@ class User < ApplicationRecord
   trim_field :school
   validates :email, presence: true
   validate :first_or_last_name
+  validate :reasonable_first_name
+  validate :reasonable_last_name
 
   # check if user is instructor in any course
   def instructor?
@@ -271,4 +273,14 @@ private
     errors.add(:first_name, "First name and last name can't both be blank")
     errors.add(:last_name, "First name and last name can't both be blank")
   end
+
+  def reasonable_first_name
+    errors.add(:first_name, "First name must be at most 32 characters.") if first_name.length > 32
+  end
+
+  def reasonable_last_name
+    errors.add(:last_name, "Last name must be at most 32 characters.") if last_name.length > 32
+  end
+
+
 end
