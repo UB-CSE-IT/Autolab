@@ -2,7 +2,7 @@
 <br>
 <%= f.error_messages %>
 
-<%= f.text_field :name, help_text: "Each problem has a name that is unique to the assessment.", placeholder: "E.g. problem1", required: true %>
+<%= f.text_field :name, help_text: "Each problem has a name that is unique to the assessment.", placeholder: "E.g. problem1", required: true, autofocus: true %>
 
 <%= f.text_field :description, help_text: "Short description of the problem.", placeholder: "(Optional)" %>
 
@@ -20,8 +20,8 @@ problem. Use this option carefully. In most cases, you should leave it
 unchecked." %>
 
 <div class="action_buttons">
-	<%= f.submit "Save Problem", {:class=>"btn primary"} %>
 	<%= f.submit "Save and Create Another", {:class=>"btn primary"} %>
+	<%= f.submit "Save and Return", {:class=>"btn primary"} %>
 	<% if @problem %>
 	<button class="delete_btn"> 
 	  <%= link_to "Delete this Problem", [@course, @assessment, @problem], method: :delete, class: 'btn btn-danger', data: { confirm: "Deleting will delete all associated problem data (such as scores and annotations) and cannot be undone. Are you sure you want to delete this problem?" } %>
