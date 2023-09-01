@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_13_053555) do
+ActiveRecord::Schema.define(version: 2023_08_31_204558) do
 
   create_table "annotations", force: :cascade do |t|
     t.integer "submission_id"
@@ -96,6 +96,8 @@ ActiveRecord::Schema.define(version: 2023_03_13_053555) do
     t.boolean "allow_student_assign_group", default: true
     t.boolean "github_submission_enabled", default: true
     t.boolean "is_positive_grading", default: false
+    t.boolean "use_ub_section_deadlines", default: false
+    t.boolean "use_ub_lectures", default: false
   end
 
   create_table "attachments", force: :cascade do |t|
@@ -335,6 +337,17 @@ ActiveRecord::Schema.define(version: 2023_03_13_053555) do
     t.integer "jobid"
     t.index ["assessment_id"], name: "index_submissions_on_assessment_id"
     t.index ["course_user_datum_id"], name: "index_submissions_on_course_user_datum_id"
+  end
+
+  create_table "ub_course_sections", force: :cascade do |t|
+    t.integer "course_id"
+    t.string "name"
+    t.boolean "is_lecture"
+    t.time "start_time"
+    t.time "end_time"
+    t.integer "days_code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "users", force: :cascade do |t|
