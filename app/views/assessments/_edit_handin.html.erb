@@ -32,6 +32,15 @@
     help_text: "Autolab has not been configured to use Github integration. Please contact your Autolab admin to perform the necessary setup and configuration based on the instructions on our docs." 
   %>
 <% end %>
+
+<%= f.check_box :use_ub_section_deadlines,
+  display_name: "Only allow submissions during each student's lecture/section (lab/recitation) time",
+  help_text: "Configure your lecture and section schedule via the self-service portal." %>
+
+<%= f.check_box :use_ub_lectures,
+  display_name: "Only allow submissions during <b>lecture</b>",
+  help_text: "Use the \"lecture\" field in the roster instead of the \"section\" field to determine allowed handin times." %>
+
 <% unless f.object.disable_handins %>
   <%= f.text_field :handin_filename, help_text: "The suffix that is appended to student submission files. Avoid non-alphanumeric characters, as these may result in Tango copy errors. Autolab stores submission files in the handin directory as email/version_fname.", placeholder: "E.g. mm.c" %>
 <% end %>

@@ -475,7 +475,7 @@ private
                                     writeup max_submissions disable_handins max_size
                                     version_threshold is_positive_grading embedded_quiz group_size
                                     github_submission_enabled allow_student_assign_group
-                                    is_positive_grading]
+                                    is_positive_grading use_ub_section_deadlines use_ub_lectures]
 
   def serialize_general
     Utilities.serializable attributes, GENERAL_SERIALIZABLE
