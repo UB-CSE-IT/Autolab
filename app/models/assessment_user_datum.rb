@@ -192,6 +192,12 @@ class AssessmentUserDatum < ApplicationRecord
     elsif at_submission_limit?
       [false, :at_submission_limit]
     else
+      # Check if user is in a section that can submit at this time if the assessment requires it
+      if assessment.use_ub_section_deadlines?
+        unless section_can_submit_at_time(@ub_course_section, at)
+          return [false, :ub_course_section_not_in_progress]
+        end
+      end
       [true, nil]
     end
   end
@@ -372,4 +378,5 @@ private
   end
 
   include AUDAssociationCache
+  include UbCourseSectionsHelper
 end

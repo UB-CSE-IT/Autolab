@@ -574,6 +574,8 @@ private
         errors[:base] << "You cannot submit because it is past the deadline."
       when :at_submission_limit
         errors[:base] << "You you have already reached the submission limit."
+      when :ub_course_section_not_in_progress
+        errors[:base] << "You cannot submit because your course lecture/section is not in progress."
       else
         raise "FATAL: unknown reason for submission denial"
       end
