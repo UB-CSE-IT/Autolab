@@ -561,9 +561,6 @@ class AssessmentsController < ApplicationController
 
     @repos = GithubIntegration.find_by(user_id: @cud.user.id)&.repositories
 
-    if @assessment.use_ub_section_deadlines?
-      @ub_course_section = get_course_user_section(@cud, @assessment.use_ub_lectures?)
-    end
   end
 
   action_auth_level :history, :student

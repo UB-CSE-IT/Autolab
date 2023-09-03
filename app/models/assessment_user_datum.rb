@@ -180,7 +180,7 @@ class AssessmentUserDatum < ApplicationRecord
   end
 
   # Check if user can submit at given date/time; provide reason, if not
-  def can_submit?(at, submitter = course_user_datum)
+  def can_submit?(at, submitter = course_user_datum, ub_course_section = nil)
     if submitter.instructor? || submitter.course_assistant?
       [true, nil]
     elsif course_user_datum.dropped? # TODO: why not submitter?
@@ -194,7 +194,7 @@ class AssessmentUserDatum < ApplicationRecord
     else
       # Check if user is in a section that can submit at this time if the assessment requires it
       if assessment.use_ub_section_deadlines?
-        unless section_can_submit_at_time(@ub_course_section, at)
+        unless section_can_submit_at_time(ub_course_section, at)
           return [false, :ub_course_section_not_in_progress]
         end
       end

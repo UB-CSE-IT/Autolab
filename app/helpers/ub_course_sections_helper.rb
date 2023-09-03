@@ -14,7 +14,12 @@ module UbCourseSectionsHelper
   end
 
   def section_can_submit_at_time(course_user_section, time)
-    return false # TODO: implement this
+    if course_user_section.nil?
+      # Do not allow submissions if the user is not in a section
+      return false
+    end
+
+    return true # TODO: implement this
   end
 
 end

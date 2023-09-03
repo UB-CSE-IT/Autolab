@@ -560,7 +560,8 @@ private
 
   def allowed?
     submitted_at = created_at || Time.zone.now
-    can, why_not = aud.can_submit? submitted_at, (submitted_by || course_user_datum)
+    ub_course_section = get_course_user_section(@cud, assessment.use_ub_lectures?)
+    can, why_not = aud.can_submit?(submitted_at, (submitted_by || course_user_datum), ub_course_section)
 
     if can
       true
@@ -677,4 +678,5 @@ private
   end
 
   include LatestSubmissionAssociationCache
+  include UbCourseSectionsHelper
 end
