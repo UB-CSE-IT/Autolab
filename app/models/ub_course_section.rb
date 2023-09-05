@@ -50,7 +50,10 @@ class UbCourseSection < ApplicationRecord
     # Convert a time (from database) to a string in English.
     # e.g. 9:00 => "9:00 AM"
     #      13:00 => "1:00 PM"
-    time.strftime("%l:%M %p")
+    #     13:30:15 => "1:30:15 PM"
+    seconds = time.strftime("%S")
+    seconds_str = seconds == "00" ? "" : ":#{seconds}"
+    time.strftime("%l:%M#{seconds_str} %p")
   end
 
   def self.days_bit_code_to_english(bit_code)
