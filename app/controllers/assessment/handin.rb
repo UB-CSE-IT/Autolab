@@ -454,7 +454,7 @@ module AssessmentHandin
 
   def set_handin
     if @assessment.use_ub_section_deadlines?
-      @ub_course_section = get_course_user_section(@cud, @assessment.use_ub_lectures?)
+      @ub_course_section = UbCourseSection.by_cud(@cud, @assessment.use_ub_lectures?)
     end
     submission_count = @assessment.submissions.where(course_user_datum_id: @cud.id).count
     @left_count = [@assessment.max_submissions - submission_count, 0].max

@@ -194,7 +194,7 @@ class AssessmentUserDatum < ApplicationRecord
     else
       # Check if user is in a section that can submit at this time if the assessment requires it
       if assessment.use_ub_section_deadlines?
-        unless section_can_submit_at_time(ub_course_section, at)
+        if ub_course_section.nil? || !ub_course_section.can_submit_at_time(at)
           return [false, :ub_course_section_not_in_progress]
         end
       end
@@ -244,7 +244,7 @@ class AssessmentUserDatum < ApplicationRecord
     cumulative_grace_days_used
   end
 
-protected
+  protected
 
   def cumulative_grace_days_used
     grace_days_used + cumulative_grace_days_used_before
@@ -257,7 +257,7 @@ protected
     "cgdub/dua-#{dua}/u-#{course_user_datum_id}/a-#{assessment_id}"
   end
 
-private
+  private
 
   def saved_change_to_latest_submission_id_or_grade_type?
     (saved_change_to_latest_submission_id? or saved_change_to_grade_type?)
@@ -348,10 +348,12 @@ private
     if grade_type == NORMAL
       if submission_status == :submitted
         latest_submission.final_score as_seen_by
-      else # :not_yet_submitted, :not_submitted
+      else
+        # :not_yet_submitted, :not_submitted
         submission_status
       end
-    else # ZEROED, EXCUSED
+    else
+      # ZEROED, EXCUSED
       AssessmentUserDatum.grade_type_to_sym grade_type
     end
   end
@@ -378,5 +380,4 @@ private
   end
 
   include AUDAssociationCache
-  include UbCourseSectionsHelper
 end

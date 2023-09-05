@@ -90,6 +90,10 @@ class Assessment < ApplicationRecord
     Time.current <= grading_deadline
   end
 
+  def ub_section_type_name
+    use_ub_lectures? ? "lecture" : "section"
+  end
+
   def folder_path
     Rails.root.join("courses", course.name, name)
   end

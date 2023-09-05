@@ -1062,7 +1062,4 @@ private
 
     @assessment.destroy # awwww!!!!
   end
-
-
-  include UbCourseSectionsHelper
 end
