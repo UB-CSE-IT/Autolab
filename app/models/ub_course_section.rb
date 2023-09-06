@@ -133,6 +133,7 @@ class UbCourseSection < ApplicationRecord
   end
 
   def self.get_all_in_course(course_name)
+    # For API usage, this isn't the most efficient because we don't want to query the course again.
     course = Course.find_by(name: course_name)
     if course.nil?
       return nil
