@@ -27,10 +27,22 @@ class UbCourseSection < ApplicationRecord
     # The time stored in the database is actually a local time so that daylight savings time is handled correctly.
 
     today = Date.today
-    start_time_today = Time.new(today.year, today.month, today.day, start_time.utc.hour, start_time.min, start_time.sec)
-    end_time_today = Time.new(today.year, today.month, today.day, end_time.utc.hour, end_time.min, end_time.sec)
+    start_time_today = Time.new(today.year, today.month, today.day, start_time.utc.hour, start_time.utc.min, start_time.utc.sec)
+    end_time_today = Time.new(today.year, today.month, today.day, end_time.utc.hour, end_time.utc.min, end_time.utc.sec)
 
     time >= start_time_today && time <= end_time_today
+  end
+
+  def to_h
+    Time.use_zone("UTC") do
+      {
+        name: name,
+        start_time: start_time.strftime("%T"),
+        end_time: end_time.strftime("%T"),
+        days_code: days_code,
+        is_lecture: is_lecture
+      }
+    end
   end
 
   def time_to_english
@@ -90,6 +102,43 @@ class UbCourseSection < ApplicationRecord
   def self.day_name_included_in_bit_code?(day_name, bit_code)
     # Check if a day name is included in a bit code as it would be represented in the database.
     day_name_to_bit_code(day_name) & bit_code != 0
+  end
+
+  def self.create_or_update(course_name, section_name, is_lecture, start_time_str, end_time_str, days_code)
+    # Create or update a UbCourseSection. Returns the UbCourseSection.
+    # UbCourseSection is uniquely identified by course_name, section_name, and is_lecture.
+    # If course_name is not found, returns nil.
+    # This is the only correct way to create or update a UbCourseSection, as it adjusts the time zone correctly.
+    # Example call: UbCourseSection.create_or_update("local", "N1", false, "22:00:21", "23:00:00", 8)
+    course = Course.find_by(name: course_name)
+    if course.nil?
+      return nil
+    end
+
+    section = UbCourseSection.where(course: course, name: section_name, is_lecture: is_lecture).first
+    if section.nil?
+      section = UbCourseSection.new
+      section.course = course
+      section.name = section_name
+      section.is_lecture = is_lecture
+    end
+
+    Time.use_zone("UTC") do
+      section.start_time = Time.zone.parse(start_time_str)
+      section.end_time = Time.zone.parse(end_time_str)
+    end
+
+    section.days_code = days_code
+    section.save!
+  end
+
+  def self.get_all_in_course(course_name)
+    course = Course.find_by(name: course_name)
+    if course.nil?
+      return nil
+    end
+
+    UbCourseSection.where(course: course)
   end
 
 end
