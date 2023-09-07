@@ -24,6 +24,7 @@ Rails.application.routes.draw do
       get "course_assessments", to: "grading_assignments#get_course_assessments"
       get "course_users", to: "grading_assignments#get_course_users"
       get "course_sections", to: "course_sections#get_course_sections"
+      post "course_sections", to: "course_sections#upsert_course_sections"
     end
 
     namespace :v1 do

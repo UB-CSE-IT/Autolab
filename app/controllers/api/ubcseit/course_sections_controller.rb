@@ -27,4 +27,26 @@ class Api::Ubcseit::CourseSectionsController < Api::Ubcseit::AdminBaseApiControl
                       })
   end
 
+  def upsert_course_sections
+
+    course = get_course_from_param
+    sections = params[:sections]
+
+    sections.each do |section|
+      UbCourseSection.create_or_update(
+        course.name,
+        section[:name],
+        section[:is_lecture],
+        section[:start_time],
+        section[:end_time],
+        section[:days_code])
+    end
+
+    respond_with_hash({
+                        :course_name => course.name,
+                        :course_display_name => course.display_name,
+                        :success => true
+                      })
+  end
+
 end
