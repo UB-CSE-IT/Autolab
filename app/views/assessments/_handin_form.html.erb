@@ -104,8 +104,6 @@
       <h3>You can't submit this assessment right now. This assessment may only be submitted during your scheduled
         <%= @assessment.ub_section_type_name %> time
         (<%= @ub_course_section&.name || "None" %>).</h3>
-      <h4>Your scheduled time is <%= @ub_course_section&.time_to_english || "[Unknown time]" %></h4>
-
     <% else %>
       <h3>You are not allowed to submit this assessment.</h3>
 
