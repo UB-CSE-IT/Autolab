@@ -13,11 +13,11 @@ class Api::Ubcseit::CourseSectionsController < Api::Ubcseit::AdminBaseApiControl
     #                "start_time": "13:00:00"},...
     #              ]
     # }
-    # Sections are sorted by days_code, then start_time, then end_time.
+    # Sections are sorted alphabetically by name.
 
     course = get_course_from_param
     sections_arr = UbCourseSection.where(course: course)
-                                  .order(:days_code, :start_time, :end_time)
+                                  .order(:name)
                                   .map { |section| section.to_h }
 
     respond_with_hash({
