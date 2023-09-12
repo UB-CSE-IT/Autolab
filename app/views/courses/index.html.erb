@@ -41,7 +41,7 @@
               <% if course_cud %>
                 <% if !course_cud.instructor? && course_cud.course_assistant? && !course_cud.section.blank? %>
                   <hr>
-                  <%= link_to "Grade Section", [:view, course, course_cud, :gradebook, section: course_cud.section], title: "Grade your section", class: "blue-text text-darken-3", style: "white-space: nowrap" %>
+                  <%= link_to "Grade Section", [:view, course, course_cud, :gradebook, { section: course_cud.section }], title: "Grade your section", class: "blue-text text-darken-3", style: "white-space: nowrap" %>
                 <% elsif course_cud.instructor? || course_cud.student? %>
                   <%= link_to "Gradebook", [course, course_cud, :gradebook], title: "View your gradebook", class: "blue-text text-darken-3" %>
                 <% end %>
