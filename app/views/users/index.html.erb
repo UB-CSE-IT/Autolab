@@ -1,6 +1,14 @@
-<% if current_user.administrator? %>
-  <%= link_to "Create user", new_user_path, { :class => "btn" } %>
+<% content_for :stylesheets do %>
+  <%= stylesheet_link_tag "users" %>
 <% end %>
+
+<div class="users-list-header-container">
+    <h3>Users List</h3>
+
+    <% if current_user.administrator? %>
+      <%= link_to "Create user", new_user_path, { class: "btn" } %>
+    <% end %>
+</div>
 
 <% if @users.count >= 1 %>
   <h3>Users List</h3>
