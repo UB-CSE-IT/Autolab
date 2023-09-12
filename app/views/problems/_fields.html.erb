@@ -1,5 +1,3 @@
-<h2>Edit Problem</h2>
-<br>
 <%= f.error_messages %>
 
 <%= f.text_field :name, help_text: "Each problem has a name that is unique to the assessment.", placeholder: "E.g. problem1", required: true, autofocus: true %>
@@ -7,9 +5,11 @@
 <%= f.text_field :description, help_text: "Short description of the problem.", placeholder: "(Optional)" %>
 
 <% if @problem %>
-<%= f.number_field :max_score, help_text: "The maximum score for this problem.", value: @problem.max_score, placeholder: "E.g. 0", step: "any", required: true %>
+<%= f.number_field :max_score, help_text: "The maximum score for this problem.",
+                               value: @problem.max_score, placeholder: "0", step: "any", required: true %>
 <% else %>
-<%= f.number_field :max_score, help_text: "The maximum score for this problem.", value: 0, placeholder: "E.g. 0", step: "any", required: true %>
+<%= f.number_field :max_score, help_text: "The maximum score for this problem.",
+                               value: 0, placeholder: "0", step: "any", required: true %>
 <% end %>
 
 <%= f.check_box :optional, help_text: "By default, all problems are
@@ -20,7 +20,7 @@ problem. Use this option carefully. In most cases, you should leave it
 unchecked." %>
 
 <div class="action_buttons">
-	<%= f.submit "Save and Create Another", {:class=>"btn primary"} %>
+	<%= f.submit "Save and Create Another", {class: "btn primary"} %>
 	<%= f.submit "Save and Return", {:class=>"btn primary"} %>
 	<% if @problem %>
 	<button class="delete_btn"> 
