@@ -65,21 +65,25 @@ $(function () {
   }
 });
 
+function update_repo_name(new_repo_name) {
+  update_branches(new_repo_name);
+}
+
 $("#repo-dropdown").change(function() {
-  var repo_name = $("#repo-dropdown input[name='repo']").val();
-  update_branches(repo_name);
+  const repo_name = $("#repo-dropdown input[name='repo']").val();
+  update_repo_name(repo_name);
 });
 
 $("#branch-dropdown").change(function() {
-  var repo_name = $("#repo-dropdown input[name='repo']").val();
-  var branch_name = $("#branch-dropdown input[name='branch']").val();
+  const repo_name = $("#repo-dropdown input[name='repo']").val();
+  const branch_name = $("#branch-dropdown input[name='branch']").val();
   update_commits(repo_name, branch_name);
 });
 
 // https://stackoverflow.com/questions/5524045/jquery-non-ajax-post
 function submit(action, method, input) {
   'use strict';
-  var form;
+  let form;
   form = $('<form />', {
       action: action,
       method: method,
@@ -106,16 +110,16 @@ function on_github_submission_tab() {
 $(document).on("click", "input[type='submit']", function (e) {
   if (on_github_submission_tab()) {
     e.preventDefault();
-    var repo_name = $("#repo-dropdown input[name='repo']").val();
-    var branch_name = $("#branch-dropdown input[name='branch']").val();
-    var commit_sha = $("#commit-dropdown input[name='commit']").val();
-    var token = $("meta[name=csrf-token]").attr("content");
-    var params = {
+    const repo_name = $("#repo-dropdown input[name='repo']").val();
+    const branch_name = $("#branch-dropdown input[name='branch']").val();
+    const commit_sha = $("#commit-dropdown input[name='commit']").val();
+    const token = $("meta[name=csrf-token]").attr("content");
+    const params = {
       repo: repo_name, branch: branch_name, commit: commit_sha, authenticity_token: token, github_submission: true
     };
-    var assessment_nav = $(".sub-navigation").find(".item").last();
-    var assessment_url = assessment_nav.find("a").attr("href");
-    var url = assessment_url + "/handin"
+    const assessment_nav = $(".sub-navigation").find(".item").last();
+    const assessment_url = assessment_nav.find("a").attr("href");
+    const url = assessment_url + "/handin";
     submit(url, 'post', params);
   }
 });
