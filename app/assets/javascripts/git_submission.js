@@ -58,6 +58,13 @@ $("a[data-tab=github]").click(function (e) {
   update_repos();
 });
 
+$(function () {
+  // On page load, update the repos if you're on the github submission tab
+  if (on_github_submission_tab()) {
+    update_repos();
+  }
+});
+
 $("#repo-dropdown").change(function() {
   var repo_name = $("#repo-dropdown input[name='repo']").val();
   update_branches(repo_name);
@@ -90,9 +97,14 @@ function submit(action, method, input) {
   form.appendTo('body').submit();
 }
 
+function on_github_submission_tab() {
+  // Returns true if you're currently on the Github submission tab
+  const tab = $(".submission-panel .ui.tab.active").attr('id');
+  return (tab === "github_tab" && !$(this).is(":disabled"));
+}
+
 $(document).on("click", "input[type='submit']", function (e) {
-  var tab = $(".submission-panel .ui.tab.active").attr('id');
-  if (tab === "github_tab" && !$(this).is(":disabled")) {
+  if (on_github_submission_tab()) {
     e.preventDefault();
     var repo_name = $("#repo-dropdown input[name='repo']").val();
     var branch_name = $("#branch-dropdown input[name='branch']").val();
