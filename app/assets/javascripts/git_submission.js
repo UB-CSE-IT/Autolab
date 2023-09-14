@@ -125,4 +125,10 @@ $(document).ready(function () {
   $('.ui.dropdown').dropdown({
     fullTextSearch: true,
   });
+  $('.ui.dropdown#repo-dropdown').dropdown({
+    // Allow manually specifying a repo name
+    fullTextSearch: true,
+    allowAdditions: true,
+    hideAdditions: false,
+  });
 });
