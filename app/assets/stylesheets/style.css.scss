@@ -249,7 +249,9 @@ form > div {
 .input-field label.active,
 [type="checkbox"] + label,
 label.control-label[for=assessment_github_submission_enabled],
-label.control-label[for=assessment_disable_handins] {
+label.control-label[for=assessment_disable_handins],
+label.control-label[for=assessment_use_ub_section_deadlines],
+label.control-label[for=assessment_use_ub_lectures] {
   color: #444;
   font-weight: 600;
 }
