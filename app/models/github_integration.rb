@@ -2,7 +2,7 @@ class GithubIntegration < ApplicationRecord
   belongs_to :user
   encrypts :access_token
 
-  # Returns the top 30 most recently pushed repos
+  # Returns the top 100 most recently pushed repos
   # Reasonably if a user wants to submit code, it should be among
   # the most recent repos updated...
   def repositories
@@ -16,7 +16,7 @@ class GithubIntegration < ApplicationRecord
       repos = client.repos({},
                            query: {
                              sort: "pushed",
-                             per_page: 30,
+                             per_page: 100,
                            })
       repos.map { |repo|
         { repo_name: repo[:full_name],
