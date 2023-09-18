@@ -24,6 +24,17 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
+  def update_user_info_after_login(user, data)
+    # If a user's first name is their email address, update it to their actual first name
+    first_name = data["info"]["name"]
+    if first_name.length > 0 && user.first_name == user.email
+      user.first_name = first_name
+    end
+    # Always overwrite last name
+    user.last_name = data["info"]["last_name"]
+    user.save!
+  end
+
   def shibboleth
     if user_signed_in?
       if data = request.env["omniauth.auth"]
@@ -40,8 +51,9 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       if @user
         data = request.env["omniauth.auth"]
         # @user.first_name = data["info"]["name"]
-        @user.last_name = data["info"]["last_name"]
+        # @user.last_name = data["info"]["last_name"]
         # @user.person_number = data["info"]["person_number"]
+        update_user_info_after_login(@user, data)
         @user.save!
         sign_in_and_redirect @user, event: :authentication # this will throw if @user is not activated
         set_flash_message(:notice, :success, kind: "Shibboleth") if is_navigational_format?
@@ -85,6 +97,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
           @user.skip_confirmation!
 
         end
+
+        update_user_info_after_login(@user, data)
 
         @user.authentications.new(provider: "CMU-Shibboleth",
                                   uid: data["uid"])
