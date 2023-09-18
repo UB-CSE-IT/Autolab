@@ -98,6 +98,8 @@ ActiveRecord::Schema.define(version: 2023_08_31_204558) do
     t.boolean "is_positive_grading", default: false
     t.boolean "use_ub_section_deadlines", default: false
     t.boolean "use_ub_lectures", default: false
+    t.integer "ub_section_start_offset", default: 0
+    t.integer "ub_section_end_offset", default: 0
   end
 
   create_table "attachments", force: :cascade do |t|

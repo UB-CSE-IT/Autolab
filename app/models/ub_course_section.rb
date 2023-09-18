@@ -15,22 +15,39 @@ class UbCourseSection < ApplicationRecord
     UbCourseSection.where(course: course, name: section_name, is_lecture: lecture_section).first
   end
 
-  def can_submit_at_time(time)
-    current_day_name = time.strftime("%A") # e.g. "Monday"
-    day_allowed = UbCourseSection.day_name_included_in_bit_code?(current_day_name, days_code)
-    unless day_allowed
+  def can_submit_at_time(time, assessment)
+    # time is a Time object, which is effectively a datetime. We only really care about the time portion.
+
+    unless can_submit_today?
       return false
     end
 
+    time >= start_time_today(assessment.ub_section_start_offset) && time <= end_time_today(assessment.ub_section_end_offset)
+  end
+
+  def can_submit_today?
+    # Returns true if this assessment can be submitted at some point today; not necessarily right now.
+    today = Date.today
+    current_day_name = today.strftime("%A") # e.g. "Monday"
+    UbCourseSection.day_name_included_in_bit_code?(current_day_name, days_code)
+  end
+
+  def start_time_today(offset = 0)
+    # Get the datetime for the start time today. Only valid if can_submit_today? is true.
+    # offset is the number of seconds to shift the start time.
+    #   This allows assessments to span a smaller time range than a whole section.
+    #   A negative offset will shift the start time earlier, and a positive offset will shift it later.
+    today = Date.today
     # Rails stores all times in UTC and then retrieves them as local times, but we're actually storing a local
     # time as if it were UTC. So we need to convert that "fake UTC" time into a real local time.
     # The time stored in the database is actually a local time so that daylight savings time is handled correctly.
+    Time.new(today.year, today.month, today.day, start_time.utc.hour, start_time.utc.min, start_time.utc.sec) + offset
+  end
 
+  def end_time_today(offset = 0)
+    # Same as start_time_today, but for the end time.
     today = Date.today
-    start_time_today = Time.new(today.year, today.month, today.day, start_time.utc.hour, start_time.utc.min, start_time.utc.sec)
-    end_time_today = Time.new(today.year, today.month, today.day, end_time.utc.hour, end_time.utc.min, end_time.utc.sec)
-
-    time >= start_time_today && time <= end_time_today
+    Time.new(today.year, today.month, today.day, end_time.utc.hour, end_time.utc.min, end_time.utc.sec) + offset
   end
 
   def to_h
@@ -45,15 +62,19 @@ class UbCourseSection < ApplicationRecord
     end
   end
 
-  def time_to_english
-    # Returns a string like "Monday, Wednesday, Friday at 9:00 AM - 11:00 AM."
+  def time_to_english(assessment)
+    # Returns a string like "Monday, Wednesday, Friday at 9:00 AM - 11:00 AM" or an error message.
     if start_time.nil? || end_time.nil?
-      return "[No time set]"
+      return "Never (no start/end time specified for section)"
+    end
+
+    if days_code == 0
+      return "Never (no days specified for section)"
     end
 
     days = UbCourseSection.days_bit_code_to_english(days_code)
-    start_time_str = UbCourseSection.time_to_english_helper(start_time.utc)
-    end_time_str = UbCourseSection.time_to_english_helper(end_time.utc)
+    start_time_str = UbCourseSection.time_to_english_helper(start_time_today(assessment.ub_section_start_offset))
+    end_time_str = UbCourseSection.time_to_english_helper(end_time_today(assessment.ub_section_end_offset))
     time_zone_name = Time.now.zone
     "#{days} at #{start_time_str} - #{end_time_str} (#{time_zone_name})"
   end

@@ -194,7 +194,7 @@ class AssessmentUserDatum < ApplicationRecord
     else
       # Check if user is in a section that can submit at this time if the assessment requires it
       if assessment.use_ub_section_deadlines?
-        if ub_course_section.nil? || !ub_course_section.can_submit_at_time(at)
+        if ub_course_section.nil? || !ub_course_section.can_submit_at_time(at, assessment)
           return [false, :ub_course_section_not_in_progress]
         end
       end
