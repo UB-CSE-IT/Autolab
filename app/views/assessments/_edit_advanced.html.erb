@@ -1,10 +1,14 @@
 <%= f.text_field :group_size,
                  display_name: "Group size",
-                 help_text: "Set the maximum size of groups for this assessment.  If group size is 1, the assessment is solo.  If the size is decreased, groups that are too large will not be broken up.  If the size is set to 1, groups will be saved, but the assessment will be solo.", placeholder: "1" %>
+                 help_text: "Set the maximum size of groups for this assessment.
+  If group size is 1, the assessment is solo. If the size is decreased, groups that are too large will not be
+  broken up.  If the size is set to 1, groups will be saved, but the assessment will be solo.",
+                 placeholder: "1" %>
 
 <%= f.check_box :allow_student_assign_group,
                 display_name: "Allow students to self assign groups",
-                help_text: "Allow students to self assign and create their own groups. Uncheck if you don't want students to create/edit their own groups" %>
+                help_text: "Allow students to self assign and create their own groups. Uncheck if you don't want
+  students to create/edit their own groups." %>
 
 <%# unless f.object.disable_handins %>
   <%#= f.text_field :handin_directory, help_text: "The subdirectory in the assessment directory where student submissions will be store. You generally shouldn't need to change this.", placeholder: "Default: handin" %>
@@ -12,9 +16,13 @@
   <%#= f.text_field :remote_handin_path, placeholder: "(Optional)", help_text: "The directory outside the assessment directory where student submissions directly from local machines will be copied." %>
 <%# end %>
 
-<%#= f.check_box :allow_unofficial, help_text: "Allow unofficial submission. Unless you know what you're doing, leave this unchecked." %>
-<%= f.check_box :embedded_quiz, display_name: "Enable Embedded Form" %>
-<%= f.file_field :embedded_quiz_form, button_text: @assessment.embedded_quiz_form_data.nil? ? "Upload Embedded Form" : "Replace Existing Embedded Form" %>
+<%#= f.check_box :allow_unofficial,
+                help_text: "Allow unofficial submission. Unless you know what you're doing, leave this unchecked." %>
+<%= f.check_box :embedded_quiz,
+                display_name: "Enable Embedded Form" %>
+<%= f.file_field :embedded_quiz_form,
+                 button_text: @assessment.embedded_quiz_form_data.nil? ? "Upload Embedded Form" : "Replace Existing Embedded Form" %>
+
 <p class="help-block">
   For more information about embedded forms, see our
   <a href="https://github.com/UB-CSE-IT/Autolab-Public-Documentation/blob/main/Create%20an%20autograder.md#embedded-forms" target="_blank">UB
@@ -24,5 +32,5 @@
 </p>
 
 <div class="action_buttons">
-  <%= f.submit "Save", :name => "advanced" %>
+  <%= f.submit "Save", name: "advanced" %>
 </div>
