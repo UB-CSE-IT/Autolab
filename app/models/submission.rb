@@ -207,6 +207,10 @@ class Submission < ApplicationRecord
               filename + ".settings.json")
   end
 
+  def settings_long_json_file_name
+    handin_file_long_filename + ".settings.json"
+  end
+
   def create_user_directory_and_return_handin_file_path
     return nil unless filename
 

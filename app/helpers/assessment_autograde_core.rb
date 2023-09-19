@@ -335,6 +335,7 @@ module AssessmentAutogradeCore
     local_makefile = File.join(ass_dir, "autograde-Makefile")
     local_autograde = File.join(ass_dir, "autograde.tar")
     local_settings = submission.settings_json_file_path
+    remote_settings = submission.settings_long_json_file_name
 
     # Name of the handin file on the destination machine
     dest_handin = assessment.handin_filename
@@ -345,7 +346,9 @@ module AssessmentAutogradeCore
                "destFile" => dest_handin }
     makefile = { "localFile" => local_makefile, "destFile" => "Makefile" }
     autograde = { "localFile" => local_autograde, "destFile" => "autograde.tar" }
-    settings = { "localFile" => local_settings, "destFile" => "settings.json" }
+    settings = { "localFile" => local_settings,
+                 "remoteFile" => remote_settings,
+                 "destFile" => "settings.json" }
 
 
     [handin, makefile, autograde, settings]
