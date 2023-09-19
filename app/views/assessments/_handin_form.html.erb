@@ -90,9 +90,7 @@
       <h3>You have reached the maximum number of submissions allowed for this assessment.</h3>
 
     <% when :ub_course_section_not_in_progress %>
-      <h3>You can't submit this assessment right now. This assessment may only be submitted during your scheduled
-        <%= @assessment.ub_section_type_name %> time
-        (<%= @ub_course_section&.name || "None" %>).</h3>
+      <h3>This assessment may only be submitted during your scheduled time shown above.</h3>
     <% else %>
       <h3>You are not allowed to submit this assessment.</h3>
 

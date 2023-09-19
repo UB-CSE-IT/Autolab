@@ -203,7 +203,7 @@
                   <% else %>
                     a custom time window</b> based on your scheduled <%= @assessment.ub_section_type_name %>
                   <% end %>
-                  (<%= @ub_course_section&.name || "you do not have an assigned section" %>)
+                  (<%= @ub_course_section&.name || "you do not have a valid assigned section" %>)
                   <% if @ub_course_section %>
                     <br>
                     <b><%= @ub_course_section&.time_to_english(@assessment) %></b>

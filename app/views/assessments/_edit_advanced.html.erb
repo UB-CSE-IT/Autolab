@@ -7,7 +7,7 @@
                 help_text: "Allow students to self assign and create their own groups. Uncheck if you don't want students to create/edit their own groups" %>
 
 <% unless f.object.disable_handins %>
-  <%= f.text_field :handin_directory, help_text: "The subdirectory in the assessment directory where student submissions will be store. You generally shouldn't need to change this.", placeholder: "Default: handin" %>
+  <%= f.text_field :handin_directory, help_text: "The subdirectory in the assessment directory where student submissions will be stored. You generally shouldn't need to change this.", placeholder: "Default: handin" %>
 
   <%= f.text_field :remote_handin_path, placeholder: "(Optional)", help_text: "The directory outside the assessment directory where student submissions directly from local machines will be copied." %>
 <% end %>
