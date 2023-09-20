@@ -262,7 +262,14 @@
             </p>
           </li>
         <% end %>
-        <%= render @attachments %>
+        <% if !@assessment.use_ub_section_deadlines ||
+          (@assessment.use_ub_section_deadlines &&
+          @assessment.ub_attachments_only_when_can_submit? &&
+          @can_submit) %>
+            <%= render @attachments %>
+        <% else %>
+          <p style="margin-left: 20px;"><i>Attachments for this assessment are only available when you're allowed to submit.</i></p>
+        <% end %>
       </ul>
     </div>
     <hr>
