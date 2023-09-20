@@ -6,13 +6,13 @@
                 display_name: "Allow student to self assign groups",
                 help_text: "Allow students to self assign and create their own groups. Uncheck if you don't want students to create/edit their own groups" %>
 
-<% unless f.object.disable_handins %>
-  <%= f.text_field :handin_directory, help_text: "The subdirectory in the assessment directory where student submissions will be store. You generally shouldn't need to change this.", placeholder: "Default: handin" %>
+<%# unless f.object.disable_handins %>
+  <%#= f.text_field :handin_directory, help_text: "The subdirectory in the assessment directory where student submissions will be store. You generally shouldn't need to change this.", placeholder: "Default: handin" %>
 
-  <%= f.text_field :remote_handin_path, placeholder: "(Optional)", help_text: "The directory outside the assessment directory where student submissions directly from local machines will be copied." %>
-<% end %>
+  <%#= f.text_field :remote_handin_path, placeholder: "(Optional)", help_text: "The directory outside the assessment directory where student submissions directly from local machines will be copied." %>
+<%# end %>
 
-<%= f.check_box :allow_unofficial, help_text: "Allow unofficial submission. Unless you know what you're doing, leave this unchecked." %>
+<%#= f.check_box :allow_unofficial, help_text: "Allow unofficial submission. Unless you know what you're doing, leave this unchecked." %>
 <%= f.check_box :embedded_quiz, display_name: "Enable Embedded Form" %>
 <%= f.file_field :embedded_quiz_form, button_text: @assessment.embedded_quiz_form_data.nil? ? "Upload Embedded Form" : "Replace Existing Embedded Form" %>
 <p class="help-block">

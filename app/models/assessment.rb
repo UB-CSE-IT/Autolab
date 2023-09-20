@@ -283,7 +283,8 @@ class Assessment < ApplicationRecord
   end
 
   def writeup_is_file?
-    is_file? writeup
+    # is_file? writeup  # File writeups disabled for security
+    false
   end
 
   def handout_is_url?
@@ -291,7 +292,8 @@ class Assessment < ApplicationRecord
   end
 
   def handout_is_file?
-    is_file? handout
+    # is_file? handout  # File handouts disabled for security
+    false
   end
 
   # raw_score
@@ -552,9 +554,13 @@ private
     else
       d = handin_directory.blank?
       f = handin_filename.blank?
+      changed_handin_directory = handin_directory != "handin"
+      disallowed_handin_filename = handin_filename =~ /[^a-zA-Z0-9_\-.]/
 
       errors.add :handin_directory, "must be specified when handins are enabled" if d
       errors.add :handin_filename, "must be specified when handins are enabled" if f
+      errors.add :handin_directory, "cannot be changed from 'handin'" if changed_handin_directory
+      errors.add :handin_filename, "may only contain letters, numbers, underscores, dashes, and periods" if disallowed_handin_filename
 
       !(d || f)
     end

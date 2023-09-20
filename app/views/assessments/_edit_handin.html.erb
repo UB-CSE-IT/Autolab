@@ -42,7 +42,7 @@
   help_text: "Use the \"lecture\" field in the roster instead of the \"section\" field to determine allowed handin times." %>
 
 <% unless f.object.disable_handins %>
-  <%= f.text_field :handin_filename, help_text: "The suffix that is appended to student submission files. Avoid non-alphanumeric characters, as these may result in Tango copy errors. Autolab stores submission files in the handin directory as email/version_fname.", placeholder: "E.g. mm.c" %>
+  <%= f.text_field :handin_filename, help_text: "The suffix that is appended to student submission files. May only contain letters, numbers, underscores, dashes, and periods. Autolab stores submission files in the handin directory as email/version_fname.", placeholder: "E.g. mm.c" %>
 <% end %>
 <%= f.text_field :max_size, help_text: "The maximum size that a handin file can have in megabytes (MB)." %>
 <%= f.check_box :disable_handins,

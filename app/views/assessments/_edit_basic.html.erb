@@ -18,9 +18,9 @@
 <div class="assessments-label">
 	<%= f.text_area  :description, class: "materialize-textarea", help_text: "", placeholder: "(Optional) Description of assessment" %>
 
-	<%= f.text_field :handout, help_text: "File path from the assessment directory containing materials that the instructor hands out to students, or a URL to redirect to.", placeholder: "E.g.   malloclab.zip   or   http://school.edu/class/malloclab.zip" %>
+	<%= f.text_field :handout, help_text: "A URL to redirect to for starter code.", placeholder: "E.g. https://cse.buffalo.edu/class/malloclab.zip" %>
 
-	<%= f.text_field :writeup, help_text: "File path from the assessment directory containing instructions to students, or a URL to redirect to.", placeholder: "E.g.   writeup.pdf   or   http://school.edu/class/writeup.pdf" %>
+	<%= f.text_field :writeup, help_text: "A URL to redirect to for instructions.", placeholder: "E.g. https://cse.buffalo.edu/class/writeup.pdf" %>
 </div>
 
 <%= f.file_field :config_file, button_text: "Upload #{@assessment.name}.rb", help_text: "Config file will be automatically reloaded after saving. Changes to other settings will be lost if an error is encountered." %>
