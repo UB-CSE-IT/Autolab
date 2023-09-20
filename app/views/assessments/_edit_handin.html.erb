@@ -57,6 +57,10 @@
                   display_name: "Only allow submissions during <i>lecture</i>",
                   help_text: "Use the \"lecture\" field in the roster instead of the \"section\" field to determine allowed handin times." %>
 
+  <%= f.check_box :ub_attachments_only_when_can_submit,
+                  display_name: "Only allow viewing attachments when submissions are allowed",
+                  help_text: "This prevents downloading attachments unless the student is currently allowed to submit the assessment." %>
+
   <%= f.text_field :ub_section_start_offset,
                    display_name: "Section start offset (seconds)",
                    help_text: "An offset relative to the start time of a section to begin allowing submissions.

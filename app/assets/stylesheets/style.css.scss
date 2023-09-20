@@ -251,7 +251,8 @@ form > div {
 label.control-label[for=assessment_github_submission_enabled],
 label.control-label[for=assessment_disable_handins],
 label.control-label[for=assessment_use_ub_section_deadlines],
-label.control-label[for=assessment_use_ub_lectures] {
+label.control-label[for=assessment_use_ub_lectures],
+label.control-label[for=assessment_ub_attachments_only_when_can_submit] {
   color: #444;
   font-weight: 600;
 }
