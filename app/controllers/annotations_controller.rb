@@ -33,6 +33,20 @@ class AnnotationsController < ApplicationController
     tweaked_params = annotation_params
     tweaked_params.delete(:submission_id)
     tweaked_params.delete(:filename)
+
+    # Update the author only if the comment, score, or problem was updated (ignore location changes)
+    changed_something_important = false
+    if @annotation.comment != tweaked_params[:comment]
+      changed_something_important = true
+    elsif @annotation.value != tweaked_params[:value].to_f
+      changed_something_important = true
+    elsif @annotation.problem_id != tweaked_params[:problem_id].to_i
+      changed_something_important = true
+    end
+    unless changed_something_important
+      tweaked_params.delete(:submitted_by)  # Don't update the submitter
+    end
+
     ActiveRecord::Base.transaction do
       # Remove effect of annotation to handle updating annotation problem
       # This ensures that the previous problem's score is removed when the problem is changed
