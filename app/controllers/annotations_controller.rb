@@ -20,7 +20,7 @@ class AnnotationsController < ApplicationController
     annotation = @submission.annotations.new(annotation_params)
 
     ActiveRecord::Base.transaction do
-      annotation.save
+      annotation.save!
       annotation.update_non_autograded_score
     end
 

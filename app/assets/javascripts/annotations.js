@@ -1281,7 +1281,7 @@ var submitNewPDFAnnotation = function (comment, value, problem_id, pageInd, xRat
       fillAnnotationBox();
     },
     error: function (result, type) {
-      $(newForm).append(elt("div", null, "Failed to Save Annotation!!!"));
+      $(newForm).append(elt("div", null, "Failed to Save Annotation!"));
     },
     complete: function (result, type) { }
   });
@@ -1396,7 +1396,7 @@ var updateLegacyAnnotation = function (annotationObj, lineInd, formEl) {
       purgeCurrentPageCache();
     },
     error: function (result, type) {
-      $(formEl).append(elt("div", null, "Failed to Save Annotation!!!"));
+      $(formEl).append(elt("div", null, "Failed to Save Annotation!"));
     },
     complete: function (result, type) { }
   });
