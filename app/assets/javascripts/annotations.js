@@ -584,17 +584,20 @@ function newAnnotationFormCode() {
       return;
     }
 
-    if (score === undefined || score === "") {
-      box.find('.error').text("Annotation score can not be blank!").show();
-      return;
-    }
+    // UB update: allow annotations without scores
+    // if (score === undefined || score === "") {
+    //   box.find('.error').text("Annotation score can not be blank!").show();
+    //   return;
+    // }
 
     if (problem_id == undefined) {
-      if ($('.select').children('option').length > 0)
-        box.find('.error').text("Problem not selected").show();
-      else
+      if ($('.select').children('option').length > 0) {
+        // UB update: allow annotations without problems
+        // box.find('.error').text("Problem not selected").show();
+      } else {
         box.find('.error').text("There are no non-autograded problems. Create a new one at Edit Assessment > Problems").show();
-      return;
+        return;
+      }
     }
 
 
@@ -658,10 +661,11 @@ function globalAnnotationFormCode(newAnnotation, config) {
       return;
     }
 
-    if (score === undefined || score === "") {
-      box.find('.error').text("Annotation score can not be blank!").show();
-      return;
-    }
+    // UB update: allow annotations without scores
+    // if (score === undefined || score === "") {
+    //   box.find('.error').text("Annotation score can not be blank!").show();
+    //   return;
+    // }
 
     if (newAnnotation) {
       submitNewAnnotation(comment, shared_comment, true, score, problem_id, 0, $(this));
@@ -726,10 +730,11 @@ function initializeBoxForm(box, annotation) {
       return;
     }
 
-    if (score === undefined || score === "") {
-      box.find('.error').text("Annotation score can not be blank!").show();
-      return;
-    }
+    // UB update: allow annotations without scores
+    // if (score === undefined || score === "") {
+    //   box.find('.error').text("Annotation score can not be blank!").show();
+    //   return;
+    // }
 
     var annotationObject = getAnnotationObject(box.data('annotationId'));
     annotationObject.comment = comment;
@@ -748,7 +753,7 @@ function newAnnotationBox(annotation) {
   box.removeClass("base-annotation-line");
 
   var problemStr = annotation.problem_id ? getProblemNameWithId(annotation.problem_id) : "General";
-  var valueStr = annotation.value ? annotation.value.toString() : "0";
+  var valueStr = annotation.value ? annotation.value.toString() : "None";
   valueStr = plusFix(valueStr);
   var commentStr = annotation.comment;
   var shared_comment = annotation.shared_comment;
@@ -1122,11 +1127,13 @@ var newAnnotationFormForPDF = function (pageInd, xCord, yCord) {
     }
 
     if (!problem_id) {
-      if (newForm.elements.problem.children.length > 1)
-        $(newForm).find('.form-warning').text("Problem not selected");
-      else
+      if (newForm.elements.problem.children.length > 1) {
+        // UB update: allow annotations without problems
+        // $(newForm).find('.form-warning').text("Problem not selected");
+      } else {
         $(newForm).find('.form-warning').text("There are no non-autograded problems. Create a new one at Edit Assessment > Problems");
-      return;
+        return;
+      }
     }
 
     var xRatio = xCord / $("#page-canvas-" + pageInd).attr('width');
@@ -1156,7 +1163,7 @@ var newAnnotationFormForPDF = function (pageInd, xCord, yCord) {
 }
 
 var newEditAnnotationForm = function (pageInd, annObj) {
-  var valueStr = annObj.value ? annObj.value.toString() : "None";
+  var valueStr = annObj.value ? annObj.value.toString() : "";
   var commentStr = annObj.comment;
 
   var newForm = newAnnotationFormTemplatePDF("annotation-edit-form", pageInd);
@@ -1187,11 +1194,13 @@ var newEditAnnotationForm = function (pageInd, annObj) {
     }
 
     if (!problem_id) {
-      if (newForm.elements.problem.children.length > 1)
-        $(newForm).find('.form-warning').text("Problem not selected");
-      else
+      if (newForm.elements.problem.children.length > 1) {
+        // UB update: allow annotations without problems
+        // $(newForm).find('.form-warning').text("Problem not selected");
+      } else {
         $(newForm).find('.form-warning').text("There are no non-autograded problems. Create a new one at Edit Assessment > Problems");
-      return;
+        return;
+      }
     }
 
     annObj.comment = comment;

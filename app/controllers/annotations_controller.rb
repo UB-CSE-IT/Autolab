@@ -35,10 +35,11 @@ class AnnotationsController < ApplicationController
     tweaked_params.delete(:filename)
     ActiveRecord::Base.transaction do
       # Remove effect of annotation to handle updating annotation problem
+      # This ensures that the previous problem's score is removed when the problem is changed
       @annotation.update({ "value" => "0" })
       @annotation.update_non_autograded_score
 
-      @annotation.update(tweaked_params)
+      @annotation.update!(tweaked_params)  # Update with strict validation
       @annotation.update_non_autograded_score
     end
 

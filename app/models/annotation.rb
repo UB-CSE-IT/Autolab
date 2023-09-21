@@ -5,9 +5,12 @@
 #
 class Annotation < ApplicationRecord
   belongs_to :submission
-  belongs_to :problem
+  belongs_to :problem, optional: true
 
-  validates :comment, :value, :filename, :submission_id, :problem_id, presence: true
+  # validates :comment, :value, :filename, :submission_id, :problem_id, presence: true
+  # UB allows annotations without problems/scores, but if a problem has a score, it must have a problem and vise versa
+  validates :comment, :filename, :submission_id, presence: true
+  validate :ensure_score_if_problem_specified
 
   def as_text
     if value
@@ -26,6 +29,8 @@ class Annotation < ApplicationRecord
   # Update all non-autograded scores with the following formula:
   # score_p = max_score_p + sum of annotations for problem
   def update_non_autograded_score
+    return unless has_problem?  # Don't run this for annotations not associated with a problem
+
     # Get score for submission, or create one if it does not already exist
     # Previously, scores would be created when instructors add a score
     # and save on the gradebook
@@ -90,4 +95,16 @@ class Annotation < ApplicationRecord
       end
     end
   end
+
+  def has_problem?
+    # Returns true if this annotation is associated with a particular problem
+    # false if it's just a comment annotation without a problem/score
+    problem_id.present?
+  end
+
+  def ensure_score_if_problem_specified
+    allowed = !(value.present? ^ has_problem?)
+    errors.add(:base, "If a problem/score is specified, the other is required too.") unless allowed
+  end
+
 end
