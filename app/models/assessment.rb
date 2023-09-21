@@ -26,6 +26,7 @@ class Assessment < ApplicationRecord
   validate :verify_dates_order
   validate :handin_directory_and_filename_or_disable_handins, if: :active?
   validate :handin_directory_exists_or_disable_handins, if: :active?
+  validate :handin_directory_and_filename_security_check
   validates :max_size, :max_submissions, numericality: true
   validates :version_threshold, numericality: { only_integer: true,
                                                 greater_than_or_equal_to: -1, allow_nil: true }
@@ -554,16 +555,18 @@ private
     else
       d = handin_directory.blank?
       f = handin_filename.blank?
-      changed_handin_directory = handin_directory != "handin"
-      disallowed_handin_filename = handin_filename =~ /[^a-zA-Z0-9_\-.]/
-
       errors.add :handin_directory, "must be specified when handins are enabled" if d
       errors.add :handin_filename, "must be specified when handins are enabled" if f
-      errors.add :handin_directory, "cannot be changed from 'handin'" if changed_handin_directory
-      errors.add :handin_filename, "may only contain letters, numbers, underscores, dashes, and periods" if disallowed_handin_filename
-
       !(d || f)
     end
+  end
+
+  def handin_directory_and_filename_security_check
+    changed_handin_directory = handin_directory != "handin"
+    disallowed_handin_filename = handin_filename =~ /[^a-zA-Z0-9_\-.]/
+    errors.add :handin_directory, "cannot be changed from 'handin'" if changed_handin_directory
+    errors.add :handin_filename, "may only contain letters, numbers, underscores, dashes, and periods" if disallowed_handin_filename
+    !(changed_handin_directory || disallowed_handin_filename)
   end
 
   def handin_directory_exists_or_disable_handins
