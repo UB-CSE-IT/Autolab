@@ -20,7 +20,7 @@ class AnnotationsController < ApplicationController
     annotation = @submission.annotations.new(annotation_params)
 
     ActiveRecord::Base.transaction do
-      annotation.save
+      annotation.save!
       annotation.update_non_autograded_score
     end
 
@@ -33,12 +33,27 @@ class AnnotationsController < ApplicationController
     tweaked_params = annotation_params
     tweaked_params.delete(:submission_id)
     tweaked_params.delete(:filename)
+
+    # Update the author only if the comment, score, or problem was updated (ignore location changes)
+    changed_something_important = false
+    if @annotation.comment != tweaked_params[:comment]
+      changed_something_important = true
+    elsif @annotation.value != tweaked_params[:value].to_f
+      changed_something_important = true
+    elsif @annotation.problem_id != tweaked_params[:problem_id].to_i
+      changed_something_important = true
+    end
+    unless changed_something_important
+      tweaked_params.delete(:submitted_by)  # Don't update the submitter
+    end
+
     ActiveRecord::Base.transaction do
       # Remove effect of annotation to handle updating annotation problem
+      # This ensures that the previous problem's score is removed when the problem is changed
       @annotation.update({ "value" => "0" })
       @annotation.update_non_autograded_score
 
-      @annotation.update(tweaked_params)
+      @annotation.update!(tweaked_params)  # Update with strict validation
       @annotation.update_non_autograded_score
     end
 
@@ -79,6 +94,8 @@ private
     params[:annotation].delete(:id)
     params[:annotation].delete(:created_at)
     params[:annotation].delete(:updated_at)
+    # Prevent spoofing the submitter
+    params[:annotation][:submitted_by] = @current_user.email
     params.require(:annotation).permit(:filename, :position, :line, :submitted_by,
                                        :comment, :shared_comment, :global_comment, :value,
                                        :problem_id, :submission_id, :coordinate)
