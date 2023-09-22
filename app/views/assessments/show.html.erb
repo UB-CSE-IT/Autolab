@@ -197,12 +197,16 @@
               <p class="valign-wrapper">
                 <i class="material-icons valign">alarm_on</i>
                 <span style="margin-left: 20px;">
-                May only be submitted during your scheduled
-                  <%= @assessment.ub_section_type_name %> time
-                  (<%= @ub_course_section&.name || "you do not have an assigned section" %>)
+                May only be submitted <b>during
+                  <% if @assessment.ub_section_start_offset == 0 && @assessment.ub_section_end_offset == 0 %>
+                    your scheduled <%= @assessment.ub_section_type_name %></b> time
+                  <% else %>
+                    a custom time window</b> based on your scheduled <%= @assessment.ub_section_type_name %>
+                  <% end %>
+                  (<%= @ub_course_section&.name || "you do not have a valid assigned section" %>)
                   <% if @ub_course_section %>
                     <br>
-                    <b><%= @ub_course_section&.time_to_english %></b>
+                    <b><%= @ub_course_section&.time_to_english(@assessment) %></b>
                   <% end %>
                   </span>
               </p>
@@ -258,7 +262,14 @@
             </p>
           </li>
         <% end %>
-        <%= render @attachments %>
+        <% if !@assessment.use_ub_section_deadlines ||
+          (@assessment.use_ub_section_deadlines &&
+          @assessment.ub_attachments_only_when_can_submit? &&
+          @can_submit) %>
+            <%= render @attachments %>
+        <% else %>
+          <p style="margin-left: 20px;"><i>Attachments for this assessment are only available when you're allowed to submit.</i></p>
+        <% end %>
       </ul>
     </div>
     <hr>

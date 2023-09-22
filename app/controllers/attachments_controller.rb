@@ -65,14 +65,31 @@ class AttachmentsController < ApplicationController
       flash[:error] = "Error loading #{@attachment.name} from #{@attachment.filename}"
       redirect_to([@course, :attachments]) && return
     end
-    if @cud.instructor? || @attachment.released?
+
+    if @cud.instructor? || @cud.course_assistant?
+      # Always allow instructors and course assistants to view attachments
+      allowed_to_view_attachment = true
+    elsif !@attachment.released?
+      # Students cannot view unreleased attachments no matter what
+      allowed_to_view_attachment = false
+    elsif @is_assessment && @assessment.use_ub_section_deadlines && @assessment.ub_attachments_only_when_can_submit?
+      # This is an assessment (not course) attachment and the assessment is set to only allow viewing
+      # attachments when the student can submit
+      ub_course_section = UbCourseSection.by_cud(@cud, @assessment.use_ub_lectures?)
+      aud = AssessmentUserDatum.get(@assessment.id, @cud.id)
+      allowed_to_view_attachment = aud.can_submit?(Time.now, @cud, ub_course_section)[0]
+    else
+      allowed_to_view_attachment = true
+    end
+
+    if allowed_to_view_attachment
       # Set to application/octet-stream to force download
       send_file(filename, disposition: "inline",
-                          type: "application/octet-stream",
+                          # type: "application/octet-stream",
                           filename: @attachment.filename) && return
     end
 
-    flash[:error] = "You are unauthorized to view this attachment"
+    flash[:error] = "You are not allowed to view this attachment at this time"
     redirect_to([@course, @assessment])
   end
 
@@ -128,7 +145,7 @@ private
     return unless @attachment.nil?
 
     COURSE_LOGGER.log("Cannot find attachment with id: #{params[:id]}")
-    flash[:error] = "Could not find Attachment \# #{params[:id]}"
+    flash[:error] = "Could not find Attachment \##{params[:id]}"
     redirect_to_attachment_list
   end
 

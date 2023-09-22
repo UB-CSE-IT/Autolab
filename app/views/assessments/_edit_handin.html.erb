@@ -2,51 +2,83 @@
   <%= javascript_include_tag "init_handin_datetimepickers" %>
 <% end %>
 <%# Initialize datepickers by defining linked relationships (using IDs) %>
-<%= f.datetime_select :start_at,
-  style: "margin-top: 0 !important;",
-  help_text: "The time this assessment is released to students.",
-  less_than: "assessment_due_at assessment_end_at assessment_grading_deadline" %>
-<%= f.datetime_select :due_at,
-  style: "margin-top: 0 !important;",
-  help_text: "Students can submit before this time without being penalized or using grace days.",
-  greater_than: "assessment_start_at",
-  less_than: "assessment_end_at assessment_grading_deadline" %>
-<%= f.datetime_select :end_at,
-  style: "margin-top: 0 !important;",
-  help_text: "Last possible time that students can submit (except those granted extensions.)",
-  greater_than: "assessment_start_at assessment_due_at",
-  less_than: "assessment_grading_deadline" %>
-<%= f.datetime_select :grading_deadline,
-  style: "margin-top: 0 !important;",
-  help_text: "Time after which final scores are included in the gradebook",
-  greater_than: "assessment_start_at assessment_due_at assessment_end_at", placeholder: Date.current %>
+
 <!-- TODO update helptext to link to docs once we have docs -->
 <% if GithubIntegration.connected %>
-  <%= f.check_box :github_submission_enabled, 
-    display_name: "Allow Github submissions",
-    help_text: "Check to enable submissions through Github. Handin filename must end in .tgz and autograder should expect a compressed .tgz tarfile if Github submission is enabled." %>
+  <%= f.check_box :github_submission_enabled,
+                  display_name: "Allow Github submissions",
+                  help_text: "Check to enable submissions through Github. Handin filename must end in .tgz and autograder should expect a compressed .tgz tarfile if Github submission is enabled." %>
 <% else %>
-  <%= f.check_box :github_submission_enabled, 
-  disabled: "disabled",
-    display_name: "Allow Github submissions (Disabled)",
-    help_text: "Autolab has not been configured to use Github integration. Please contact your Autolab admin to perform the necessary setup and configuration based on the instructions on our docs." 
+  <%= f.check_box :github_submission_enabled,
+                  disabled: "disabled",
+                  display_name: "Allow Github submissions (Disabled)",
+                  help_text: "Autolab has not been configured to use Github integration. Please contact your Autolab admin to perform the necessary setup and configuration based on the instructions on our docs."
   %>
 <% end %>
 
-<%= f.check_box :use_ub_section_deadlines,
-  display_name: "Only allow submissions during each student's lecture/section (lab/recitation) time",
-  help_text: "Configure your lecture and section schedule via the self-service portal." %>
-
-<%= f.check_box :use_ub_lectures,
-  display_name: "Only allow submissions during <b>lecture</b>",
-  help_text: "Use the \"lecture\" field in the roster instead of the \"section\" field to determine allowed handin times." %>
+<%= f.datetime_select :start_at,
+                      style: "margin-top: 0 !important;",
+                      help_text: "The time this assessment is released to students.",
+                      less_than: "assessment_due_at assessment_end_at assessment_grading_deadline" %>
+<%= f.datetime_select :due_at,
+                      style: "margin-top: 0 !important;",
+                      help_text: "Students can submit before this time without being penalized or using grace days.",
+                      greater_than: "assessment_start_at",
+                      less_than: "assessment_end_at assessment_grading_deadline" %>
+<%= f.datetime_select :end_at,
+                      style: "margin-top: 0 !important;",
+                      help_text: "Last possible time that students can submit (except those granted extensions.)",
+                      greater_than: "assessment_start_at assessment_due_at",
+                      less_than: "assessment_grading_deadline" %>
+<%= f.datetime_select :grading_deadline,
+                      style: "margin-top: 0 !important;",
+                      help_text: "Time after which final scores are included in the gradebook",
+                      greater_than: "assessment_start_at assessment_due_at assessment_end_at", placeholder: Date.current %>
 
 <% unless f.object.disable_handins %>
   <%= f.text_field :handin_filename, help_text: "The suffix that is appended to student submission files. May only contain letters, numbers, underscores, dashes, and periods. Autolab stores submission files in the handin directory as email/version_fname.", placeholder: "E.g. mm.c" %>
 <% end %>
 <%= f.text_field :max_size, help_text: "The maximum size that a handin file can have in megabytes (MB)." %>
 <%= f.check_box :disable_handins,
-  help_text: "Check this to disallow handins through Autolab. This option can be used to track scores for assignments that are not submitted through Autolab such as midterms and written assignments." %>
+                help_text: "Check this to disallow handins through Autolab. This option can be used to track scores for assignments that are not submitted through Autolab such as midterms and written assignments." %>
+
+<div style="border-left: 5px solid #005bbb; padding-left: 20px; margin-left: -25px;">
+  <h5>UB Course Section Settings</h5>
+  <p>Configure your lecture and section (lab/recitation) schedule via the Autolab Portal:
+    <a href="/portal/course-sections/<%= @course.name %>" target="_blank">Manage Course Sections for <%= @course.name %></a>
+    <br>
+    Ensure students have a lecture/section assigned to them in the Autolab course roster.</p>
+
+  <%= f.check_box :use_ub_section_deadlines,
+                  display_name: "Only allow submissions during each student's lecture/section time",
+                  help_text: "This enables the UB Course Sections feature for this assessment. Nothing below will apply unless this is checked." %>
+
+  <%= f.check_box :use_ub_lectures,
+                  display_name: "Only allow submissions during <i>lecture</i>",
+                  help_text: "Use the \"lecture\" field in the roster instead of the \"section\" field to determine allowed handin times." %>
+
+  <%= f.check_box :ub_attachments_only_when_can_submit,
+                  display_name: "Only allow viewing attachments when submissions are allowed",
+                  help_text: "This prevents downloading attachments unless the student is currently allowed to submit the assessment." %>
+
+  <%= f.text_field :ub_section_start_offset,
+                   display_name: "Section start offset (seconds)",
+                   help_text: "An offset relative to the start time of a section to begin allowing submissions.
+                   <br>A negative value allows submissions earlier than the section's start time.
+                   <br>A positive value doesn't allow submissions until after the section's start time.
+                   <br>E.g., If a section starts at 10:00am and this is set to 600 (10 minutes), submissions will be allowed starting at 10:10am for that section.
+                   <br>(This does not support wrapping around days. Do not push the start time earlier than midnight for your earliest section.)".html_safe %>
+
+  <%= f.text_field :ub_section_end_offset,
+                   display_name: "Section end offset (seconds)",
+                   help_text: "An offset relative to the end time of a section to stop allowing submissions.
+                   <br>A negative value prevents submissions before the section's end time.
+                   <br>A positive value allows submissions after the section's end time.
+                   <br>E.g., If a section ends at 11:50am and this is set to -600 (10 minutes), submissions will be allowed until 11:40am for that section.
+                   <br>(This does not support wrapping around days. Do not push the end time later than midnight for your latest section.)".html_safe %>
+
+</div>
+
 <div class="action_buttons">
-  <%= f.submit "Save", :name=>"handin" %>
+  <%= f.submit "Save", :name => "handin" %>
 </div>
