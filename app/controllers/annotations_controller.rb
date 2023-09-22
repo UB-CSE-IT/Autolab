@@ -38,9 +38,9 @@ class AnnotationsController < ApplicationController
     changed_something_important = false
     if @annotation.comment != tweaked_params[:comment]
       changed_something_important = true
-    elsif @annotation.value != tweaked_params[:value].to_f
+    elsif @annotation.value.to_f != tweaked_params[:value].to_f
       changed_something_important = true
-    elsif @annotation.problem_id != tweaked_params[:problem_id].to_i
+    elsif @annotation.problem_id.to_i != tweaked_params[:problem_id].to_i
       changed_something_important = true
     end
     unless changed_something_important
