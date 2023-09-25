@@ -47,7 +47,8 @@
   <p>Configure your lecture and section (lab/recitation) schedule via the Autolab Portal:
     <a href="/portal/course-sections/<%= @course.name %>" target="_blank">Manage Course Sections for <%= @course.name %></a>
     <br>
-    Ensure students have a lecture/section assigned to them in the Autolab course roster.</p>
+    <a href="https://github.com/UB-CSE-IT/Autolab-Public-Documentation/blob/main/UB%20course%20sections.md" target="_blank">Read the documentation</a>
+  </p>
 
   <%= f.check_box :use_ub_section_deadlines,
                   display_name: "Only allow submissions during each student's lecture/section time",
