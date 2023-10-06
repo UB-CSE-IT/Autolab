@@ -160,15 +160,17 @@ class SubmissionsController < ApplicationController
       flash[:html_safe] = true
     end
 
-    if @assessment.disable_handins
-      flash[:error] = "There are no submissions to download."
-      if @cud.course_assistant
-        redirect_to course_assessment_path(@course, @assessment)
-      else
-        redirect_to course_assessment_submissions_path(@course, @assessment)
-      end
-      return
-    end
+    # UB: We DO want to allow downloading submissions for assessments that have handins disabled.
+    #   Some professors use this as a toggle to disable submissions after submissions have been made.
+    # if @assessment.disable_handins
+    #   flash[:error] = "There are no submissions to download."
+    #   if @cud.course_assistant
+    #     redirect_to course_assessment_path(@course, @assessment)
+    #   else
+    #     redirect_to course_assessment_submissions_path(@course, @assessment)
+    #   end
+    #   return
+    # end
 
     submissions = if params[:final]
                     @assessment.submissions.latest.includes(:course_user_datum)
