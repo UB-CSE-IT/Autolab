@@ -27,6 +27,13 @@ module AssessmentHandin
       return false
     end
 
+    set_handin
+    unless @can_submit
+      flash[:error] = "You are not allowed to submit this assessment right now. (Error code: #{@why_not})"
+      redirect_to(action: :show)
+      return false
+    end
+
     # UB Feature: This prevents students from submitting too quickly, which prevents race conditions that result in
     # multiple submissions having the same version number.
     max_seconds_ago = 5
