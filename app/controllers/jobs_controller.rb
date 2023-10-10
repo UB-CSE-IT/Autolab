@@ -217,7 +217,7 @@ protected
       if !@cud.instructor?
         # Students can see only their own job names
         job[:name] = "*" unless job[:name].ends_with? "_#{@cud.user.email}"
-      elsif !rjob["notifyURL"] || !(job[:course].eql? @cud.course.id.to_s)
+      elsif !rjob["notifyURL"] || !(job[:course].eql? @cud.course.name.to_s)
         job[:name] = "*"
       end
       # Instructors can see only their course's job names
