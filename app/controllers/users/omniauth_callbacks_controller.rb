@@ -27,7 +27,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def update_user_info_after_login(user, data)
     # If a user's first name is their email address, update it to their actual first name
     first_name = data["info"]["name"]
-    if first_name.length > 0 && user.first_name == user.email
+    if first_name.length > 0 && (user.first_name == user.email || user.first_name == "Instructor")
       user.first_name = first_name
     end
     # Always overwrite last name
