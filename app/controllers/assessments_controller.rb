@@ -720,6 +720,10 @@ class AssessmentsController < ApplicationController
     return unless valid_json?(feedback)
 
     jsonFeedbackHash = JSON.parse(feedback)
+
+    # Solves the obscure bug where the feedback presentation line is technically valid JSON (an int/string), but not a hash
+    return unless jsonFeedbackHash.is_a?(Hash)
+
     if jsonFeedbackHash.key?("_presentation") == false
       nil
     elsif jsonFeedbackHash["_presentation"] == "semantic" && !parse_stages(jsonFeedbackHash).nil?
