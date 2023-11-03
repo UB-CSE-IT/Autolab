@@ -27,6 +27,9 @@ class Assessment < ApplicationRecord
   validate :handin_directory_and_filename_or_disable_handins, if: :active?
   validate :handin_directory_exists_or_disable_handins, if: :active?
   validate :handin_directory_and_filename_security_check
+  validate :valid_handout
+  validate :valid_writeup
+  validate :valid_handin_directory
   validates :max_size, :max_submissions, numericality: true
   validates :version_threshold, numericality: { only_integer: true,
                                                 greater_than_or_equal_to: -1, allow_nil: true }
@@ -590,6 +593,27 @@ private
     else
       true
     end
+  end
+
+  def valid_handout
+    return true if handout.blank? || handout_is_url? || handout_is_file?
+
+    errors.add :handout, "must be a URL or a file in the assessment folder"
+    false
+  end
+
+  def valid_writeup
+    return true if writeup.blank? || writeup_is_url? || writeup_is_file?
+
+    errors.add :writeup, "must be a URL or a file in the assessment folder"
+    false
+  end
+
+  def valid_handin_directory
+    return true if handin_directory.blank? || Archive.in_dir?(handin_directory_path, folder_path)
+
+    errors.add :handin_directory, " must be a directory in the assessment folder"
+    false
   end
 
   def invalidate_raw_scores
