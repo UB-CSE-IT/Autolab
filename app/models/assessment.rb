@@ -550,7 +550,7 @@ private
   end
 
   def is_file?(name)
-    name.present? && File.file?(path(name))
+    File.file?(path(name))
   end
 
   def verify_dates_order
