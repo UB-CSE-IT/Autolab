@@ -139,5 +139,17 @@ module Autolab3
       ENV.delete('SECRET_KEY_BASE')
     end
 
+    # Configure trusted proxies for accurate client IP address retrieval:
+    # Modified from https://github.com/casunlight/rails/blob/0f969a989c87872935ecdd4db5ab700e35226238/actionpack/lib/action_dispatch/middleware/remote_ip.rb#L27-L38
+    # to allow for private IP ranges within UB
+    config.action_dispatch.trusted_proxies = [
+      "127.0.0.1", # localhost IPv4
+      "::1", # localhost IPv6
+      "fc00::/7", # private IPv6 range fc00::/7
+      # (removed "10.0.0.0/8")
+      "172.16.0.0/12", # private IPv4 range 172.16.0.0 .. 172.31.255.255
+      "192.168.0.0/16", # private IPv4 range 192.168.x.x
+    ].map { |proxy| IPAddr.new(proxy) }
+
   end
 end
