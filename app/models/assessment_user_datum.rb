@@ -244,7 +244,21 @@ class AssessmentUserDatum < ApplicationRecord
     cumulative_grace_days_used
   end
 
-  protected
+  # atomic way of updating version number
+  # (necessary in the case multiple submissions made concurrently)
+  def update_version_number
+    with_lock do
+      if version_number.nil?
+        self.version_number = 1
+      else
+        self.version_number += 1
+      end
+      save!
+    end
+    self.version_number
+  end
+
+protected
 
   def cumulative_grace_days_used
     grace_days_used + cumulative_grace_days_used_before
@@ -257,7 +271,7 @@ class AssessmentUserDatum < ApplicationRecord
     "cgdub/dua-#{dua}/u-#{course_user_datum_id}/a-#{assessment_id}"
   end
 
-  private
+private
 
   def saved_change_to_latest_submission_id_or_grade_type?
     (saved_change_to_latest_submission_id? or saved_change_to_grade_type?)
@@ -348,12 +362,10 @@ class AssessmentUserDatum < ApplicationRecord
     if grade_type == NORMAL
       if submission_status == :submitted
         latest_submission.final_score as_seen_by
-      else
-        # :not_yet_submitted, :not_submitted
+      else # :not_yet_submitted, :not_submitted
         submission_status
       end
-    else
-      # ZEROED, EXCUSED
+    else # ZEROED, EXCUSED
       AssessmentUserDatum.grade_type_to_sym grade_type
     end
   end
