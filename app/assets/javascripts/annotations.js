@@ -589,15 +589,15 @@ function newAnnotationFormCode() {
     //   return;
     // }
 
-    if (problem_id == undefined) {
-      if ($('.select').children('option').length > 0) {
-        // UB update: allow annotations without problems
-        // box.find('.error').text("Problem not selected").show();
-      } else {
-        box.find('.error').text("There are no non-autograded problems. Create a new one at Edit Assessment > Problems").show();
-        return;
-      }
-    }
+    // if (problem_id == undefined) {
+    //   if ($('.select').children('option').length > 0) {
+    //     // UB update: allow annotations without problems
+    //     // box.find('.error').text("Problem not selected").show();
+    //   } else {
+    //     box.find('.error').text("There are no non-autograded problems. Create a new one at Edit Assessment > Problems").show();
+    //     return;
+    //   }
+    // }
 
 
     submitNewAnnotation(comment, shared_comment, false, score, problem_id, line, $(this));
@@ -1125,15 +1125,15 @@ var newAnnotationFormForPDF = function (pageInd, xCord, yCord) {
       return;
     }
 
-    if (!problem_id) {
-      if (newForm.elements.problem.children.length > 1) {
-        // UB update: allow annotations without problems
-        // $(newForm).find('.form-warning').text("Problem not selected");
-      } else {
-        $(newForm).find('.form-warning').text("There are no non-autograded problems. Create a new one at Edit Assessment > Problems");
-        return;
-      }
-    }
+    // if (!problem_id) {
+    //   if (newForm.elements.problem.children.length > 1) {
+    //     // UB update: allow annotations without problems
+    //     // $(newForm).find('.form-warning').text("Problem not selected");
+    //   } else {
+    //     $(newForm).find('.form-warning').text("There are no non-autograded problems. Create a new one at Edit Assessment > Problems");
+    //     return;
+    //   }
+    // }
 
     var xRatio = xCord / $("#page-canvas-" + pageInd).attr('width');
     var yRatio = yCord / $("#page-canvas-" + pageInd).attr('height');
@@ -1192,15 +1192,15 @@ var newEditAnnotationForm = function (pageInd, annObj) {
       return;
     }
 
-    if (!problem_id) {
-      if (newForm.elements.problem.children.length > 1) {
-        // UB update: allow annotations without problems
-        // $(newForm).find('.form-warning').text("Problem not selected");
-      } else {
-        $(newForm).find('.form-warning').text("There are no non-autograded problems. Create a new one at Edit Assessment > Problems");
-        return;
-      }
-    }
+    // if (!problem_id) {
+    //   if (newForm.elements.problem.children.length > 1) {
+    //     // UB update: allow annotations without problems
+    //     // $(newForm).find('.form-warning').text("Problem not selected");
+    //   } else {
+    //     $(newForm).find('.form-warning').text("There are no non-autograded problems. Create a new one at Edit Assessment > Problems");
+    //     return;
+    //   }
+    // }
 
     annObj.comment = comment;
     annObj.value = value;

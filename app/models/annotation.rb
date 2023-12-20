@@ -103,7 +103,14 @@ class Annotation < ApplicationRecord
   end
 
   def ensure_score_if_problem_specified
-    allowed = !(value.present? ^ has_problem?)
+    # Allow submissions with BOTH a score and problem specified
+    # Allow submissions with NEITHER a score nor problem specified
+    # Don't allow submissions with ONLY ONE OF a score or problem specified
+    # The default score is 0, so allow submissions with score 0 and no problem (treat as no score)
+    score_specified = value.present?
+    score_zero = value == 0.0
+    problem_specified = has_problem?
+    allowed = !(score_specified ^ problem_specified) || (score_zero && !problem_specified)
     errors.add(:base, "If a problem/score is specified, the other is required too.") unless allowed
   end
 
