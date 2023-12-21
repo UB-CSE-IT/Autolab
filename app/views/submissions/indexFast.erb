@@ -1,0 +1,51 @@
+<% @title = "Manage Submissions 2.0" %>
+
+<% content_for :stylesheets do %>
+  <%= stylesheet_link_tag "datatable.adapter" %>
+
+  <style>
+      table [type="checkbox"] + label {
+          width: 18px;
+          padding: 0;
+      }
+
+      #floater {
+          z-index: 5;
+      }
+  </style>
+<% end %>
+
+<% content_for :javascripts do %>
+  <%= external_javascript_include_tag "lodash" %>
+  <%= javascript_include_tag "sorttable" %>
+  <%= external_javascript_include_tag "jquery.dataTables" %>
+  <%= javascript_include_tag "manage_submissions" %>
+<% end %>
+
+<h3><%= @title %></h3>
+<p>This page introduces a revamped submission management experience, built from scratch for UB. The
+  legacy <%= link_to 'Manage Submissions', legacy_course_assessment_submissions_path %> page remains available, but it's
+  much less efficient for assessments with many submissions.</p>
+<hr>
+
+<p>
+  <%= link_to "Create New Submission".html_safe, new_course_assessment_submission_path(@course, @assessment),
+              { :title => "Create a new submission for a student, with an option to submit a handin file on their behalf",
+                :class => "" } %>
+  |
+  <%= link_to "Download All Submissions".html_safe,
+              downloadAll_course_assessment_submissions_path(@course, @assessment),
+              { :title => "Down all submissions from each student",
+                :class => "" } %>
+  |
+  <%= link_to "Download Final Submissions".html_safe,
+              downloadAll_course_assessment_submissions_path(@course, @assessment, final: true),
+              { :title => "Download the most recent submission from each student",
+                :class => "" } %>
+  |
+  <%= link_to "Missing Submissions".html_safe,
+              missing_course_assessment_submissions_path(@course, @assessment),
+              { :title => "List the students who have not submitted anything. You'll be given the option to create new submissions for the missing students",
+                :class => "" } %>
+
+</p>

@@ -20,6 +20,12 @@ class SubmissionsController < ApplicationController
     @autograded = @assessment.has_autograder?
   end
 
+  def indexFast
+    # A custom, much faster, UB version of the "manage submissions" page
+    # This replaces the old "index" action, but we'll keep the old one around to avoid merge conflicts
+    # The old index is accessible at /submissions/legacy
+  end
+
   # this works
   action_auth_level :new, :instructor
   def new

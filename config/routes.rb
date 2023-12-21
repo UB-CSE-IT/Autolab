@@ -144,6 +144,10 @@ Rails.application.routes.draw do
         get "help", on: :member
       end
       resources :submissions do
+        collection do
+          root action: :indexFast
+          get 'legacy', action: :index
+        end
         resources :annotations, only: [:create, :update, :destroy] do
           collection do
             get "shared_comments"
