@@ -4,22 +4,41 @@
   <%= stylesheet_link_tag "datatable.adapter" %>
 
   <style>
-      table [type="checkbox"] + label {
-          width: 18px;
-          padding: 0;
-      }
-
       #floater {
           z-index: 5;
       }
-  </style>
-<% end %>
 
-<% content_for :javascripts do %>
-  <%= external_javascript_include_tag "lodash" %>
-  <%= javascript_include_tag "sorttable" %>
-  <%= external_javascript_include_tag "jquery.dataTables" %>
-  <%= javascript_include_tag "manage_submissions" %>
+      .column-header {
+          display: flex;
+          align-items: center;
+      }
+
+      .sortable-header-link {
+          color: grey;
+          text-decoration: underline;
+      }
+
+      .sort-icons {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          margin-left: 10px;
+      }
+
+      .sort-icons > * {
+          border-radius: 50px;
+          height: 16px;
+          width: 16px;
+          display: inline-flex;
+          justify-content: center;
+          color: lightgrey;
+      }
+
+      .current-sort {
+          color: #005bbb;
+          background-color: white;
+      }
+  </style>
 <% end %>
 
 <h3><%= @title %></h3>
@@ -49,3 +68,81 @@
                 :class => "" } %>
 
 </p>
+
+<div class="row">
+  <% if @autograded %>
+    <div class="col s3">
+      <%= link_to "Regrade All",
+                  [:regradeAll, @course, @assessment],
+                  { method: :post,
+                    :title => "Regrade the most recent submission from each student",
+                    :confirm => "Are you sure you want to do this? It will regrade the most recent submission from each student, which might take a while.",
+                    :class => "btn" } %>
+    </div>
+  <% end %>
+</div>
+
+TODO
+- Make email clickable to show submissions from user
+- Make file clickable to download submission
+- Make loading scores optional (slower)
+- Allow filtering by name/email/ip
+- Allow server-side filtering to latest submission only (probably slower)
+- Add action links
+
+
+<table class="prettyBorder" id="submissions">
+  <thead class="float">
+  <tr>
+    <%
+      columns = [
+        { :name => "Submitted By", :sort => "submitted_by" },
+        { :name => "Version", :sort => "version" },
+        { :name => "Score", :sort => nil },
+        { :name => "Submission Date (YYYY-MM-DD)", :sort => "date" },
+        { :name => "File", :sort => "file_name" },
+        { :name => "IP Address", :sort => "ip" },
+        { :name => "Actions", :sort => nil }
+      ]
+    %>
+
+    <% columns.each do |column| %>
+      <th>
+        <div class="column-header">
+          <% if column[:sort].nil? %>
+            <%= column[:name] %>
+          <% else %>
+            <% if @selected_sort == column[:sort] + "_asc" %>
+              <%= link_to column[:name], url_for(:sort => column[:sort] + "_desc"), class: "sortable-header-link" %>
+            <% else %>
+              <%= link_to column[:name], url_for(:sort => column[:sort] + "_asc"), class: "sortable-header-link" %>
+            <% end %>
+            <br>
+            <div class="sort-icons">
+              <%= link_to "⮝", url_for(:sort => column[:sort] + "_asc"), class: @selected_sort == column[:sort] + "_asc" ? "current-sort" : "" %>
+              <%= link_to "⮟", url_for(:sort => column[:sort] + "_desc"), class: @selected_sort == column[:sort] + "_desc" ? "current-sort" : "" %>
+            </div>
+          <% end %>
+        </div>
+      </th>
+    <% end %>
+  </tr>
+  </thead>
+  <tbody>
+
+  <% @submissions.each do |submission| %>
+    <tr>
+      <td><%= "#{submission[:last_name]}, #{submission[:first_name]} " %><%= submission[:email] %></td>
+      <td><%= submission[:version] %></td>
+      <td><%= submission[:score] %></td>
+      <td><span class="moment-date-time"><%= submission[:created_at].in_time_zone.to_s %></span></td>
+      <td><%= submission[:filename] %></td>
+      <td><%= submission[:submitter_ip] %></td>
+      <td>
+        Actions
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+

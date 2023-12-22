@@ -24,6 +24,55 @@ class SubmissionsController < ApplicationController
     # A custom, much faster, UB version of the "manage submissions" page
     # This replaces the old "index" action, but we'll keep the old one around to avoid merge conflicts
     # The old index is accessible at /submissions/legacy
+    @autograded = @assessment.has_autograder?
+
+    default_sort = "submitted_by_asc"
+    sort_options = {
+      "submitted_by_asc" => "users.last_name ASC, users.first_name ASC",
+      "submitted_by_desc" => "users.last_name DESC, users.first_name DESC",
+      "version_asc" => "submissions.version ASC",
+      "version_desc" => "submissions.version DESC",
+      # Score TODO
+      "date_asc" => "submissions.created_at ASC",
+      "date_desc" => "submissions.created_at DESC",
+      "file_name_asc" => "submissions.filename ASC",
+      "file_name_desc" => "submissions.filename DESC",
+      "ip_asc" => "submissions.submitter_ip ASC",
+      "ip_desc" => "submissions.submitter_ip DESC"
+    }
+
+    @selected_sort = params[:sort]
+    if @selected_sort.nil? || not(sort_options.key? @selected_sort)
+      return redirect_to course_assessment_submissions_url(:sort => default_sort)
+    end
+
+    sort_sql = sort_options[@selected_sort]
+
+    @submissions = Submission.joins(course_user_datum: :user)
+                             .where(assessment_id: @assessment.id)
+                             .order(sort_sql)
+                             .pluck('submissions.id',
+                                    'submissions.created_at',
+                                    'submissions.submitter_ip',
+                                    'submissions.filename',
+                                    'submissions.version',
+                                    'course_user_data.instructor',
+                                    'course_user_data.course_assistant',
+                                    'users.email',
+                                    'users.first_name',
+                                    'users.last_name')
+                             .map { |s| { id: s[0],
+                                          created_at: s[1],
+                                          submitter_ip: s[2],
+                                          filename: s[3],
+                                          version: s[4],
+                                          instructor: s[5],
+                                          course_assistant: s[6],
+                                          email: s[7],
+                                          first_name: s[8],
+                                          last_name: s[9] }
+                             }
+
   end
 
   # this works
