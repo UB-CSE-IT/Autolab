@@ -49,6 +49,22 @@
           color: #005bbb;
           background-color: white;
       }
+
+      .actions-row {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          gap: 3px;
+      }
+
+      .no-pointer {
+          pointer-events: none;
+      }
+
+      .no-pointer a {
+          /* Keep the pointer for links within .no-pointer */
+          pointer-events: auto;
+      }
   </style>
 <% end %>
 
@@ -98,17 +114,14 @@
 </div>
 
 TODO
-- Make email clickable to show submissions from user
-- Make file clickable to download submission
 - Make loading scores optional (slower)
 - Allow filtering by name/email/ip
 - Allow server-side filtering to latest submission only (probably slower)
-- Add action links
 
 
 <table class="prettyBorder" id="submissions">
   <thead class="float">
-  <tr>
+  <tr class="no-pointer">
     <%
       columns = [
         { :name => "Submitted By", :sort => "submitted_by" },
@@ -166,7 +179,23 @@ TODO
       </td>
       <td><%= submission[:submitter_ip] %></td>
       <td>
-        Actions
+        <div class="actions-row">
+          <% if @autograded and submission[:version] > 0 %>
+            <%= button_to [:regrade, @course, @assessment, submission_id: submission[:id]],
+                          :method => :post,
+                          :title => "Rerun the autograder on this submission",
+                          :class => "btn small" do %>
+              <i class='material-icons'>autorenew</i>
+            <% end %>
+          <% end %>
+          <%= link_to "<i class='material-icons'>edit</i>".html_safe, edit_course_assessment_submission_path(@course, @assessment, submission[:id]),
+                      { :title => "Edit the grading properties of this submission",
+                        :class => "btn small" } %>
+          <%= link_to "<i class='material-icons'>delete</i>".html_safe, destroyConfirm_course_assessment_submission_path(@course, @assessment, submission[:id]),
+                      { :title => "Destroy this submission forever",
+                        :class => "btn small" } %>
+
+        </div>
       </td>
     </tr>
   <% end %>
