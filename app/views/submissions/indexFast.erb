@@ -8,6 +8,17 @@
           z-index: 5;
       }
 
+      #gradeBackdrop {
+          background-color: #aaaaaa;
+          display: none;
+          height: 100%;
+          left: 0;
+          opacity: 0.8;
+          position: fixed;
+          top: 0;
+          width: 100%;
+      }
+
       .column-header {
           display: flex;
           align-items: center;
@@ -39,6 +50,10 @@
           background-color: white;
       }
   </style>
+<% end %>
+
+<% content_for :javascripts do %>
+  <%= javascript_include_tag "manage_submissions_fast" %>
 <% end %>
 
 <h3><%= @title %></h3>
@@ -132,11 +147,23 @@ TODO
 
   <% @submissions.each do |submission| %>
     <tr>
-      <td><%= "#{submission[:last_name]}, #{submission[:first_name]} " %><%= submission[:email] %></td>
+      <td><%= [submission[:last_name], submission[:first_name]].reject(&:blank?).join(', ') %>
+        <%= link_to submission[:email],
+                    history_course_assessment_path(@course, @assessment, cud_id: submission[:course_user_datum_id], partial: true),
+                    { remote: true, class: :trigger }
+
+        %></td>
       <td><%= submission[:version] %></td>
       <td><%= submission[:score] %></td>
       <td><span class="moment-date-time"><%= submission[:created_at].in_time_zone.to_s %></span></td>
-      <td><%= submission[:filename] %></td>
+      <td>
+        <% if submission[:filename] %>
+          <%= link_to "#{submission[:filename]}",
+                      download_course_assessment_submission_path(@course, @assessment, submission[:id]) %>
+        <% else %>
+          None
+        <% end %>
+      </td>
       <td><%= submission[:submitter_ip] %></td>
       <td>
         Actions
@@ -145,4 +172,7 @@ TODO
   <% end %>
   </tbody>
 </table>
+
+<div id="gradeBackdrop"></div>
+<div id="floater"></div>
 

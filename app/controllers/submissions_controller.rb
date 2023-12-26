@@ -59,6 +59,7 @@ class SubmissionsController < ApplicationController
                                     'submissions.version',
                                     'course_user_data.instructor',
                                     'course_user_data.course_assistant',
+                                    'course_user_data.id',
                                     'users.email',
                                     'users.first_name',
                                     'users.last_name')
@@ -69,9 +70,10 @@ class SubmissionsController < ApplicationController
                                           version: s[4],
                                           instructor: s[5],
                                           course_assistant: s[6],
-                                          email: s[7],
-                                          first_name: s[8],
-                                          last_name: s[9] }
+                                          course_user_datum_id: s[7],
+                                          email: s[8],
+                                          first_name: s[9],
+                                          last_name: s[10] }
                              }
 
   end
