@@ -27,13 +27,12 @@ class SubmissionsController < ApplicationController
     # The old index is accessible at /submissions/legacy
     @autograded = @assessment.has_autograder?
 
-    default_sort = "submitted_by_asc"
+    default_sort = "date_desc"
     sort_options = {
       "submitted_by_asc" => "users.last_name ASC, users.first_name ASC",
       "submitted_by_desc" => "users.last_name DESC, users.first_name DESC",
       "version_asc" => "submissions.version ASC",
       "version_desc" => "submissions.version DESC",
-      # Score TODO
       "date_asc" => "submissions.created_at ASC",
       "date_desc" => "submissions.created_at DESC",
       "file_name_asc" => "submissions.filename ASC",
@@ -46,8 +45,16 @@ class SubmissionsController < ApplicationController
     if @selected_sort.nil? || not(sort_options.key? @selected_sort)
       return redirect_to course_assessment_submissions_url(:sort => default_sort)
     end
-
     sort_sql = sort_options[@selected_sort]
+
+    # Search by name, email, or IP
+    if params[:search].present?
+      search = params[:search].strip
+    else
+      search = nil
+    end
+
+    @search = search
 
     @submissions = Submission.joins(course_user_datum: :user)
                              .where(assessment_id: @assessment.id)
@@ -63,18 +70,20 @@ class SubmissionsController < ApplicationController
                                     'users.email',
                                     'users.first_name',
                                     'users.last_name')
-                             .map { |s| { id: s[0],
-                                          created_at: s[1],
-                                          submitter_ip: s[2],
-                                          filename: s[3],
-                                          version: s[4],
-                                          instructor: s[5],
-                                          course_assistant: s[6],
-                                          course_user_datum_id: s[7],
-                                          email: s[8],
-                                          first_name: s[9],
-                                          last_name: s[10] }
-                             }
+                             .map { |s|
+                               next unless search.nil? || s[8].to_s.include?(search) || s[9].to_s.include?(search) || s[10].to_s.include?(search) || s[2].to_s.include?(search)
+                               { id: s[0],
+                                 created_at: s[1],
+                                 submitter_ip: s[2],
+                                 filename: s[3],
+                                 version: s[4],
+                                 instructor: s[5],
+                                 course_assistant: s[6],
+                                 course_user_datum_id: s[7],
+                                 email: s[8],
+                                 first_name: s[9],
+                                 last_name: s[10] }
+                             }.compact
 
   end
 
