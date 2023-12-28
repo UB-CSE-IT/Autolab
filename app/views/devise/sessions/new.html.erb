@@ -7,13 +7,14 @@
   <% end %>
 
   <img src="/images/autolab.svg" alt="Autolab logo" class="valign login-logo">
-  <h5>Sign into Autolab</h5>
+  <h3>Welcome to Autolab</h3>
+  <p>Please sign in to continue</p>
   <br/>
 
-  <p><b>Students and Faculty:</b></p>
+  <p><b>Students and Faculty</b></p>
   <%= render "devise/shared/links" %>
 
-  <p>CSE IT Staff:</p>
+  <p>CSE IT Staff</p>
   <button id="cse-it-login-button" class="btn">More Options</button>
   <br/>
   <br/>
@@ -31,17 +32,18 @@
   <div id="cse-it-login-form" style="display: none; border: 2px solid #005bbb; border-radius: 10px; max-width: 370px;
     padding: 10px; margin: 0 auto;">
     <h4>CSE IT Login Options</h4>
+    <br/>
 
-    <h5>Developer Login</h5>
+    <h6>Developer Login</h6>
     <% if Rails.env == "development" %>
-      <p>Sign in as anybody without a password:</p>
+      <p>Sign in as anybody without a password</p>
       <%= button_to "Sign in with Developer Login", "/home/developer_login", { class: 'btn red darken-3' } %>
     <% else %>
       <p>Autolab isn't running in a development environment, so you can't use the developer login here.</p>
     <% end %>
-    <br/>
+    <hr style="color: #005bbb; margin: 40px;"/>
 
-    <h4>Local Login</h4>
+    <h6>Local Login</h6>
     <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
       <div><%= f.email_field :email, :autofocus => true, :placeholder => "Email Address" %></div>
       <div><%= f.password_field :password, :placeholder => "Password" %></div>
