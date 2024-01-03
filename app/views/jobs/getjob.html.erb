@@ -5,7 +5,7 @@
   <%= stylesheet_link_tag "getjob" %>
 <% end %>
 <p>
-<%= link_to "Return to Jobs", {:action=>"index"} %>
+<%= link_to "Return to Jobs", { action: "index" } %>
 </p>
 <h3>Job <%= @job[:id] %> Summary</h3>
 <div class="jobs-table-div">
@@ -63,7 +63,6 @@
   </table>
 </div>
 
-
 <h3>Job Parameters</h3>
 <div class="jobs-table-div">
   <table class="jobs-table">
@@ -73,7 +72,7 @@
           VM image
         </td>
         <td>
-          <%= @job[:rjob]["vm"]["name"]%>
+          <%= @job[:rjob]["vm"]["name"] %>
         </td>
       </tr>
       <tr>
@@ -89,7 +88,7 @@
           Output File
         </td>
         <td>
-          <%= @job[:rjob]["outputFile"].sub(/\/afs\/cs\.cmu\.edu\/academic\/autolab\/autolab2/, "[autolab]").gsub(ENV['RESTFUL_KEY'], "<api key>") %>
+          <%= @job[:rjob]["outputFile"].sub(%r{/afs/cs\.cmu\.edu/academic/autolab/autolab2}, "[autolab]").gsub(ENV['RESTFUL_KEY'], "<api key>") %>
         </td>
       </tr>
       <tr>
@@ -132,7 +131,7 @@
       <tr>
         <td>
           <code>
-            <%= item["localFile"].sub(/\/afs\/cs\.cmu\.edu\/academic\/autolab\/autolab2\/courses/, "[autolab courses]").gsub(ENV['RESTFUL_KEY'], "<api key>")%>
+            <%= item["localFile"].sub(%r{/afs/cs\.cmu\.edu/academic/autolab/autolab2/courses}, "[autolab courses]").gsub(ENV['RESTFUL_KEY'], "<api key>") %>
           </code>
         </td>
         <td>
