@@ -1,0 +1,243 @@
+<% @title = "Manage Submissions 2.0" %>
+
+<% content_for :stylesheets do %>
+  <%= stylesheet_link_tag "datatable.adapter" %>
+
+  <style>
+      #floater {
+          z-index: 5;
+      }
+
+      #gradeBackdrop {
+          z-index: 3;
+          background-color: #aaaaaa;
+          display: none;
+          height: 100%;
+          left: 0;
+          opacity: 0.8;
+          position: fixed;
+          top: 0;
+          width: 100%;
+      }
+
+      .search-wrapper {
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-end;
+      }
+
+      .search-form {
+          width: 300px;
+          display: flex;
+          align-items: center;
+          align-content: flex-end;
+      }
+
+      .column-header {
+          display: flex;
+          align-items: center;
+      }
+
+      .sortable-header-link {
+          color: grey;
+          text-decoration: underline;
+      }
+
+      .sort-icons {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          margin-left: 10px;
+      }
+
+      .sort-icons > * {
+          border-radius: 50px;
+          height: 16px;
+          width: 16px;
+          display: inline-flex;
+          justify-content: center;
+          color: lightgrey;
+      }
+
+      .current-sort {
+          color: #005bbb;
+          background-color: white;
+      }
+
+      .actions-row {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          gap: 3px;
+      }
+
+      .no-pointer {
+          pointer-events: none;
+      }
+
+      .no-pointer a {
+          /* Keep the pointer for links within .no-pointer */
+          pointer-events: auto;
+      }
+  </style>
+<% end %>
+
+<% content_for :javascripts do %>
+  <%= javascript_include_tag "manage_submissions_fast" %>
+<% end %>
+
+<h3><%= @title %></h3>
+<p>This page introduces a higher performance submission management experience, built from scratch for UB.</p>
+
+<p>The <%= link_to 'Legacy Manage Submissions', legacy_course_assessment_submissions_path %> page remains available, but
+  it's much slower for assessments with many submissions. For comparison, the legacy version took 198 seconds (3.3
+  minutes) for an assessment with 18,000 submissions to load, then an additional 15 seconds for the JavaScript front-end
+  to become responsive, even on high-end hardware. It also required sending a staggering 144,000+ SQL queries
+  to the database server. The new version loads 18,000 submissions in 2.7 seconds, has no JavaScript, and uses fewer
+  than 20 SQL queries (including standard queries for permission checking).</p>
+
+<p>Click an email address to view all submissions from that user. Click a file name to download the submission. You can
+  search by first name, last name, email address, or IP address. Click a column name or arrow to use server-side
+  sorting. Scores are not shown in this table because computing them has a significant overhead (they are not stored
+  directly).</p>
+
+<hr>
+
+<p>
+  <%= link_to "Create New Submission".html_safe, new_course_assessment_submission_path(@course, @assessment),
+              { :title => "Create a new submission for a student, with an option to submit a handin file on their behalf",
+                :class => "" } %>
+  |
+  <%= link_to "Download All Submissions".html_safe,
+              downloadAll_course_assessment_submissions_path(@course, @assessment),
+              { :title => "Down all submissions from each student",
+                :class => "" } %>
+  |
+  <%= link_to "Download Final Submissions".html_safe,
+              downloadAll_course_assessment_submissions_path(@course, @assessment, final: true),
+              { :title => "Download the most recent submission from each student",
+                :class => "" } %>
+  |
+  <%= link_to "Missing Submissions".html_safe,
+              missing_course_assessment_submissions_path(@course, @assessment),
+              { :title => "List the students who have not submitted anything. You'll be given the option to create new submissions for the missing students",
+                :class => "" } %>
+
+</p>
+
+<div class="row">
+  <% if @autograded %>
+    <div class="col s3">
+      <%= link_to "Regrade All",
+                  [:regradeAll, @course, @assessment],
+                  { method: :post,
+                    :title => "Regrade the most recent submission from each student",
+                    :confirm => "Are you sure you want to do this? It will regrade the most recent submission from each student, which might take a while.",
+                    :class => "btn" } %>
+    </div>
+  <% end %>
+</div>
+
+<div class="search-wrapper">
+  <%= form_tag(root_course_assessment_submissions_url, method: "get", enforce_utf8: false, class: "search-form") do %>
+    <%= hidden_field_tag(:sort, params[:sort]) %>
+
+    <%= text_field_tag :search, params[:search], class: "form-control" %>
+
+    <%= submit_tag("Search", :name => nil, :class => "btn") %>
+  <% end %>
+</div>
+
+<table class="prettyBorder" id="submissions">
+  <thead class="float">
+  <tr class="no-pointer">
+    <%
+      columns = [
+        { :name => "Submitted By", :sort => "submitted_by" },
+        { :name => "Version", :sort => "version" },
+        { :name => "Submission Date (YYYY-MM-DD)", :sort => "date" },
+        { :name => "File", :sort => "file_name" },
+        { :name => "IP Address", :sort => "ip" },
+        { :name => "Actions", :sort => nil }
+      ]
+    %>
+
+    <% columns.each do |column| %>
+      <th>
+        <div class="column-header">
+          <% if column[:sort].nil? %>
+            <%= column[:name] %>
+          <% else %>
+            <% if @selected_sort == column[:sort] + "_asc" %>
+              <%= link_to column[:name], url_for(:sort => column[:sort] + "_desc", :search => @search), class: "sortable-header-link" %>
+            <% else %>
+              <%= link_to column[:name], url_for(:sort => column[:sort] + "_asc", :search => @search), class: "sortable-header-link" %>
+            <% end %>
+            <br>
+            <div class="sort-icons">
+              <%= link_to "⮝", url_for(:sort => column[:sort] + "_asc", :search => @search), class: @selected_sort == column[:sort] + "_asc" ? "current-sort" : "" %>
+              <%= link_to "⮟", url_for(:sort => column[:sort] + "_desc", :search => @search), class: @selected_sort == column[:sort] + "_desc" ? "current-sort" : "" %>
+            </div>
+          <% end %>
+        </div>
+      </th>
+    <% end %>
+  </tr>
+  </thead>
+  <tbody>
+
+  <% @submissions.each do |submission| %>
+    <tr>
+      <td><%= [submission[:last_name], submission[:first_name]].reject(&:blank?).join(', ') %>
+        <%= link_to submission[:email],
+                    history_course_assessment_path(@course, @assessment, cud_id: submission[:course_user_datum_id], partial: true),
+                    { remote: true, class: :trigger }
+
+        %>
+        <%= if submission[:instructor] == 1
+              "(Instructor)"
+            else
+              submission[:course_assistant] == 1 ? "(CA)" : ""
+            end %>
+
+      </td>
+      <td><%= submission[:version] %></td>
+      <td><span class="moment-date-time"><%= submission[:created_at].in_time_zone.to_s %></span></td>
+      <td>
+        <% if submission[:filename] %>
+          <%= link_to "#{submission[:filename]}",
+                      download_course_assessment_submission_path(@course, @assessment, submission[:id]) %>
+        <% else %>
+          None
+        <% end %>
+      </td>
+      <td><%= submission[:submitter_ip] %></td>
+      <td>
+        <div class="actions-row">
+          <% if @autograded and submission[:version] > 0 %>
+            <%= button_to [:regrade, @course, @assessment, submission_id: submission[:id]],
+                          :method => :post,
+                          :title => "Rerun the autograder on this submission",
+                          :class => "btn small" do %>
+              <i class='material-icons'>autorenew</i>
+            <% end %>
+          <% end %>
+          <%= link_to "<i class='material-icons'>edit</i>".html_safe, edit_course_assessment_submission_path(@course, @assessment, submission[:id]),
+                      { :title => "Edit the grading properties of this submission",
+                        :class => "btn small" } %>
+          <%= link_to "<i class='material-icons'>delete</i>".html_safe, destroyConfirm_course_assessment_submission_path(@course, @assessment, submission[:id]),
+                      { :title => "Destroy this submission forever",
+                        :class => "btn small" } %>
+
+        </div>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<p>Showing <%= @submissions.length %> of <%= @assessment.submissions.length %> submissions.</p>
+
+<div id="gradeBackdrop"></div>
+<div id="floater"></div>
+

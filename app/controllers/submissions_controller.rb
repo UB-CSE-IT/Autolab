@@ -15,13 +15,82 @@ class SubmissionsController < ApplicationController
 
   # this page loads.  links/functionality may be/are off
   action_auth_level :index, :instructor
+
   def index
     @submissions = @assessment.submissions.order("created_at DESC")
     @autograded = @assessment.has_autograder?
   end
 
+  action_auth_level :indexFast, :instructor
+  def indexFast
+    # A custom, much faster, UB version of the "manage submissions" page
+    # This replaces the old "index" action, but we'll keep the old one around to avoid merge conflicts
+    # The old index is accessible at /submissions/legacy
+    @autograded = @assessment.has_autograder?
+
+    default_sort = "date_desc"
+    sort_options = {
+      "submitted_by_asc" => "users.last_name ASC, users.first_name ASC",
+      "submitted_by_desc" => "users.last_name DESC, users.first_name DESC",
+      "version_asc" => "submissions.version ASC",
+      "version_desc" => "submissions.version DESC",
+      "date_asc" => "submissions.created_at ASC",
+      "date_desc" => "submissions.created_at DESC",
+      "file_name_asc" => "submissions.filename ASC",
+      "file_name_desc" => "submissions.filename DESC",
+      "ip_asc" => "submissions.submitter_ip ASC",
+      "ip_desc" => "submissions.submitter_ip DESC"
+    }
+
+    @selected_sort = params[:sort]
+    if @selected_sort.nil? || not(sort_options.key? @selected_sort)
+      return redirect_to course_assessment_submissions_url(:sort => default_sort)
+    end
+    sort_sql = sort_options[@selected_sort]
+
+    # Search by name, email, or IP
+    if params[:search].present?
+      search = params[:search].strip
+    else
+      search = nil
+    end
+
+    @search = search
+
+    @submissions = Submission.joins(course_user_datum: :user)
+                             .where(assessment_id: @assessment.id)
+                             .order(sort_sql)
+                             .pluck('submissions.id',
+                                    'submissions.created_at',
+                                    'submissions.submitter_ip',
+                                    'submissions.filename',
+                                    'submissions.version',
+                                    'course_user_data.instructor',
+                                    'course_user_data.course_assistant',
+                                    'course_user_data.id',
+                                    'users.email',
+                                    'users.first_name',
+                                    'users.last_name')
+                             .map { |s|
+                               next unless search.nil? || s[8].to_s.include?(search) || s[9].to_s.include?(search) || s[10].to_s.include?(search) || s[2].to_s.include?(search)
+                               { id: s[0],
+                                 created_at: s[1],
+                                 submitter_ip: s[2],
+                                 filename: s[3],
+                                 version: s[4],
+                                 instructor: s[5],
+                                 course_assistant: s[6],
+                                 course_user_datum_id: s[7],
+                                 email: s[8],
+                                 first_name: s[9],
+                                 last_name: s[10] }
+                             }.compact
+
+  end
+
   # this works
   action_auth_level :new, :instructor
+
   def new
     @submission = @assessment.submissions.new(tweak: Tweak.new)
 
@@ -41,6 +110,7 @@ class SubmissionsController < ApplicationController
 
   # this seems to work to.
   action_auth_level :create, :instructor
+
   def create
     @submission = @assessment.submissions.new
 
@@ -72,16 +142,19 @@ class SubmissionsController < ApplicationController
   end
 
   action_auth_level :show, :student
+
   def show; end
 
   # this loads and looks good
   action_auth_level :edit, :instructor
+
   def edit
     @submission.tweak ||= Tweak.new
   end
 
   # this is good
   action_auth_level :update, :instructor
+
   def update
     flash[:error] = "Cannot update nil submission" if @submission.nil?
 
@@ -106,6 +179,7 @@ class SubmissionsController < ApplicationController
 
   # this is good
   action_auth_level :destroy, :instructor
+
   def destroy
     if params[:yes]
       if @submission.destroy
@@ -122,6 +196,7 @@ class SubmissionsController < ApplicationController
 
   # this is good
   action_auth_level :destroyConfirm, :instructor
+
   def destroyConfirm; end
 
   ##
@@ -130,6 +205,7 @@ class SubmissionsController < ApplicationController
 
   # TODONE?  THIS MAY DELETE MOST OF YOUR USERS.  USE WITH CAUTION.
   action_auth_level :missing, :instructor
+
   def missing
     @submissions = @assessment.submissions
 
@@ -150,6 +226,7 @@ class SubmissionsController < ApplicationController
 
   # should be okay, but untested
   action_auth_level :downloadAll, :course_assistant
+
   def downloadAll
     flash[:error] = "Cannot index submissions for nil assessment" if @assessment.nil?
 
@@ -210,6 +287,7 @@ class SubmissionsController < ApplicationController
   # not actually view it. If the :header_position parameter is set, it will
   # try to send the file at that position in the archive.
   action_auth_level :download, :student
+
   def download
     if Archive.archive?(@submission.handin_file_path) && params[:header_position]
       file, pathname = Archive.get_nth_file(@filename, params[:header_position].to_i)
@@ -237,7 +315,7 @@ class SubmissionsController < ApplicationController
           next if annotation.coordinate.nil?
 
           position = annotation.coordinate.split(",")
-          page  = position[2].to_i
+          page = position[2].to_i
 
           width = position[3].to_f * pdf.bounds.width
           height = position[4].to_f * pdf.bounds.height
@@ -281,6 +359,7 @@ class SubmissionsController < ApplicationController
   # parameter is set, it will try to send the file at that position in
   # archive.
   action_auth_level :view, :student
+
   def view
     flash[:error] = "Cannot manage nil course" if @course.nil?
 
@@ -297,18 +376,18 @@ class SubmissionsController < ApplicationController
       end
     else
       @files = [{
-        pathname: @filename,
-        header_position: 0,
-        mac_bs_file: @filename.include?("__MACOSX") ||
-          @filename.include?(".DS_Store") ||
-          @filename.include?(".metadata"),
-        directory: Archive.looks_like_directory?(@filename)
-      }]
+                  pathname: @filename,
+                  header_position: 0,
+                  mac_bs_file: @filename.include?("__MACOSX") ||
+                    @filename.include?(".DS_Store") ||
+                    @filename.include?(".metadata"),
+                  directory: Archive.looks_like_directory?(@filename)
+                }]
     end
 
     viewing_autograder_output = params.include?(:header_position) &&
-                                (params[:header_position].to_i == -1) &&
-                                !@submission.autograde_file.nil?
+      (params[:header_position].to_i == -1) &&
+      !@submission.autograde_file.nil?
 
     # Adds autograded file as first option if it exist
     # We are mapping Autograder to header_position -1
@@ -340,15 +419,15 @@ class SubmissionsController < ApplicationController
           archive_file[:mac_bs_file] == false and archive_file[:directory] == false
         end || { header_position: 0 }
         redirect_to(url_for([:view, @course, @assessment, @submission, {
-                              header_position: firstFile[:header_position]
-                            }])) && return
+          header_position: firstFile[:header_position]
+        }])) && return
 
-      # redirect to header_pos = 0, which is the first file,
-      # if there's autograder and no header_position
+        # redirect to header_pos = 0, which is the first file,
+        # if there's autograder and no header_position
       elsif !@submission.autograde_file.nil? && !params.include?(:header_position)
         redirect_to(url_for([:view, @course, @assessment, @submission, {
-                              header_position: 0
-                            }])) && return
+          header_position: 0
+        }])) && return
       end
 
       file = @submission.handin_file.read
@@ -390,9 +469,9 @@ class SubmissionsController < ApplicationController
           obj_temp = JSON.parse(@ctags_json[i])
           if ((obj_temp["kind"] == "function") ||
             (obj_temp["kind"] == "method")) &&
-             (@ctag_obj.select do |ctag|
-                ctag["line"] == obj_temp["line"]
-              end).empty?
+            (@ctag_obj.select do |ctag|
+              ctag["line"] == obj_temp["line"]
+            end).empty?
 
             @ctag_obj.push(obj_temp)
           end
@@ -402,12 +481,12 @@ class SubmissionsController < ApplicationController
 
           obj_temp = JSON.parse(@ctags_json[i])
           while (i + 1 < @ctags_json.length) &&
-                ((obj_temp["kind"] == "member") || (obj_temp["kind"] == "method"))
+            ((obj_temp["kind"] == "member") || (obj_temp["kind"] == "method"))
 
             obj_exists = @ctag_obj.select { |ctag| ctag["line"] == obj_temp["line"] }
             if obj_exists.empty?
               @ctag_obj.push(obj_temp)
-            # we want the obj with the extra class-qualified tag entry, 'class.function'
+              # we want the obj with the extra class-qualified tag entry, 'class.function'
             elsif obj_temp["name"].length > obj_exists[0]["name"].length
               @ctag_obj[@ctag_obj.index(obj_exists[0])] = obj_temp
             end
@@ -440,7 +519,7 @@ class SubmissionsController < ApplicationController
     end
 
     @problemReleased = @submission.scores.pluck(:released).all? &&
-                       !@assessment.before_grading_deadline?
+      !@assessment.before_grading_deadline?
 
     @annotations = @submission.annotations.to_a
     unless @submission.group_key.empty?
@@ -529,7 +608,7 @@ class SubmissionsController < ApplicationController
 
       annotations_by_file = annotations_by_type[false] || []
       # sort by filename (a[6]), followed by line (a[2]) and group by filename (a[6])
-      annotations_by_file = annotations_by_file.sort_by{ |a| [a[6], a[2]] }.group_by { |a| a[6] }
+      annotations_by_file = annotations_by_file.sort_by { |a| [a[6], a[2]] }.group_by { |a| a[6] }
 
       @problemAnnotations[problem] = {
         global_annotations: global_annotations,
@@ -540,7 +619,7 @@ class SubmissionsController < ApplicationController
     @latestSubmissions = @assessment.assessment_user_data
                                     .map(&:latest_submission)
                                     .reject(&:nil?)
-                                    .sort_by{ |submission| submission.course_user_datum.user.email }
+                                    .sort_by { |submission| submission.course_user_datum.user.email }
     @curSubmissionIndex = @latestSubmissions.index do |submission|
       submission.course_user_datum.user.email == @submission.course_user_datum.user.email
     end
@@ -620,7 +699,7 @@ class SubmissionsController < ApplicationController
     end
   end
 
-private
+  private
 
   def new_submission_params
     params.require(:submission).permit(:course_used_datum_id, :notes, :file,
