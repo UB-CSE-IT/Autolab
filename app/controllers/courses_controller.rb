@@ -289,7 +289,7 @@ class CoursesController < ApplicationController
         { first_name: Regexp.last_match(1), email: Regexp.last_match(2) }
         # when it's first name last name <email>
       else
-        { email: email }
+        { email: }
       end
     end
 
@@ -462,7 +462,7 @@ class CoursesController < ApplicationController
 
     # don't email kids who dropped!
     @cuds = if section
-              @course.course_user_data.where(dropped: false, section: section)
+              @course.course_user_data.where(dropped: false, section:)
             else
               @course.course_user_data.where(dropped: false)
             end
@@ -648,7 +648,7 @@ private
         major = new_cud[:major]
         year = new_cud[:year]
 
-        if (user = User.where(email: email).first).nil?
+        if (user = User.where(email:).first).nil?
           begin
             # Create a new user
             user = User.roster_create(email, first_name, last_name, school,
@@ -678,7 +678,7 @@ private
           end
         end
 
-        existing = @course.course_user_data.where(user: user).first
+        existing = @course.course_user_data.where(user:).first
         # Make sure this user doesn't have a cud in the course
         if existing
           duplicates.add(new_cud[:email])
