@@ -60,7 +60,6 @@ ActiveRecord::Schema.define(version: 2023_09_20_164407) do
   create_table "assessments", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.timestamp "due_at"
     t.timestamp "end_at"
-    t.timestamp "visible_at"
     t.timestamp "start_at"
     t.string "name"
     t.text "description"
@@ -90,7 +89,6 @@ ActiveRecord::Schema.define(version: 2023_09_20_164407) do
     t.integer "group_size", default: 1
     t.text "embedded_quiz_form_data"
     t.boolean "embedded_quiz"
-    t.binary "embedded_quiz_form"
     t.boolean "github_submission_enabled", default: true
     t.boolean "allow_student_assign_group", default: true
     t.boolean "is_positive_grading", default: false
