@@ -293,7 +293,7 @@ class SubmissionsController < ApplicationController
 
       # Only show annotations if grades have been released or the user is an instructor
       @annotations = []
-      if !@assessment.before_grading_deadline? || @cud.instructor || @cud.course_assistant
+      if @submission.grades_released?(@cud)
         @annotations = @submission.annotations.to_a
       end
 
@@ -504,9 +504,6 @@ class SubmissionsController < ApplicationController
       end
     end
 
-    @problemReleased = @submission.scores.pluck(:released).all? &&
-                       !@assessment.before_grading_deadline?
-
     @annotations = @submission.annotations.to_a
     unless @submission.group_key.empty?
       group_submissions = @submission.group_associated_submissions
@@ -517,7 +514,7 @@ class SubmissionsController < ApplicationController
     @annotations.sort! { |a, b| a.line.to_i <=> b.line.to_i }
 
     # Only show annotations if grades have been released or the user is an instructor
-    unless !@assessment.before_grading_deadline? || @cud.instructor || @cud.course_assistant
+    unless @submission.grades_released?(@cud)
       @annotations = []
     end
 
