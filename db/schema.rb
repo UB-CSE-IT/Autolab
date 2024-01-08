@@ -430,6 +430,7 @@ ActiveRecord::Schema.define(version: 2023_12_08_083728) do
     t.index ["risk_condition_id"], name: "index_watchlist_instances_on_risk_condition_id"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "github_integrations", "users"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
