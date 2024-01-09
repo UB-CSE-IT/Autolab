@@ -43,19 +43,6 @@
         <i id="remove-handed-in" class="material-icons small">close</i>
       </div>
     </div>
-    <div style="margin-top: 14px;">
-      <% filename_list = @assessment.handin_filename.split(".") %>
-      <% if (filename_list.size > 1) %>
-        <!-- file needs to have a period, else we ignore (e.g. for README files) -->
-        <div class="filename-check" id="filename-check">
-          <div>
-            Handin format:
-            .<b id="handin-file-type"><%= filename_list[1..].join(".") %></b> files
-          </div>
-          <b id="handin-file-type-incorrect" style="color: red; margin: 0"></b>
-        </div>
-      <% end %>
-    </div>
   </div>
   <div class="ui tab <%= github_submissions_enabled ? "active" : "" %>" data-tab="github" id="github_tab">
     <% if GithubIntegration.find_by_user_id(@cud.user.id)&.is_connected %>
