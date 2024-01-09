@@ -1,6 +1,8 @@
 <h2>Create New Course</h2>
 
-<p>Note: it's better to use the <a href="/portal">self-service portal</a> if possible.</p>
+<p>Note: it's better to use the <a href="/portal">Self-Service Portal</a> if possible.</p>
+<p>If you insist, ensure to follow the <a href="https://github.com/UB-CSE-IT/Autolab-Public-Documentation/blob/main/Getting%20started.md#custom-course-url-conventions">standard naming conventions</a>.</p>
+
 
 <%= form_for :newCourse, url: courses_path, builder: FormBuilderWithDateTimeInput do |f| %>
   <%= f.error_messages %>
