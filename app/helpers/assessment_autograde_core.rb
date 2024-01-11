@@ -263,6 +263,15 @@ module AssessmentAutogradeCore
     return failed_list
   end
 
+  def order_group_submissions(submissions, submitter_cud)
+    # For group submissions, re-order submissions so the submitter's submission is first (before their group members)
+    # This ensures that the Tango job is owned by the submitter, rather than the first group member
+
+    submitter = submitter_cud.user
+    submitter_index = submissions.index {|s| s.course_user_datum.user == submitter}
+    submissions.insert(0, submissions.delete_at(submitter_index))
+  end
+
   ##
   # sendJob - this scary-looking function initiates an autograding
   # job request on the backend. It builds a job structure that
@@ -275,11 +284,17 @@ module AssessmentAutogradeCore
   # i.e. this list contains more than one submission ONLY when a
   # student submits a job as a member of a group. In that case, each
   # submission in this list corresponds to a unique submission record,
-  # one for each member of the group. Only the first in the list is
-  # submitted to tango, but the result is saved to all submissions,
+  # one for each member of the group. ~~Only the first in the list is
+  # submitted to tango~~, but the result is saved to all submissions,
   # as they all have the same "dave".
   #
+  # UB update (Jan 11, 2024): For group submissions, the user who made the submission
+  # is sent to Tango, rather than the first user in the group.
+  #
   def sendJob(course, assessment, submissions, cud)
+    if submissions.length > 1
+      order_group_submissions(submissions, cud)
+    end
     extend_config_module(assessment, submissions[0], cud)
 
     # Get the autograding properties for this assessment.
