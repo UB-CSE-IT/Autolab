@@ -4,20 +4,20 @@
 # hasn't ran in more than its period's time, it's function is run.  This is awful.
 #
 class SchedulersController < ApplicationController
-  action_auth_level :index, :instructor
+  action_auth_level :index, :administrator
   def index
     @schedulers = Scheduler.where(course_id: @course.id)
   end
 
-  action_auth_level :show, :instructor
+  action_auth_level :show, :administrator
   def show
     @scheduler = Scheduler.find(params[:id])
   end
 
-  action_auth_level :new, :instructor
+  action_auth_level :new, :administrator
   def new; end
 
-  action_auth_level :create, :instructor
+  action_auth_level :create, :administrator
   def create
     @scheduler = @course.scheduler.new(scheduler_params)
     if @scheduler.save
@@ -29,17 +29,17 @@ class SchedulersController < ApplicationController
     end
   end
 
-  action_auth_level :edit, :instructor
+  action_auth_level :edit, :administrator
   def edit
     @scheduler = Scheduler.find(params[:id])
   end
 
-  action_auth_level :run, :instructor
+  action_auth_level :run, :administrator
   def run
     @scheduler = Scheduler.find(params[:scheduler_id])
   end
 
-  action_auth_level :visual_run, :instructor
+  action_auth_level :visual_run, :administrator
   def visual_run
     action = Scheduler.find(params[:scheduler_id])
     # https://stackoverflow.com/a/1076445
@@ -81,7 +81,7 @@ class SchedulersController < ApplicationController
     render partial: "visual_test"
   end
 
-  action_auth_level :update, :instructor
+  action_auth_level :update, :administrator
   def update
     @scheduler = Scheduler.find(params[:id])
     if @scheduler.update(scheduler_params)
@@ -93,7 +93,7 @@ class SchedulersController < ApplicationController
     end
   end
 
-  action_auth_level :destroy, :instructor
+  action_auth_level :destroy, :administrator
   def destroy
     @scheduler = Scheduler.find(params[:id])
     if @scheduler.destroy
