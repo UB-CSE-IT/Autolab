@@ -31,10 +31,12 @@
               <%= link_to "Install assessment", install_assessment_course_assessments_path(@course),
                           { title: "Create an assessment from scratch or install one from an existing directory" } %>
             </li>
-            <li>
-              <%= link_to "Send bulk email", email_course_path(@course),
-                          { title: "Send an email to everyone in the class" } %>
-            </li>
+            <% if @cud.user.administrator? %>
+              <li>
+                <%= link_to "Send bulk email (admins only)", email_course_path(@course),
+                            { title: "Send an email to everyone in the class" } %>
+              </li>
+            <% end %>
             <li>
               <%= link_to "Manage course attachments", course_attachments_path(@course),
                           { title: "Distribute files to your students" } %>
@@ -45,10 +47,10 @@
             </li>
 
             <% if @cud.user.administrator? %>
-            <li>
-              <%= link_to "Manage schedulers (admins only)", course_schedulers_path(@course),
-                          { title: "Set and update scheduler for log submissions. (Advanced feature)" } %>
-            </li>
+              <li>
+                <%= link_to "Manage schedulers (admins only)", course_schedulers_path(@course),
+                            { title: "Set and update scheduler for log submissions. (Advanced feature)" } %>
+              </li>
             <% end %>
             <li>
               <%= link_to "Act as user", sudo_course_course_user_datum_path(@course, @cud),
@@ -100,9 +102,9 @@
         </thead>
         <tbody>
         <%
-           # filter only for category / course average
-           @course_stats.filter{ |_, statsValue| statsValue[0] == "avg" }
-                        .each do |name, statsValue|
+          # filter only for category / course average
+          @course_stats.filter { |_, statsValue| statsValue[0] == "avg" }
+                       .each do |name, statsValue|
         %>
           <% stats = statsValue[2] %>
           <tr>
@@ -120,8 +122,8 @@
         <tbody>
         <%
           # filter for only assessments, group into hashes based on category
-          @course_stats.filter{ |_, statsValue| statsValue[0] == "asmt" }
-                       .group_by{ |_, statsValue| statsValue[1].category_name }
+          @course_stats.filter { |_, statsValue| statsValue[0] == "asmt" }
+                       .group_by { |_, statsValue| statsValue[1].category_name }
                        .each do |category_name, category_asmts|
         %>
           <thead>
@@ -134,20 +136,20 @@
             <th>Max</th>
           </tr>
           </thead>
-        <% category_asmts.each do |name, statsValue| %>
-          <% asmt = statsValue[1] %>
-          <% stats = statsValue[2] %>
-          <tr>
-            <td>
+          <% category_asmts.each do |name, statsValue| %>
+            <% asmt = statsValue[1] %>
+            <% stats = statsValue[2] %>
+            <tr>
+              <td>
                 <%= link_to asmt.display_name, course_assessment_path(@course, asmt) %>
-            </td>
-            <td><%= stats[:mean] %></td>
-            <td><%= stats[:median] %></td>
-            <td><%= stats[:stddev] %></td>
-            <td><%= stats[:min] %></td>
-            <td><%= stats[:max] %></td>
-          </tr>
-        <% end %>
+              </td>
+              <td><%= stats[:mean] %></td>
+              <td><%= stats[:median] %></td>
+              <td><%= stats[:stddev] %></td>
+              <td><%= stats[:min] %></td>
+              <td><%= stats[:max] %></td>
+            </tr>
+          <% end %>
         <% end %>
         </tbody>
       </table>

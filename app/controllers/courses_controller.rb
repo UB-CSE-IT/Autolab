@@ -218,6 +218,7 @@ class CoursesController < ApplicationController
 
   # Non-RESTful Routes Below
 
+  action_auth_level :report_bug, :administrator
   def report_bug
     return unless request.post?
 
@@ -454,7 +455,7 @@ class CoursesController < ApplicationController
 
   # email - The email action allows instructors to email the entire course, or
   # a single section at a time.  Sections are passed via params[:section].
-  action_auth_level :email, :instructor
+  action_auth_level :email, :administrator
   def email
     return unless request.post?
 
