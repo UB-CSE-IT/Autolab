@@ -4,5 +4,9 @@
   &middot; <a href="/portal">Portal</a>
   &middot; <a target="_blank" href="https://github.com/UB-CSE-IT/Autolab/">GitHub</a>
 
-  <span class="site_version">UB v<%= Rails.configuration.ub_site_version %> | CMU v<%= Rails.configuration.site_version %></span>
+  <span class="site_version">
+    <% if Rails.env == "development" %>
+      <span style="background-color: red;">(Development)</span>
+    <% end %>
+    UB v<%= Rails.configuration.ub_site_version %> | CMU v<%= Rails.configuration.site_version %></span>
 </div>
