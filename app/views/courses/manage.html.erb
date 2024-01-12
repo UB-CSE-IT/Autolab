@@ -44,10 +44,12 @@
                           { title: "Manage announcements via banners on either front page or all pages (persistent)." } %>
             </li>
 
+            <% if @cud.user.administrator? %>
             <li>
-              <%= link_to "Manage schedulers", course_schedulers_path(@course),
+              <%= link_to "Manage schedulers (admins only)", course_schedulers_path(@course),
                           { title: "Set and update scheduler for log submissions. (Advanced feature)" } %>
             </li>
+            <% end %>
             <li>
               <%= link_to "Act as user", sudo_course_course_user_datum_path(@course, @cud),
                           { title: "Temporarily become another user" } %>
