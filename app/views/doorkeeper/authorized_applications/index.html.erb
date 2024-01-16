@@ -8,6 +8,12 @@
 <% num_permissions = is_admin ? 6 : 5 %>
 
 <h3>Manage Authorized Applications</h3>
+<p>This page shows applications that you've authorized to use your account and the maximum permissions they're allowed
+  to request. When you authorize an application, it shows you which scopes (permissions) it's requesting. Those scopes
+  <i>are</i> honored, even if it's not represented on this page. One application can have multiple authorizations with
+  different scopes, and it's not feasible to display that here. Don't panic if you see an application with more access
+  than you granted it here. Each application client instance can only access the scopes you originally granted it. If
+  you want to revoke an application, it will deauthorize all authorizations for that particular app.</p>
 <br>
 
 <table class="bordered centered">
