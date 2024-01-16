@@ -39,6 +39,11 @@ class SubmissionsController < ApplicationController
       "ip_desc" => "submissions.submitter_ip DESC"
     }
 
+    # Handle clearing search
+    if params[:search_clear].present?
+      return redirect_to course_assessment_submissions_url(request.query_parameters.merge(search: nil, search_clear: nil))
+    end
+
     @selected_sort = params[:sort]
     if @selected_sort.nil? || not(sort_options.key? @selected_sort)
       return redirect_to course_assessment_submissions_url(:sort => default_sort)
@@ -51,6 +56,8 @@ class SubmissionsController < ApplicationController
     else
       search = nil
     end
+
+    filter_latest = params[:latest] == "true"
 
     @search = search
 
@@ -82,6 +89,25 @@ class SubmissionsController < ApplicationController
                                  first_name: s[9],
                                  last_name: s[10] }
                              }.compact
+
+    if filter_latest
+      # Find each student's latest submission
+      cud_latest_version = AssessmentUserDatum.where(assessment_id: @assessment.id)
+                         .pluck('course_user_datum_id',
+                                'version_number')
+                                  .map { |s| {
+                                    cud_id: s[0],
+                                    version: s[1]
+                                  } }
+
+      cud_to_latest_version = {}
+      cud_latest_version.each do |clv|
+        cud_to_latest_version[clv[:cud_id]] = clv[:version]
+      end
+
+      # Filter submissions to only include each student's latest
+      @submissions = @submissions.select { |s| cud_to_latest_version[s[:course_user_datum_id]] == s[:version]}
+    end
 
   end
 
