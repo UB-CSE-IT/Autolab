@@ -791,7 +791,8 @@ class AssessmentsController < ApplicationController
       params[:active_tab] = "basic"
     end
 
-    @has_annotations = @assessment.submissions.any? { |s| !s.annotations.empty? }
+    # @has_annotations = @assessment.submissions.any? { |s| !s.annotations.empty? }
+    # Removed at UB on Jan 16, 2024 to improve performance
 
     @is_positive_grading = @assessment.is_positive_grading
 
