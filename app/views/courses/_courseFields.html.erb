@@ -19,7 +19,7 @@
 <%= f.score_adjustment_input :late_penalty, optional: true, help_text: "The penalty applied to late submissions after
   a student runs out of grace days. It represents an amount of points or a percentage of the total score removed per
   day, and must be a non-negative number. This field can be overriden on a per-assessment basis.",
-                                            placeholder: "10" %>
+                             placeholder: "10" %>
 
 <%= f.text_field :version_threshold, help_text: "If a submission's version is greater than this threshold, it is
   penalized according to the version penalty. If set to -1, no submissions are penalized. This field can be overriden on a per-assessment basis.", placeholder: "10" %>
@@ -30,10 +30,10 @@
   version of a student's submissions would be docked 2 points. This field can be overriden on a per-assessment basis.", placeholder: "10" %>
 
 <%= f.date_select :start_date, help_text: "When the course becomes active.",
-                               less_than: "course_end_date" %>
+                  less_than: "course_end_date" %>
 
 <%= f.date_select :end_date, help_text: "When the course becomes inactive.",
-                             greater_than: "course_start_date" %>
+                  greater_than: "course_start_date" %>
 
 <%= f.check_box :disabled,
                 help_text: "If this box is checked, then students won't be able download labs
@@ -43,13 +43,20 @@
   submissions for any assessment in this class." %>
 
 <%= f.text_area :gb_message, class: "materialize-textarea",
-                             help_text: "An optional message that is displayed to students at the top of
+                help_text: "An optional message that is displayed to students at the top of
   their gradebooks.  It can be used to explain grading criteria.",
-                             display_name: "Gradebook Message", placeholder: "Optional" %>
+                display_name: "Gradebook Message", placeholder: "Optional" %>
 
-<%= f.file_field :config_file, button_text: "Upload course.rb",
-                               help_text: "Config file will be automatically reloaded after saving.
+<% if @cud.user.administrator? %>
+  <%= f.file_field :config_file, button_text: "Upload course.rb", disabled: true,
+                   help_text: "Config file will be automatically reloaded after saving.
                                Changes to other settings will be lost if an error is encountered." %>
+<% else %>
+  <%= button_tag "Upload course.rb", class: "btn", disabled: true %>
+  <p>For security purposes, only Autolab administrators are allowed to upload custom Ruby scripts. Please
+    <a href="/contact">contact us</a>, with the course URL and Ruby file attached, to request
+    for it to be uploaded.</p>
+<% end %>
 
 <p>Learn more about overriding grading policies via course.rb in the
   <a href="https://docs.autolabproject.com/instructors/#overriding-category-and-course-averages" target="_blank">

@@ -1,10 +1,10 @@
 <%= f.text_field :name, disabled: true, class: "",
-                        help_text: "The unique (for this course) name of the assessment. Must be
+                 help_text: "The unique (for this course) name of the assessment. Must be
   lowercase alphanumeric (no punctuation). E.g.,
   <kbd>malloclab</kbd>".html_safe %>
 
 <%= f.text_field :display_name, placeholder: "Homework0",
-                                help_text: "Name that will be displayed on the course home page. E.g.,
+                 help_text: "Name that will be displayed on the course home page. E.g.,
   'Malloc Lab'" %>
 
 <div class="input-field">
@@ -13,24 +13,33 @@
                           { selected: @assessment.category_name } %>
   or
   <%= text_field_tag :new_category, nil, placeholder: "New Category", autocomplete: "off" %>
-  <p class="help-block">Select an existing category or enter a new category name <i>(you can always change it later)</i></p>
+  <p class="help-block">Select an existing category or enter a new category name <i>(you can always change it later)</i>
+  </p>
 </div>
 
 <div class="assessments-label">
   <%= f.text_area :description, class: "materialize-textarea", help_text: "",
-                                placeholder: "(Optional) Description of assessment" %>
+                  placeholder: "(Optional) Description of assessment" %>
 
-	<%= f.text_field :handout, help_text: "A URL to redirect to for starter code.",
+  <%= f.text_field :handout, help_text: "A URL to redirect to for starter code.",
                    placeholder: "E.g. https://cse.buffalo.edu/class/malloclab.zip" %>
 
-	<%= f.text_field :writeup, help_text: "A URL to redirect to for instructions.",
+  <%= f.text_field :writeup, help_text: "A URL to redirect to for instructions.",
                    placeholder: "E.g. https://cse.buffalo.edu/class/writeup.pdf" %>
 </div>
 
 <h4>Assessment Config</h4>
-<%= f.file_field :config_file, button_text: "Upload #{@assessment.name}.rb",
-                               help_text: "Config file will be automatically reloaded after saving. Changes to other settings will be lost if an error is encountered." %>
-<b id="config-file-type-incorrect" style="color: red; margin: 0"></b>
+<% if @cud.user.administrator? %>
+  <%= f.file_field :config_file, button_text: "Upload #{@assessment.name}.rb",
+                   help_text: "Config file will be automatically reloaded after saving. Changes to other settings will be lost if an error is encountered." %>
+  <b id="config-file-type-incorrect" style="color: red; margin: 0"></b>
+<% else %>
+  <%= button_tag "Upload #{@assessment.name}.rb", class: "btn", disabled: true %>
+  <p>For security purposes, only Autolab administrators are allowed to upload custom Ruby scripts. Please
+    <a href="/contact">contact us</a>, with the assessment URL and Ruby file attached, to request
+    for it to be uploaded.</p>
+<% end %>
+
 <div>
   <%= link_to "Reload Assessment Config", { action: :reload }, { method: :post, class: "btn", title: "Reload the Assessment Config in the case that a config file doesn't exist." } %>
 </div>
