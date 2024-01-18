@@ -836,19 +836,26 @@ class AssessmentsController < ApplicationController
     end
 
     unless uploaded_config_file.nil?
-      config_source = uploaded_config_file.read
+      if current_user.administrator?
+        config_source = uploaded_config_file.read
 
-      assessment_config_file_path = @assessment.unique_source_config_file_path
-      File.open(assessment_config_file_path, "w") do |f|
-        f.write(config_source)
+        assessment_config_file_path = @assessment.unique_source_config_file_path
+        File.open(assessment_config_file_path, "w") do |f|
+          f.write(config_source)
+        end
+
+        begin
+          @assessment.load_config_file
+        rescue StandardError, SyntaxError => e
+          @error = e
+          render("reload") && return
+        end
+      else
+        # UB update January 18, 2024: Only administrators may upload custom rb scripts
+        flash[:error] = "For security purposes, only Autolab administrators are allowed to upload custom Ruby scripts. Please contact #{Rails.configuration.school['tech_email']}, with the assessment URL and Ruby file attached, to request for it to be uploaded."
       end
 
-      begin
-        @assessment.load_config_file
-      rescue StandardError, SyntaxError => e
-        @error = e
-        render("reload") && return
-      end
+
     end
 
     begin
