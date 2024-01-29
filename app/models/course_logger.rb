@@ -48,7 +48,7 @@ class AssessmentLogger < CustomLogger
 
   def setAssessment(assessment)
     @assessment = assessment
-    setLogPath(Rails.root.join("courses", @course.name, @assessment.name, "log.txt"))
+    setLogPath(assessment.log_path)
   end
 end
 
