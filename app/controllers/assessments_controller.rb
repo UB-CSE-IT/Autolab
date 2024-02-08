@@ -250,16 +250,34 @@ class AssessmentsController < ApplicationController
     end
     @assessment.load_embedded_quiz # this will check and load embedded quiz
     @assessment.construct_folder # make sure there's a handin folder, just in case
-    begin
-      @assessment.load_config_file # only call this on saved assessments
-    rescue StandardError => e
-      flash[:error] = "Error loading config module: #{e}"
-      destroy_no_redirect
-      # delete files explicitly b/c the paths don't match ONLY if
-      # import was from tarball
-      FileUtils.rm_rf(assessment_path) if cleanup_on_failure
-      redirect_to(install_assessment_course_assessments_path(@course)) && return
+
+    if current_user.administrator?
+      # UB update January 18, 2024: Only administrators may import custom rb scripts
+      begin
+        @assessment.load_config_file # only call this on saved assessments
+      rescue StandardError => e
+        flash[:error] = "Error loading config module: #{e}"
+        destroy_no_redirect
+        # delete files explicitly b/c the paths don't match ONLY if
+        # import was from tarball
+        FileUtils.rm_rf(assessment_path) if cleanup_on_failure
+        redirect_to(install_assessment_course_assessments_path(@course)) && return
+      end
+
+    else
+      # Create the default rb file for a new assessment if a non-admin is importing the assessment
+      assessment_config_file_path = @assessment.unique_source_config_file_path
+      # Remove the imported config (assessment.rb) file
+      FileUtils.rm([assessment_config_file_path])
+      # Create the default config file
+      default_created = @assessment.construct_default_config_file
+      unless default_created
+        flash[:error] = "Failed to create default assessment config file"
+      end
+      # Don't forget to reload the config!
+      @assessment.load_config_file
     end
+
     flash[:success] = "Successfully imported #{@assessment.name}"
     redirect_to course_assessment_path(@course, @assessment)
   end
@@ -836,19 +854,26 @@ class AssessmentsController < ApplicationController
     end
 
     unless uploaded_config_file.nil?
-      config_source = uploaded_config_file.read
+      if current_user.administrator?
+        config_source = uploaded_config_file.read
 
-      assessment_config_file_path = @assessment.unique_source_config_file_path
-      File.open(assessment_config_file_path, "w") do |f|
-        f.write(config_source)
+        assessment_config_file_path = @assessment.unique_source_config_file_path
+        File.open(assessment_config_file_path, "w") do |f|
+          f.write(config_source)
+        end
+
+        begin
+          @assessment.load_config_file
+        rescue StandardError, SyntaxError => e
+          @error = e
+          render("reload") && return
+        end
+      else
+        # UB update January 18, 2024: Only administrators may upload custom rb scripts
+        flash[:error] = "For security purposes, only Autolab administrators are allowed to upload custom Ruby scripts. Please contact #{Rails.configuration.school['tech_email']}, with the assessment URL and Ruby file attached, to request for it to be uploaded."
       end
 
-      begin
-        @assessment.load_config_file
-      rescue StandardError, SyntaxError => e
-        @error = e
-        render("reload") && return
-      end
+
     end
 
     begin
