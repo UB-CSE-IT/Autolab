@@ -172,7 +172,7 @@ private
   end
 
   def scoreboard_params
-    params[:scoreboard].permit(:banner, :colspec)
+    params[:scoreboard].permit(:banner, :colspec, :include_instructors)
   end
 
   # emitColSpec - Emits a text summary of a column specification string.
