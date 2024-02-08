@@ -35,14 +35,15 @@
 <% end %>
 <%= f.text_field :max_size, help_text: "The maximum size that a handin file can have in megabytes (MB)." %>
 <%= f.check_box :disable_handins,
-                help_text: "Check this to disallow handins through Autolab. This option can be used to track scores for assignments that are not submitted through Autolab such as midterms and written assignments." %>
+                help_text: "Check this to disallow handins through Autolab. This option can be used to track scores for assignments that are not submitted through Autolab such as midterms and written assignments. It does NOT interfere with the UB Course Sections \"Only allow viewing attachments when submissions are allowed\" feature." %>
+<br>
 
 <div style="border-left: 5px solid #005bbb; padding-left: 20px; margin-left: -25px;">
   <h5>UB Course Section Settings</h5>
-  <p>Configure your lecture and section (lab/recitation) schedule via the Autolab Self-Service Portal:
-    <a href="/portal/course-sections/<%= @course.name %>" target="_blank">Manage Course Sections for <%= @course.name %></a>
-    <br>
+  <p>
     <a href="https://github.com/UB-CSE-IT/Autolab-Public-Documentation/blob/main/UB%20course%20sections.md" target="_blank">Read the documentation</a>
+    <br>
+    <a href="/portal/course-sections/<%= @course.name %>" target="_blank">Manage Course Sections for <%= @course.name %> in the Autolab Portal</a>
   </p>
 
   <%= f.check_box :use_ub_section_deadlines,
@@ -55,7 +56,7 @@
 
   <%= f.check_box :ub_attachments_only_when_can_submit,
                   display_name: "Only allow viewing attachments when submissions are allowed",
-                  help_text: "This prevents downloading attachments unless the student is currently allowed to submit the assessment." %>
+                  help_text: "Prevent downloading attachments unless the student is currently allowed to submit the assessment. This ignores the \"Disable handins\" feature above. I.e., attachments are still downloadable during the lecture/section time when handins are disabled for the assessment." %>
 
   <%= f.text_field :ub_section_start_offset,
                    display_name: "Section start offset (seconds)",
@@ -71,7 +72,7 @@
                    <br>A negative value prevents submissions before the section's end time.
                    <br>A positive value allows submissions after the section's end time.
                    <br>E.g., If a section ends at 11:50am and this is set to -600 (10 minutes), submissions will be allowed until 11:40am for that section.
-                   <br>(This does not support wrapping around days. Do not push the end time later than midnight for your latest section.)".html_safe %>
+                   <br>(This does not support wrapping around days. Do not push the end time later than 11:59:59 PM for your latest section. Additionally, do not push the end time to be before the start time for any section.)".html_safe %>
 
 </div>
 
