@@ -7,6 +7,7 @@ class UsersController < ApplicationController
   before_action :set_user,
                 only: [:github_oauth, :github_revoke, :lti_launch_initialize,
                        :lti_launch_link_course]
+  before_action :set_users_list_breadcrumb, except: %i[index]
 
   # GET /users
   action_auth_level :index, :student
@@ -148,6 +149,9 @@ class UsersController < ApplicationController
     else
       @user = current_user
     end
+
+    # Do it ad-hoc here, since this is the only place we need it
+    @breadcrumbs << (view_context.link_to @user.display_name, user_path(@user))
   end
 
   # PATCH users/:id/
@@ -312,6 +316,7 @@ class UsersController < ApplicationController
       flash[:error] = "Error with Github OAuth (invalid state), please try again."
       redirect_to(root_path) && return
     end
+    oauth_user = github_integration.user
 
     begin
       # Results in exception if invalid
@@ -325,7 +330,7 @@ class UsersController < ApplicationController
     access_token = token.to_hash[:access_token]
     github_integration.update!(access_token:, oauth_state: nil)
     flash[:success] = "Successfully connected with Github."
-    redirect_to(root_path) && return
+    redirect_to(user_path(id: oauth_user.id)) && return
   end
 
   action_auth_level :github_revoke, :student

@@ -187,6 +187,7 @@ ActiveRecord::Schema.define(version: 2024_02_08_143255) do
     t.datetime "cgdub_dependencies_updated_at"
     t.text "gb_message"
     t.string "website"
+    t.string "access_code"
   end
 
   create_table "extensions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
