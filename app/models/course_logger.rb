@@ -23,7 +23,8 @@ class CustomLogger
   end
 
   def log(message, severity = Logger::INFO)
-    @logger.add(severity) { message } unless Rails.env.test? || Rails.env.development?
+    # UB update Feb 14, 2024: *Do* log things in development
+    @logger.add(severity) { message } unless Rails.env.test? # || Rails.env.development?
   end
 end
 

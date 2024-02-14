@@ -77,6 +77,7 @@ class AttachmentsController < ApplicationController
       begin
         attached_file = @attachment.attachment_file
         if attached_file.attached?
+          log_attachment_access(@attachment)
           send_data attached_file.download, filename: @attachment.filename,
                     type: @attachment.mime_type
           return
@@ -84,6 +85,7 @@ class AttachmentsController < ApplicationController
 
         old_attachment_path = Rails.root.join("attachments", @attachment.filename)
         if File.exist?(old_attachment_path)
+          log_attachment_access(@attachment)
           send_file old_attachment_path, filename: @attachment.filename, type: @attachment.mime_type
           return
         else
@@ -177,5 +179,13 @@ private
 
   def attachment_params
     params.require(:attachment).permit(:name, :file, :category_name, :release_at, :mime_type)
+  end
+
+  def log_attachment_access(attachment)
+    if @is_assessment && @cud.student?
+      user = @cud.user.full_name_with_email
+      ip_address = request.remote_ip
+      ASSESSMENT_LOGGER.log("Attachment \"#{attachment.name}\" (#{attachment.filename}) was viewed by #{user} from #{ip_address}.")
+    end
   end
 end
