@@ -668,8 +668,9 @@ private
           end
         else
           # Override current user
-          user.first_name = first_name
-          user.last_name = last_name
+          # UB Update Feb 14, 2024: Don't replace names on upload
+          # user.first_name = first_name
+          # user.last_name = last_name
           user.school = school
           user.major = major
           user.year = year
@@ -740,8 +741,9 @@ private
         end
 
         # Update user data
-        user.first_name = new_cud[:first_name]
-        user.last_name = new_cud[:last_name]
+        # UB Update Feb 14, 2024: Don't replace names on upload
+        # user.first_name = new_cud[:first_name]
+        # user.last_name = new_cud[:last_name]
         user.school = new_cud[:school]
         user.major = new_cud[:major]
         user.year = new_cud[:year]
