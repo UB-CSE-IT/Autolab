@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_02_08_143255) do
+ActiveRecord::Schema.define(version: 2024_02_19_175942) do
 
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -125,6 +125,7 @@ ActiveRecord::Schema.define(version: 2024_02_08_143255) do
     t.integer "ub_section_start_offset", default: 0
     t.integer "ub_section_end_offset", default: 0
     t.boolean "ub_attachments_only_when_can_submit", default: false
+    t.boolean "disable_network", default: false
   end
 
   create_table "attachments", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

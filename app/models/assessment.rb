@@ -541,7 +541,7 @@ private
                                     github_submission_enabled allow_student_assign_group
                                     is_positive_grading use_ub_section_deadlines use_ub_lectures
                                     ub_section_start_offset ub_section_end_offset
-                                    ub_attachments_only_when_can_submit ]
+                                    ub_attachments_only_when_can_submit disable_network]
 
   def serialize_general
     Utilities.serializable attributes, GENERAL_SERIALIZABLE
