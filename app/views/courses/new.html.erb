@@ -1,27 +1,14 @@
-<% @title = "Create New Course" %>
-
-<h4>Create New Course</h4>
-
-<p>Note: it's better to use the <a href="/portal">Self-Service Portal</a> if possible.</p>
-<p>If you insist, ensure to follow the <a href="https://github.com/UB-CSE-IT/Autolab-Public-Documentation/blob/main/Getting%20started.md#custom-course-url-conventions">standard naming conventions</a>.</p>
-
-
-<%= form_for :newCourse, url: courses_path, builder: FormBuilderWithDateTimeInput do |f| %>
-  <%= f.error_messages %>
-
-  <%= f.text_field :name, required: true,
-                   help_text: "The course ID used in URLs and DB keys. This field must be unique
-  and URL-able. If a course is cross-listed, use the lowest numbered one. Typically includes the course number and semester. Examples:
-  cse116-f23, cse486-s24" %>
-
-  <%= f.text_field :semester, size: 3,
-                   help_text: "The current semester. Examples: f23, w24, s24, u24 - (fall, winter, spring, summer)" %>
-
-  <div class="input-field">
-    <label class="control-label" for="instructor_email">Instructor Email</label>
-    <%= email_field_tag :instructor_email, nil, class: "validate", placeholder: "", required: true, autocomplete: "off" %>
-  <p class="help-block">Email of an Instructor, they will set up the course from here!</p>
+<div class="row">
+  <div class="col s12">
+    <ul class="tabs">
+      <li class="tab col s6"><a href="#new-course">Create New Course</a></li>
+      <li class="tab col s6"><a href="#import-course">Import Course</a></li>
+    </ul>
   </div>
-
-  <%= f.submit "Create", { class: "btn primary" } %>
-<% end %>
+  <div id="new-course" class="col s12">
+    <%= render partial: 'create_new_course' %>
+  </div>
+  <div id="import-course" class="col s12">
+    <%= render partial: 'import_new_course' %>
+  </div>
+</div>
