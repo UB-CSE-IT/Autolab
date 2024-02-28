@@ -251,12 +251,14 @@ private
     # from the scoreboard array object in the JSON autoresult.
     begin
       parsed = ActiveSupport::JSON.decode(autoresult)
-      if !parsed["scoreboard"].is_a?(Array) && @cud.instructor?
+      if !parsed["scoreboard"].is_a?(Array)
+        Rails.logger.error("Scoreboard error in #{@course.name}/#{@assessment.name}: " \
+                             "Scoreboard result is not an array")
+        if @cud.instructor?
         flash[:error] = "Error parsing scoreboard for autograded assessment: scoreboard result is"\
           " not an array. Please ensure that the autograder returns scoreboard results as an array."
+        end
       end
-      Rails.logger.error("Scoreboard error in #{@course.name}/#{@assessment.name}: " \
-                           "Scoreboard result is not an array")
       raise if !parsed || !parsed["scoreboard"] || !parsed["scoreboard"].is_a?(Array)
     rescue StandardError
       # If there is no autoresult for this student (typically
