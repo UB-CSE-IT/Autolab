@@ -139,6 +139,11 @@ module AssessmentHandin
       end
     end
 
+    # UB Update 2024-02-28: Log handins in the assessment log
+    submitter = @cud.user.full_name_with_email
+    ip_address = request.remote_ip
+    version = submissions[0].version
+    ASSESSMENT_LOGGER.log("Version #{version} was submitted by #{submitter} from #{ip_address}.")
     redirect_to([:history, @course, @assessment]) && return
   end
 
