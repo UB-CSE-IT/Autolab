@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_02_19_175942) do
+ActiveRecord::Schema.define(version: 2024_02_26_194217) do
 
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -370,6 +370,7 @@ ActiveRecord::Schema.define(version: 2024_02_19_175942) do
     t.integer "submitted_by_app_id"
     t.string "group_key", default: ""
     t.integer "jobid"
+    t.text "missing_problems"
     t.index ["assessment_id"], name: "index_submissions_on_assessment_id"
     t.index ["course_user_datum_id"], name: "index_submissions_on_course_user_datum_id"
   end
