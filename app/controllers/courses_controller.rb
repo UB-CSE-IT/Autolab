@@ -1207,7 +1207,7 @@ private
             next if Archive.looks_like_directory?(pathname)
 
             pathname.gsub!(%r{/}, "-")
-            pathname.prepend("extracted-")
+            pathname.prepend("MOSS-")
             destination = File.join(stuDir, pathname)
             # make sure all subdirectories are there
             FileUtils.mkdir_p(File.dirname(destination))
