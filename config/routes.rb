@@ -148,7 +148,7 @@ Rails.application.routes.draw do
       end
       resources :problems, except: [:index, :show]
       resource :scoreboard, except: [:new]
-      resources :submissions do
+      resources :submissions, except: [:show] do
         collection do
           root action: :indexFast
           get 'legacy', action: :index
