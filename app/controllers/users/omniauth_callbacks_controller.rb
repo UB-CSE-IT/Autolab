@@ -2,25 +2,24 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def google_oauth2
     if user_signed_in?
-      if data = request.env["omniauth.auth"]
-        if current_user.authentications.where(provider: data["provider"],
-                                              uid: data["uid"]).empty?
-          current_user.authentications.create(provider: data["provider"],
-                                              uid: data["uid"])
-        end
+      if (data = request.env["omniauth.auth"]) && current_user.authentications.where(provider: data["provider"],
+                                                                                     uid: data["uid"]).empty?
+        current_user.authentications.create(provider: data["provider"],
+                                            uid: data["uid"])
       end
       redirect_to root_path
     else
       @user = User.find_for_google_oauth2_oauth(request.env["omniauth.auth"], current_user)
 
-      if @user
-        sign_in_and_redirect @user, event: :authentication # this will throw if @user is not activated
-        set_flash_message(:notice, :success, kind: "Google_OAuth2") if is_navigational_format?
-      else
+      unless @user
         # automatic cleanup of devise.* after sign in
         session["devise.google_oauth2_data"] = request.env["omniauth.auth"].except("extra")
-        redirect_to new_user_registration_url
+        @user = User.add_oauth_if_user_exists session
+        @user ||= User.new_with_session(nil, session)
       end
+
+      sign_in_and_redirect @user, event: :authentication
+      set_flash_message(:notice, :success, kind: "Google_OAuth2") if is_navigational_format?
     end
   end
 
@@ -37,12 +36,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def shibboleth
     if user_signed_in?
-      if data = request.env["omniauth.auth"]
-        if current_user.authentications.where(provider: "CMU-Shibboleth",
-                                              uid: data["uid"]).empty?
-          current_user.authentications.create(provider: "CMU-Shibboleth",
-                                              uid: data["uid"])
-        end
+      if (data = request.env["omniauth.auth"]) && current_user.authentications.where(provider: "CMU-Shibboleth",
+                                                                                     uid: data["uid"]).empty?
+        current_user.authentications.create(provider: "CMU-Shibboleth",
+                                            uid: data["uid"])
       end
       redirect_to root_path
     else
@@ -91,7 +88,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
           @user.first_name = "(blank)" if @user.first_name.nil?
           @user.last_name = "(blank)" if @user.last_name.nil?
 
-          temp_pass = Devise.friendly_token[0, 20]    # generate a random token
+          temp_pass = Devise.friendly_token[0, 20] # generate a random token
           @user.password = temp_pass
           @user.password_confirmation = temp_pass
           @user.skip_confirmation!
