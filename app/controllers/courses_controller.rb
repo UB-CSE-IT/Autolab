@@ -200,7 +200,7 @@ class CoursesController < ApplicationController
       end
 
     else
-      flash.now[:error] = "Course creation failed. Check all fields"
+      flash.now[:error] = "Course creation failed. Please review the fields below."
       render(action: "new") && return
     end
   end
@@ -249,7 +249,7 @@ class CoursesController < ApplicationController
     end
 
     unless @newCourse.save
-      flash[:error] = "Course creation failed. Check all fields"
+      flash[:error] = "Course creation failed. Please review all fields below."
       render(action: "new") && return
     end
 
