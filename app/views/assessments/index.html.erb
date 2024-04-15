@@ -144,7 +144,7 @@
         <% if idx % 3 == 0 %>
           <div class="clearfix hide-on-small-only"></div>
         <% end %>
-        <% attachments = @course_attachments.from_category(cat).ordered %>
+        <% attachments = @course_attachments.from_category(cat) %>
         <% if attachments.any? %>
           <div class="col s12 m4">
             <div class="card hoverable">
