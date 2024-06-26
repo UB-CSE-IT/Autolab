@@ -299,6 +299,12 @@ end
   def score_grader_info
     score = Score.find(params[:score_id])
     return head :forbidden unless submission_belongs_to_current_course(score.submission)
+    if score.nil?
+      flash[:error] = "Could not find score #{params[:score_id]}."
+      redirect_to action: :show
+      return
+    end
+
     grader = (if score then score.grader else nil end)
     grader_info = ""
     if grader
