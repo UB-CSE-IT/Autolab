@@ -71,7 +71,7 @@
               <li><%= link_to "Scoreboard settings", edit_course_assessment_scoreboard_path(@course, @assessment), title: "Configure the appearance of the scoreboard" %></li>
             <% end %>
             <li><%= link_to "Manage extensions", course_assessment_extensions_path(@course, @assessment), { title: "Give extensions to students" } %></li>
-            <li><%= link_to "Manage submissions", course_assessment_submissions_path(@course, @assessment), { title: "Create, view, export, and re-autograde submissions" } %></li>
+            <li><%= link_to "Manage submissions", course_assessment_submissions_path(@course, @assessment, :latest => true), { title: "Create, view, export, and re-autograde submissions" } %></li>
             <li><%= link_to "View statistics", statistics_course_assessment_path(@course, @assessment), { title: "View detailed stats for this assessment" } %></li>
             <li><%= link_to "Bulk import grades", bulkGrade_course_assessment_path(@course, @assessment), { title: "Upload scores or feedback for multiple students from a CSV file" } %></li>
             <li><%= link_to "Bulk export grades", bulkExport_course_assessment_path(@course, @assessment), { title: "Export grades (with sub-scores) \nfor all students to a CSV file" } %></li>

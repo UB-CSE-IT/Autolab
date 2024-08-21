@@ -44,9 +44,11 @@ class SubmissionsController < ApplicationController
       return redirect_to course_assessment_submissions_url(request.query_parameters.merge(search: nil, search_clear: nil))
     end
 
+    filter_latest = params[:latest] == "true"
+
     @selected_sort = params[:sort]
     if @selected_sort.nil? || not(sort_options.key? @selected_sort)
-      return redirect_to course_assessment_submissions_url(:sort => default_sort)
+      return redirect_to course_assessment_submissions_url(request.query_parameters.merge(sort: default_sort))
     end
     sort_sql = sort_options[@selected_sort]
 
@@ -56,8 +58,6 @@ class SubmissionsController < ApplicationController
     else
       search = nil
     end
-
-    filter_latest = params[:latest] == "true"
 
     @search = search
 
