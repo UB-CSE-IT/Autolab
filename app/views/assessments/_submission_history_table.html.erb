@@ -24,7 +24,7 @@
 
         <th title="Max <%=@assessment.max_score %> points">
           Total Score<br>
-          (<%= @assessment.max_score || raw('&ndash;') %>)
+          (<%= @assessment.max_score.round(3) || raw('&ndash;') %>)
         </th>
 
         <% if @cud.instructor? %>
