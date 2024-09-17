@@ -84,7 +84,8 @@ module AssessmentHandin
       end
 
       # Populate submission field for validation
-      params[:submission] = { "tar" => @tarfile_path }
+      # UB Update 2024-09-17: Pass GitHub submission details through for settings.json
+      params[:submission] = { "tar": @tarfile_path, "repo": params["repo"], "branch": params["branch"], "commit": params["commit"] }
       git_tarfile_cleanup_path = @tarfile_path
 
       redirect_to(action: :show) && return unless validateHandin_forGit

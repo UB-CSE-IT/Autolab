@@ -98,6 +98,8 @@ class Submission < ApplicationRecord
       FileUtils.mv(src, create_user_directory_and_return_handin_file_path)
     end
 
+    is_github_submission = upload["tar"]
+
     if upload["file"]
       begin
         self.mime_type = upload["file"].content_type
@@ -123,6 +125,9 @@ class Submission < ApplicationRecord
       "section" => course_user_datum.section,
       "timestamp" => created_at,
       "version" => version,
+      "github_repo" => is_github_submission ? upload["repo"] : nil,
+      "github_branch" => is_github_submission ? upload["branch"] : nil,
+      "github_commit" => is_github_submission ? upload["commit"] : nil,
     }
 
     settings = form_params.merge(settings) if form_params
