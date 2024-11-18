@@ -304,6 +304,7 @@ end
       redirect_to action: :show
       return
     end
+    return head :forbidden unless submission_belongs_to_current_course(score.submission)
 
     grader = (if score then score.grader else nil end)
     grader_info = ""
