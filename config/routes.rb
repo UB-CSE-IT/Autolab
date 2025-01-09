@@ -64,12 +64,12 @@ Rails.application.routes.draw do
                      path_prefix: "auth"
 
   get "courses", to: "courses#index"
+  get "contact", to: "home#contact"
 
   namespace :home do
     if Rails.env == "development" || Rails.env == "test"
       match "developer_login", via: [:get, :post]
     end
-    get "contact"
     get "no_user"
   end
 
