@@ -1,10 +1,10 @@
 require "tango_client"
 
 class DockersController < ApplicationController
-  action_auth_level :index, :instructor
+  action_auth_level :index, :administrator
   def index; end
 
-  action_auth_level :uploadDockerImage, :instructor
+  action_auth_level :uploadDockerImage, :administrator
   def uploadDockerImage
     image_name = params[:image_name]
     image_file = params[:image_file]

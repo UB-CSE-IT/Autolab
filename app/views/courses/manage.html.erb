@@ -60,9 +60,9 @@
               <%= link_to "Run Moss cheat checker", moss_course_path(@course),
                           { title: "Use the Stanford Moss server to detect copying" } %>
             </li>
-            <% if Rails.configuration.x.docker_image_upload_enabled.presence %>
+            <% if Rails.configuration.x.docker_image_upload_enabled.presence && @cud.user.administrator? %>
               <li>
-                <%= link_to "Upload docker image", course_dockers_path(@course),
+                <%= link_to "Upload Docker image (admins only)", course_dockers_path(@course),
                             { title: "Upload docker image for autograding assessments" } %>
               </li>
             <% end %>
