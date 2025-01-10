@@ -102,7 +102,7 @@
     window.addEventListener('DOMContentLoaded', () => {
         highlightComments();
     });
-    window.navigation.addEventListener("navigate", () => {
+    window.addEventListener("navigate", () => {
         highlightComments();
     });
     PDFJS.workerSrc = "<%= asset_url 'pdf.worker.js' %>";
