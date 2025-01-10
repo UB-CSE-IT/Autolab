@@ -9,6 +9,7 @@ class FileManagerController < ApplicationController
   skip_before_action :authorize_user_for_course
   skip_before_action :update_persistent_announcements
 
+  action_auth_level :index, :administrator
   def index
     path = params[:path].nil? ? "" : params[:path]
     new_url = "#{path}/"
@@ -45,10 +46,12 @@ class FileManagerController < ApplicationController
     end
   end
 
+  action_auth_level :upload, :administrator
   def upload
     upload_file(params[:path].nil? ? "" : params[:path])
   end
 
+  action_auth_level :delete, :administrator
   def delete
     absolute_path = check_path_exist(params[:path])
     return unless check_instructor(absolute_path)
@@ -59,6 +62,7 @@ class FileManagerController < ApplicationController
     FileUtils.rm_rf(absolute_path)
   end
 
+  action_auth_level :rename, :administrator
   def rename
     absolute_path = check_path_exist(params[:relative_path])
     if check_instructor(absolute_path)
@@ -91,6 +95,7 @@ class FileManagerController < ApplicationController
     flash[:error] = e.message
   end
 
+  action_auth_level :download_tar, :administrator
   def download_tar
     path = params[:path]&.split("/")&.drop(2)&.join("/")
     path = CGI.unescape(path)
