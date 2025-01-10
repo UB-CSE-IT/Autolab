@@ -1,7 +1,6 @@
 <%= form_for @autograder, url: course_assessment_autograder_path(@course, @assessment, @autograder),
                           builder: FormBuilderWithDateTimeInput,
                           html: { multipart: true } do |f| %>
-  <%= f.error_messages %>
 
   <%= f.text_field :autograde_image, display_name: "VM Image" %>
   <p class="help-block">
@@ -22,7 +21,7 @@
   </p>
 
   <%= f.fields_for :assessment, @assessment do |af| %>
-    <%= af.check_box :disable_network, help_text: "Disable network access for autograding containers." %>
+    <%= af.check_box :disable_network, disabled: true, help_text: "Disable network access for autograding containers. (This is not implemented in UB's Tango yet.)" %>
   <% end %>
 
   <%= f.submit "Save Settings" %>
@@ -32,10 +31,10 @@
               data: { confirm: "Are you sure you want to delete the Autograder for this assesssment?" } %>
 
   <% unless @makefile_exists.nil? %>
-    <%= link_to "Download Makefile", download_file_course_assessment_autograder_path(file_path: @makefile_exists, file_key: 'makefile'), class: "btn" %>
+    <%= link_to "Download Makefile", download_file_course_assessment_autograder_path(file_key: 'makefile'), class: "btn" %>
   <% end %>
 
   <% unless @tar_exists.nil? %>
-    <%= link_to "Download Tar", download_file_course_assessment_autograder_path(file_path: @tar_exists, file_key: 'tar'), class: "btn" %>
+    <%= link_to "Download Tar", download_file_course_assessment_autograder_path(file_key: 'tar'), class: "btn" %>
   <% end %>
 <% end %>
