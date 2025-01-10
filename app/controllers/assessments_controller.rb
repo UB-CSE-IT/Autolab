@@ -405,7 +405,9 @@ class AssessmentsController < ApplicationController
     @assessment.end_at = Time.current + 1.day
     @assessment.quiz = false
     @assessment.quizData = ""
-    @assessment.max_submissions = params.include?(:max_submissions) ? params[:max_submissions] : -1
+    # UB update January 10, 2025: Limit submissions to 50 by default to discourage
+    # excessive submissions
+    @assessment.max_submissions = 50
 
     begin
       @assessment.construct_folder
