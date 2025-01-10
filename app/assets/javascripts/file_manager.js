@@ -186,7 +186,7 @@ function selectDeleteSelected(path) {
 }
 
 function updateButtonStatesAndStyle(button, parent) {
-    parent.style.backgroundColor = button.disabled ? "grey" : "rgba(153, 0, 0, 0.9)";
+    parent.style.backgroundColor = button.disabled ? "grey" : "#005bbb";
     parent.style.pointerEvents = button.disabled ? "none" : "auto";
 }
 
