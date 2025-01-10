@@ -341,7 +341,7 @@ protected
   end
 
   def set_manage_course_breadcrumb
-    return if @course.nil? || !@cud.instructor
+    return if @course.nil? || (@cud && !@cud.instructor && !current_user.administrator)
 
     @breadcrumbs << (view_context.link_to "Manage Course",
                                           manage_course_path(@course))
