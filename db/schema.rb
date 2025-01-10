@@ -199,7 +199,7 @@ ActiveRecord::Schema.define(version: 2024_04_06_174050) do
     t.boolean "infinite", default: false, null: false
   end
 
-  create_table "friendly_id_slugs", charset: "utf8mb3", force: :cascade do |t|
+  create_table "friendly_id_slugs", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "slug", null: false
     t.integer "sluggable_id", null: false
     t.string "sluggable_type", limit: 50
