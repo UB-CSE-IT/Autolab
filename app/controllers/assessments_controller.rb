@@ -288,10 +288,20 @@ class AssessmentsController < ApplicationController
         next
       end
       new_assessment.load_embedded_quiz # this will check and load embedded quiz
+
+      assessment_ruby_file_path = new_assessment.unique_source_config_file_path
+      # UB update January 18, 2024: Only administrators may import custom rb scripts.
+      # Refactored January 10, 2025 after CMU update.
+      unless current_user.administrator?
+        # Remove the imported config (assessment.rb) file.
+        # `force: true` prevents an error if it doesn't exist.
+        FileUtils.rm([assessment_ruby_file_path], force: true)
+      end
+
       constructed_config_file = new_assessment.construct_folder # make sure there's a handin folder
       if constructed_config_file
         import_statuses[i][:messages].append(
-          "Could not find config file, constructed default config file."
+          "Constructed default config file."
         )
       end
       begin
