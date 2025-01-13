@@ -722,14 +722,14 @@ private
   def valid_handout
     return true if handout.blank? || handout_is_url? || handout_is_file?
 
-    errors.add :handout, "must be a URL or a file in the assessment folder"
+    errors.add :handout, "must be a URL"
     false
   end
 
   def valid_writeup
     return true if writeup.blank? || writeup_is_url? || writeup_is_file?
 
-    errors.add :writeup, "must be a URL or a file in the assessment folder"
+    errors.add :writeup, "must be a URL"
     false
   end
 

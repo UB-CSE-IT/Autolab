@@ -72,7 +72,7 @@ RSpec.describe "Instructor can create new assessment", type: :feature do
         fill_in("Handout", with: bad_handout_name)
         click_on "Save"
         expect(find('#flash_error')).to(
-          have_content("Handout must be a URL or a file in the assessment folder")
+          have_content("Handout must be a URL")
         )
         expect(page).not_to have_field('Handout', with: bad_handout_name)
 

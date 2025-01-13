@@ -14,7 +14,8 @@
   <% end %>
 </h3>
 <% if result %>
-  <%= link_to "View Moss Results", result, { class: "btn" } %>
+  <p><b class="redText">Warning:</b> Do not share the MOSS results URL with students&mdash;it may contain submissions from other students.</p>
+  <%= link_to "View Moss Results", result, { class: "btn", target: "_blank" } %>
 <% end %>
 <% if @failures.length > 0 then %>
   <h3>The Following Files could not be extracted:</h3>
