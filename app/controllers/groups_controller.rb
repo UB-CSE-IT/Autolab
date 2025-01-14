@@ -333,6 +333,55 @@ class GroupsController < ApplicationController
     respond_with(@course, @assessment, @group)
   end
 
+  # Given a CSV with columns: `email address, group name`, assign each user to the named group.
+  # Groups will be created if necessary. Users not in the CSV will not be updated.
+  action_auth_level :import_csv, :instructor
+  def import_csv
+    uploaded_file = params[:file]
+    unless uploaded_file.present?
+      flash[:error] = "No CSV file was selected."
+      redirect_to(course_assessment_groups_path(@course, @assessment)) && return
+    end
+
+    email_groups = {} # email -> group name
+    begin
+      csv_data = CSV.parse(uploaded_file.read, headers: false)
+      csv_data.each do |row|
+        email = row[0].strip
+        group_name = row[1].strip
+        email_groups[email] = group_name
+      end
+    rescue StandardError
+      flash[:error] = "Error while parsing uploaded file. Please verify it is formatted properly."
+      redirect_to(course_assessment_groups_path(@course, @assessment)) && return
+    end
+
+    group_cuds = Hash.new { |h, k| h[k] = [] } # group name -> list of cuds
+    # Validate all users are in this course
+    email_groups.each do |email, group_name|
+      cud = @course.course_user_data.joins(:user).find_by(users: { email: })
+      if cud.nil?
+        flash[:error] = "User does not exist in this course: #{email}"
+        redirect_to(course_assessment_groups_path(@course, @assessment)) && return
+      end
+      group_cuds[group_name] << cud
+    end
+
+    group_cuds.each do |group_name, cuds|
+      group = Group.new
+      group.name = group_name
+      cuds.each do |cud|
+        aud = @assessment.aud_for cud
+        aud.group = group
+        aud.membership_status = AssessmentUserDatum::CONFIRMED
+        aud.save!
+      end
+    end
+
+    flash[:success] = "Successfully created groups from CSV file."
+    redirect_to(course_assessment_groups_path(@course, @assessment))
+  end
+
 private
 
   def check_assessment_for_groups
