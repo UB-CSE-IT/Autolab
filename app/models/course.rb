@@ -326,6 +326,16 @@ class Course < ApplicationRecord
     [users, usersEncoded]
   end
 
+  # Used by Manage Submissions 2.0; like `get_autocomplete_data`, but maps to email
+  # addresses instead of cuds, and doesn't base64 encode them (not used in JS)
+  def get_email_autocomplete_data
+    users = {}
+    course_user_data.each do |cud|
+      users[CGI.escapeHTML cud.full_name_with_email] = cud.email
+    end
+    users
+  end
+
   # To determine if a course assistant has permission to watchlist
   def watchlist_allow_ca
     return false if watchlist_configuration.nil?

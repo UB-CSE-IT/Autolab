@@ -33,11 +33,15 @@
       }
 
       .search-form {
-          width: 350px;
+          width: 500px;
           display: flex;
           align-items: center;
           margin-left: auto;
           padding-left: 3px;
+      }
+
+      .user-search-field {
+          width: 500px;
       }
 
       .column-header {
@@ -159,7 +163,13 @@
           hidden_field_tag(:latest, params[:latest])
         end %>
 
-    <%= text_field_tag :search, params[:search], class: "form-control" %>
+    <%= text_field_tag :search, params[:search], list: "users-list", class: "user-search-field form-control autocomplete", autocomplete: "off" %>
+
+    <datalist id="users-list">
+      <% @users.each do |display, email| %>
+        <option value="<%= email %>" label="<%= display %>"></option>
+      <% end %>
+    </datalist>
 
     <%= submit_tag("Search", :name => nil, :class => "btn", style: "margin-left: 3px;") %>
     <%= submit_tag("Clear", :name => "search_clear", :class => "btn", style: "margin-left: 3px;") %>

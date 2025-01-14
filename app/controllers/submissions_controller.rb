@@ -26,6 +26,7 @@ class SubmissionsController < ApplicationController
     # This replaces the old "index" action, but we'll keep the old one around to avoid merge conflicts
     # The old index is accessible at /submissions/legacy
     @autograded = @assessment.has_autograder?
+    @users = @course.get_email_autocomplete_data
 
     default_sort = "date_desc"
     sort_options = {
