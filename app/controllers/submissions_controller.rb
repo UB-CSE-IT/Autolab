@@ -78,7 +78,11 @@ class SubmissionsController < ApplicationController
                                     'users.first_name',
                                     'users.last_name')
                              .map { |s|
-                               next unless search.nil? || s[8].to_s.include?(search) || s[9].to_s.include?(search) || s[10].to_s.include?(search) || s[2].to_s.include?(search)
+                               next unless search.nil? ||
+                                 s[8].to_s.downcase.include?(search.downcase) ||
+                                 s[9].to_s.downcase.include?(search.downcase) ||
+                                 s[10].to_s.downcase.include?(search.downcase) ||
+                                 s[2].to_s.downcase.include?(search.downcase)
                                { id: s[0],
                                  created_at: s[1],
                                  submitter_ip: s[2],
