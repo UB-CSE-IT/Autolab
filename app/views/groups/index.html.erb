@@ -6,10 +6,34 @@
     <li class="collection-item">
       Students are not allowed to self-assign groups for this assessment.
       <br>
-      For convenience, you will not be added to groups that you create and students do not need to confirm their membership.
+      For convenience, you will not be added to groups that you create and students do not need to confirm their
+      membership.
     </li>
   </ul>
 <% end %>
+
+<div style="margin: 16px 0;" class="collection">
+  <div class="collection-item">
+    <h6 style="margin: 4px 0;">Import groups from CSV file</h6>
+    <p style="margin: 4px 0;">Upload a CSV file without a header with rows formatted like:
+      <b>email@example.com, group_name</b> to quickly assign groups.
+    </p>
+    <%= form_with url: { action: "import_csv" },
+                  html: { multipart: true,
+                          style: "display: flex; align-items: center; flex-wrap: wrap; gap: 8px;"
+                  } do |form| %>
+      <%= form.file_field :file %>
+      <%= form.submit 'Import CSV', { class: "btn primary" } %>
+    <% end %>
+  </div>
+</div>
+
+<%= link_to new_course_assessment_group_path(@course, @assessment) do %>
+  <span class="btn primary" style="margin-bottom: 16px;">
+    Create New Group
+  </span>
+<% end %>
+
 <% if @groups.size > 0 %>
 
   <table class=prettyBorder>
@@ -55,12 +79,6 @@
   </p>
 <% end %>
 
-<br>
-<%= link_to new_course_assessment_group_path(@course, @assessment) do %>
-  <span class="btn primary">
-    Create New Group
-  </span>
-<% end %>
 
 <% if @grouplessCUDs.size > 0 %>
   <h4>Users Without Groups</h4>

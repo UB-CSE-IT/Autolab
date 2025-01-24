@@ -165,6 +165,7 @@ Rails.application.routes.draw do
         end
 
         post "import", on: :collection
+        post "import_csv", on: :collection
       end
       resources :problems, except: [:index, :show]
       resource :scoreboard, except: [:new]
