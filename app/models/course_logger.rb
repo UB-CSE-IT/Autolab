@@ -12,7 +12,7 @@ class CustomLogger
 
   def setLogPath(path)
     # if this can't grab the file, Autolab should still function
-    @logger = Logger.new(path, "monthly")
+    @logger = Logger.new(path)
     @logger.formatter = AutolabFormatter.new
   rescue StandardError
     @logger = Rails.logger
