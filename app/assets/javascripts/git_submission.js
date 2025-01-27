@@ -117,9 +117,7 @@ $(document).on("click", "input[type='submit']", function (e) {
     const params = {
       repo: repo_name, branch: branch_name, commit: commit_sha, authenticity_token: token, github_submission: true
     };
-    const assessment_nav = $(".sub-navigation").find(".item").last();
-    const assessment_url = assessment_nav.find("a").attr("href");
-    const url = assessment_url + "/handin";
+    const url = window.location.pathname + "/handin";
     submit(url, 'post', params);
   }
 });
