@@ -91,56 +91,21 @@
     </ul>
   </div>
   <!-- course / assessment statistics -->
-  <div class="col s12 m8">
-    <div class="category">
-      <table class="stats-table">
-        <colgroup>
-          <col class="asmt_names">
-          <col class="gdu">
-          <col class="gdu">
-          <col class="gdu">
-          <col class="gdu">
-          <col class="gdu">
-        </colgroup>
-        <thead>
-        <tr class="header">
-          <th>Category Averages</th>
-          <th>Mean</th>
-          <th>Median</th>
-          <th>Std. Dev.</th>
-          <th>Min</th>
-          <th>Max</th>
-        </tr>
-        </thead>
-        <tbody>
-        <%
-          # filter only for category / course average
-          @course_stats.filter { |_, statsValue| statsValue[0] == "avg" }
-                       .each do |name, statsValue|
-        %>
-          <% stats = statsValue[2] %>
-          <tr>
-            <td>
-              <%= name %>
-            </td>
-            <td><%= stats[:mean] %></td>
-            <td><%= stats[:median] %></td>
-            <td><%= stats[:stddev] %></td>
-            <td><%= stats[:min] %></td>
-            <td><%= stats[:max] %></td>
-          </tr>
-        <% end %>
-        </tbody>
-        <tbody>
-        <%
-          # filter for only assessments, group into hashes based on category
-          @course_stats.filter { |_, statsValue| statsValue[0] == "asmt" }
-                       .group_by { |_, statsValue| statsValue[1].category_name }
-                       .each do |category_name, category_asmts|
-        %>
+  <div class="col s12 m8" style="margin-top: 7px;">
+    <% if @show_grade_matrix %>
+      <div class="category">
+        <table class="stats-table">
+          <colgroup>
+            <col class="asmt_names">
+            <col class="gdu">
+            <col class="gdu">
+            <col class="gdu">
+            <col class="gdu">
+            <col class="gdu">
+          </colgroup>
           <thead>
           <tr class="header">
-            <th><%= category_name %> Averages</th>
+            <th>Category Averages</th>
             <th>Mean</th>
             <th>Median</th>
             <th>Std. Dev.</th>
@@ -148,12 +113,16 @@
             <th>Max</th>
           </tr>
           </thead>
-          <% category_asmts.each do |name, statsValue| %>
-            <% asmt = statsValue[1] %>
+          <tbody>
+          <%
+            # filter only for category / course average
+            @course_stats.filter { |_, statsValue| statsValue[0] == "avg" }
+                         .each do |name, statsValue|
+          %>
             <% stats = statsValue[2] %>
             <tr>
               <td>
-                <%= link_to asmt.display_name, course_assessment_path(@course, asmt) %>
+                <%= name %>
               </td>
               <td><%= stats[:mean] %></td>
               <td><%= stats[:median] %></td>
@@ -162,9 +131,44 @@
               <td><%= stats[:max] %></td>
             </tr>
           <% end %>
-        <% end %>
-        </tbody>
-      </table>
-    </div>
+          </tbody>
+          <tbody>
+          <%
+            # filter for only assessments, group into hashes based on category
+            @course_stats.filter { |_, statsValue| statsValue[0] == "asmt" }
+                         .group_by { |_, statsValue| statsValue[1].category_name }
+                         .each do |category_name, category_asmts|
+          %>
+            <thead>
+            <tr class="header">
+              <th><%= category_name %> Averages</th>
+              <th>Mean</th>
+              <th>Median</th>
+              <th>Std. Dev.</th>
+              <th>Min</th>
+              <th>Max</th>
+            </tr>
+            </thead>
+            <% category_asmts.each do |name, statsValue| %>
+              <% asmt = statsValue[1] %>
+              <% stats = statsValue[2] %>
+              <tr>
+                <td>
+                  <%= link_to asmt.display_name, course_assessment_path(@course, asmt) %>
+                </td>
+                <td><%= stats[:mean] %></td>
+                <td><%= stats[:median] %></td>
+                <td><%= stats[:stddev] %></td>
+                <td><%= stats[:min] %></td>
+                <td><%= stats[:max] %></td>
+              </tr>
+            <% end %>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <%= link_to "Show assessment statistics (slow)", manage_course_path(@course, statistics: true), class: "btn"%>
+    <% end %>
   </div>
 </div>
