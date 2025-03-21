@@ -46,7 +46,7 @@
   </div>
   <div class="ui tab <%= github_submissions_enabled ? "active" : "" %>" data-tab="github" id="github_tab">
     <% if GithubIntegration.find_by_user_id(@cud.user.id)&.is_connected %>
-      <% if repos.present? %>
+      <% if true %>
         <label>Repository</label>
         <div class="ui fluid search selection dropdown" id="repo-dropdown">
           <input type="hidden" name="repo">

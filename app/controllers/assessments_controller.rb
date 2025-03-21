@@ -628,7 +628,11 @@ class AssessmentsController < ApplicationController
     # Check if we should include regrade as a function
     @autograded = @assessment.has_autograder?
 
-    @repos = GithubIntegration.find_by(user_id: @cud.user.id)&.repositories
+    # @repos = GithubIntegration.find_by(user_id: @cud.user.id)&.repositories
+    # UB Update March 21, 2025: Remove `repos` variable to improve performance. Looking up the
+    # user's repos takes about 600ms, which greatly delays the page render. The client already
+    # fetches the repos itself, so this is unnecessary. It was only used in
+    # _submission_panel.html.erb to show a message if the user doesn't have any repos.
 
     return unless @assessment.invalid? && @cud.instructor?
 
