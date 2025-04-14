@@ -194,7 +194,7 @@ Rails.application.routes.draw do
         collection do
           get "download_all"
           post "destroy_batch"
-          get "download_batch"
+          post "download_batch"
           get "popover"
           post "excuse_batch"
           post "unexcuse"
