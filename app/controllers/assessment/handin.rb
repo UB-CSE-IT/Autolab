@@ -57,6 +57,10 @@ module AssessmentHandin
     embedded_quiz_with_file = params[:submission_file].present?
     embedded_quiz_form_data = nil
 
+    # Clear cache since new submission made, need to remake cache
+    Rails.cache.delete(["submission_ids", @assessment.id])
+    Rails.cache.delete(["submissions_to_cud", @assessment.id])
+
     if @assessment.embedded_quiz
       contents = params.except(:controller, :action, :submission, :utf8, :authenticity_token, :submission_file,
                                :integrity_checkbox, :course_name, :name)
