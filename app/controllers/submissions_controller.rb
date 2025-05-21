@@ -467,7 +467,7 @@ class SubmissionsController < ApplicationController
 
     return unless file
 
-    @file_contents = file # Keep this for the diff viewer
+    @file_contents = force_utf8(file) # Keep this for the diff viewer
     file = "Binary file not displayed" if is_binary_file?(file)
 
     unless PDF.pdf?(file)
@@ -686,7 +686,7 @@ class SubmissionsController < ApplicationController
 
     # For diff viewer
     if @prevVersion
-      @prev_file_contents = get_file(@prevVersion[:submission], @prevVersion[:header_position])
+      @prev_file_contents = force_utf8(get_file(@prevVersion[:submission], @prevVersion[:header_position]))
     end
 
     # Rendering this page fails. Often. Mostly due to PDFs.
@@ -724,6 +724,10 @@ class SubmissionsController < ApplicationController
   end
 
 private
+
+  def force_utf8(file_contents)
+    file_contents.encode("UTF-8", "UTF-8", invalid: :replace, undef: :replace, replace: "?")
+  end
 
   def edit_submission_params
     params.require(:submission).permit(:notes,
