@@ -106,15 +106,19 @@ $("#integrity_checkbox").change(function (e) {
   enableSubmit();
 });
 
-$("#remove-handed-in").click(function (e) {
-  e.preventDefault();
-  var fileSelector = $("#handin_show_assessment input[type='file']").get(0);
+function removeHandinFile() {
+  const fileSelector = $("#handin_show_assessment input[type='file']").get(0);
   fileSelector.value = null;
   $(".handin-row").show(function () {
     enableSubmit();
   });
   $(".handedin-row").hide();
-  $('#handin-file-type-incorrect').text("")
+  $('#handin-file-type-incorrect').text("");
+}
+
+$("#remove-handed-in").click(function (e) {
+  e.preventDefault();
+  removeHandinFile();
 });
 
 function enableSubmit() {
@@ -167,4 +171,9 @@ $(document).on("click", ".submission-panel .item", function (e) {
 
 $(document).ready(function() {
   $('.tabular.menu .item').tab();
+});
+
+$(window).bind("pageshow", function() {
+  $("#new_submission")[0].reset();
+  removeHandinFile();
 });
