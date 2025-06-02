@@ -22,6 +22,17 @@
       </script>
     <% end %>
 
+    <% if Rails.configuration.x.matomo_container_src %>
+      <script>
+          var _mtm = window._mtm = window._mtm || [];
+          _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
+          (function() {
+              var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+              g.async=true; g.src='<%= Rails.configuration.x.matomo_container_src %>'; s.parentNode.insertBefore(g,s);
+          })();
+      </script>
+    <% end %>
+
     <%= content_for :head %>
     <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400' rel='stylesheet' type='text/css'>
     <%= content_for :stylesheets %>

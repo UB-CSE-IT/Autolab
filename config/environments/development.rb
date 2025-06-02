@@ -83,6 +83,9 @@ Rails.application.configure do
   # ID for Google Analytics
   config.x.google_analytics_id = nil
 
+  # URL for Matomo container (g.src from tag manager)
+  config.x.matomo_container_src = nil
+
   # OAuth2 Application Configuration for Github
   # See https://docs.autolabproject.com/installation/github_integration/
   if File.size?("#{Rails.configuration.config_location}/github_config.yml")
