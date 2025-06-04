@@ -490,7 +490,7 @@ class SubmissionsController < ApplicationController
               filename: "#{@course.name}_#{@course.semester}_#{@assessment.name}_submissions.zip")
   end
 
-  action_auth_level :submission_info, :instructor
+  action_auth_level :tweak_total, :instructor
   def tweak_total
     tweak =
       @submission.global_annotations.empty? ? nil : @submission.global_annotations.sum(:value)
