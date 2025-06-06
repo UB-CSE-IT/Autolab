@@ -171,8 +171,7 @@ Rails.application.routes.draw do
       resource :scoreboard, except: [:new]
       resources :submissions, except: [:show] do
         collection do
-          root action: :indexFast
-          get 'legacy', action: :index
+          get 'fast', action: :index_fast
         end
         resources :annotations, only: [:create, :update, :destroy] do
           collection do

@@ -100,7 +100,7 @@
 <h3><%= @title %></h3>
 <p>This page introduces a higher performance submission management experience, built from scratch for UB.</p>
 
-<p>The <%= link_to 'Legacy Manage Submissions', legacy_course_assessment_submissions_path %> page remains available, but
+<p>The <%= link_to 'Legacy Manage Submissions', course_assessment_submissions_path %> page remains available, but
   it's much slower for assessments with many submissions. For comparison, the legacy version took 198 seconds (3.3
   minutes) for an assessment with 18,000 submissions to load, then an additional 15 seconds for the JavaScript front-end
   to become responsive, even on high-end hardware. It also required sending a staggering 144,000+ SQL queries
@@ -154,7 +154,7 @@
     <% end %>
   </div>
 
-  <%= form_tag(root_course_assessment_submissions_url, method: "get", enforce_utf8: false, class: "search-form") do %>
+  <%= form_tag(fast_course_assessment_submissions_path, method: "get", enforce_utf8: false, class: "search-form") do %>
     <%= if params[:sort].present?
           hidden_field_tag(:sort, params[:sort])
         end %>

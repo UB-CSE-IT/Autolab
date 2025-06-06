@@ -83,11 +83,9 @@ class SubmissionsController < ApplicationController
     nil
   end
 
-  action_auth_level :indexFast, :instructor
-  def indexFast
-    # A custom, much faster, UB version of the "manage submissions" page
-    # This replaces the old "index" action, but we'll keep the old one around to avoid merge conflicts
-    # The old index is accessible at /submissions/legacy
+  action_auth_level :index_fast, :instructor
+  def index_fast
+    # A custom, much faster, UB version of the "manage submissions" page hosted at .../submissions/fast
     @autograded = @assessment.has_autograder?
     @users = @course.get_email_autocomplete_data
 
@@ -107,14 +105,14 @@ class SubmissionsController < ApplicationController
 
     # Handle clearing search
     if params[:search_clear].present?
-      return redirect_to course_assessment_submissions_url(request.query_parameters.merge(search: nil, search_clear: nil))
+      return redirect_to fast_course_assessment_submissions_path(request.query_parameters.merge(search: nil, search_clear: nil))
     end
 
     filter_latest = params[:latest] == "true"
 
     @selected_sort = params[:sort]
     if @selected_sort.nil? || not(sort_options.key? @selected_sort)
-      return redirect_to course_assessment_submissions_url(request.query_parameters.merge(sort: default_sort))
+      return redirect_to fast_course_assessment_submissions_path(request.query_parameters.merge(sort: default_sort))
     end
     sort_sql = sort_options[@selected_sort]
 
