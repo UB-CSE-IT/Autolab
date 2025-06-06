@@ -303,8 +303,6 @@ class SubmissionsController < ApplicationController
                                                    @submission.assessment))
   end
 
-  # page to show to instructor to confirm that they would like to
-  # remove a given submission for a student
   action_auth_level :destroy_batch, :instructor
   def destroy_batch
     request_body = request.body.read
@@ -318,45 +316,50 @@ class SubmissionsController < ApplicationController
       return
     end
 
+    # Verify all submissions belong to the current assessment (and therefore course), so that
+    # we know the user is an instructor for the course that the submissions belong to.
+    allowed = true
     submissions.each do |s|
-      if s.nil?
-        next
-      end
+      next if !s.nil? && s.assessment == @assessment
 
-      unless @cud.instructor || @cud.course_assistant || s.course_user_datum_id == @cud.id
-        flash[:error] =
-          "You do not have permission to delete #{s.course_user_datum.user.email}'s submission."
-        redirect_to(course_assessment_submissions_path(submissions[0].course_user_datum.course,
-                                                       submissions[0].assessment)) && return
+      flash[:error] = "You don't have permission to delete these submissions."
+      allowed = false
+      break
+    end
+
+    if allowed
+      submissions.each do |s|
+        if s.destroy
+          scount += 1
+        else
+          fcount += 1
+        end
       end
-      if s.destroy
-        scount += 1
+      if fcount == 0
+        flash[:success] =
+          "#{ActionController::Base.helpers.pluralize(scount,
+                                                      'submission')} destroyed.
+                                                      #{ActionController::Base.helpers.pluralize(
+                                                        fcount, 'submission'
+                                                      )} failed."
       else
-        fcount += 1
+        flash[:error] =
+          "#{ActionController::Base.helpers.pluralize(scount,
+                                                      'submission')} destroyed.
+                                                      #{ActionController::Base.helpers.pluralize(
+                                                        fcount, 'submission'
+                                                      )} failed."
       end
     end
-    if fcount == 0
-      flash[:success] =
-        "#{ActionController::Base.helpers.pluralize(scount,
-                                                    'submission')} destroyed.
-                                                    #{ActionController::Base.helpers.pluralize(
-                                                      fcount, 'submission'
-                                                    )} failed."
-    else
-      flash[:error] =
-        "#{ActionController::Base.helpers.pluralize(scount,
-                                                    'submission')} destroyed.
-                                                    #{ActionController::Base.helpers.pluralize(
-                                                      fcount, 'submission'
-                                                    )} failed."
-    end
+
     respond_to do |format|
       format.html { redirect_to [@course, @assessment, :submissions] }
       format.json { render json: { redirect: url_for([@course, @assessment, :submissions]) } }
     end
   end
 
-  # this is good
+  # page to show to instructor to confirm that they would like to
+  # remove a given submission for a student
   action_auth_level :destroyConfirm, :instructor
   def destroyConfirm; end
 
