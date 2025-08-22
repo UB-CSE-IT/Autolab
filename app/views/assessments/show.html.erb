@@ -205,6 +205,17 @@
               </p>
             <% end %>
 
+            <% if @assessment.depends_on_assessment %>
+              <p class="valign-wrapper">
+                <i class="material-icons valign">link</i>
+                <span style="margin-left: 20px;">
+                  Prerequisite: Complete
+                  <b><%= link_to @assessment.depends_on_assessment.display_name, course_assessment_path(@course, @assessment.depends_on_assessment) %></b>
+                  with a minimum score of <b><%= @assessment.dependency_minimum_score || 0.0 %></b>
+                  </span>
+              </p>
+            <% end %>
+
             <% if @cud.instructor? and @assessment.exam? %>
               <p class="attention">This is an exam. While it is in progress, please check Admin > Edit Course > Exam In
                 Progress.</p>

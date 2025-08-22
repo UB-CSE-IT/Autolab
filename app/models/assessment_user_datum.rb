@@ -173,6 +173,22 @@ class AssessmentUserDatum < ApplicationRecord
     apply_extension s, extension
   end
 
+  def assessment_dependency_satisfied?
+    dependent_assessment = assessment.depends_on_assessment
+    return true if dependent_assessment.nil? # No dependency
+
+    dependency_aud = dependent_assessment.aud_for(course_user_datum)
+    return false if dependency_aud.nil? # No AUD for dependent assessment and this user
+
+    dependency_score = dependency_aud.final_score(course_user_datum)
+
+    return false if dependency_score.nil? # No score for dependent assessment
+
+    minimum_score = assessment.dependency_minimum_score || 0.0
+
+    dependency_score >= minimum_score
+  end
+
   # Check if user can submit at given date/time; provide reason, if not
   def can_submit?(at, submitter = course_user_datum, ub_course_section = nil)
     if submitter.instructor? || submitter.course_assistant?
@@ -185,6 +201,8 @@ class AssessmentUserDatum < ApplicationRecord
       [false, :past_end_at]
     elsif at_submission_limit?
       [false, :at_submission_limit]
+    elsif !assessment_dependency_satisfied?
+      [false, :assessment_dependency_not_satisfied]
     else
       # Check if user is in a section that can submit at this time if the assessment requires it
       if assessment.use_ub_section_deadlines?

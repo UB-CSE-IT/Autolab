@@ -579,6 +579,8 @@ private
         errors.add(:base, "You have already reached the submission limit.")
       when :ub_course_section_not_in_progress
         errors.add(:base, "You cannot submit because your course lecture/section is not in progress.")
+      when :assessment_dependency_not_satisfied
+        errors.add(:base, "You cannot submit because you have not satisfied the dependency for this assessment.")
       else
         raise "FATAL: unknown reason for submission denial"
       end

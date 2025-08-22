@@ -86,6 +86,12 @@
     <% when :at_submission_limit %>
       <h3>You have reached the maximum number of submissions allowed for this assessment.</h3>
 
+    <% when :assessment_dependency_not_satisfied %>
+      <h3>You must complete
+        <b><%= link_to @assessment.depends_on_assessment.display_name, course_assessment_path(@course, @assessment.depends_on_assessment) %></b>
+        with a minimum score of <b><%= @assessment.dependency_minimum_score || 0.0 %></b> before submitting this assessment.
+      </h3>
+
     <% when :ub_course_section_not_in_progress %>
       <h3>This assessment may only be submitted during your scheduled time shown above.</h3>
     <% else %>
