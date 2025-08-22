@@ -14,7 +14,7 @@ module Autolab3
     # This breaks some existing code (e.g. create course, create assessment)
 
     config.to_prepare do
-      Devise::ConfirmationsController.skip_before_action :set_course
+      Devise::ConfirmationsController.skip_before_action(:set_course, raise: false)
       Devise::ConfirmationsController.skip_before_action :authorize_user_for_course
       Devise::ConfirmationsController.skip_before_action :authenticate_for_action
       Devise::ConfirmationsController.skip_before_action :update_persistent_announcements

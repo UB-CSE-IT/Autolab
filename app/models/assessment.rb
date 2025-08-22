@@ -11,6 +11,7 @@ class Assessment < ApplicationRecord
   belongs_to :course_user_datum
   belongs_to :late_penalty, class_name: "Penalty"
   belongs_to :version_penalty, class_name: "Penalty"
+  belongs_to :depends_on_assessment, class_name: "Assessment", optional: true
   has_many :submissions
   has_many :problems, dependent: :destroy
   has_many :extensions, dependent: :destroy
@@ -31,6 +32,7 @@ class Assessment < ApplicationRecord
   validate :valid_handout
   validate :valid_writeup
   validate :valid_handin_directory
+  validate :dependent_assessment_belongs_to_same_course
   validates :max_size, :max_submissions, numericality: true
   validates :version_threshold, numericality: { only_integer: true,
                                                 greater_than_or_equal_to: -1, allow_nil: true }
@@ -754,6 +756,13 @@ private
 
     errors.add :handin_directory, "must be a directory in the assessment folder"
     false
+  end
+
+  def dependent_assessment_belongs_to_same_course
+    return if depends_on_assessment.nil?
+    return if depends_on_assessment.course == course
+
+    errors.add :base, "Dependent assessment must belong to the same course"
   end
 
   def invalidate_raw_scores

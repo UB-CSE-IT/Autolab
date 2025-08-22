@@ -1,3 +1,5 @@
+<h4>Groups</h4>
+
 <%= f.text_field :group_size,
                  display_name: "Group size",
                  help_text: "Set the maximum size of groups for this assessment.
@@ -19,6 +21,8 @@
 <%#= f.check_box :disable_network, disabled: true, help_text: "Disable network access for autograding containers. (This is not implemented in UB's Tango yet.)" %>
 <%#= f.check_box :allow_unofficial,
                 help_text: "Allow unofficial submission. Unless you know what you're doing, leave this unchecked." %>
+
+<h4>Embedded form</h4>
 <%= f.check_box :embedded_quiz,
                 display_name: "Enable Embedded Form" %>
 <%= f.file_field :embedded_quiz_form,
@@ -31,6 +35,21 @@
   <a href="https://docs.autolabproject.com/features/embedded-forms" target="_blank">Autolab Project's documentation.</a>
   Our documentation includes information about combining embedded forms with file uploads, a custom UB feature.
 </p>
+
+<h4>Assessment dependency</h4>
+
+<div class="input-field">
+  <%= f.label :depends_on_assessment_id, "Dependent assessment", class: "control-label active" %>
+  <%= f.collection_select :depends_on_assessment_id,
+                          @course.assessments.where.not(id: @assessment.id).order(:display_name),
+                          :id, :display_name, include_blank: "(None)" %>
+  <p class="help-block">Select an assessment that must be completed before this assessment can be submitted.</p>
+</div>
+
+<%= f.number_field :dependency_minimum_score,
+                   help_text: "The minimum score required on the dependent assessment to submit this assessment.",
+                   step: "any", required: false %>
+
 
 <div class="action_buttons">
   <%= f.submit "Save", name: "advanced" %>

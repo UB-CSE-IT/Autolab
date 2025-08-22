@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_04_06_174050) do
+ActiveRecord::Schema.define(version: 2025_08_20_153142) do
 
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -124,6 +124,9 @@ ActiveRecord::Schema.define(version: 2024_04_06_174050) do
     t.integer "ub_section_end_offset", default: 0
     t.boolean "ub_attachments_only_when_can_submit", default: false
     t.boolean "disable_network", default: false
+    t.integer "depends_on_assessment_id"
+    t.float "dependency_minimum_score"
+    t.index ["depends_on_assessment_id"], name: "index_assessments_on_depends_on_assessment_id"
   end
 
   create_table "attachments", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -456,6 +459,7 @@ ActiveRecord::Schema.define(version: 2024_04_06_174050) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "assessments", "assessments", column: "depends_on_assessment_id"
   add_foreign_key "github_integrations", "users"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
