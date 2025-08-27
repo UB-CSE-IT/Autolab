@@ -114,7 +114,7 @@ module Autolab3
     # site version
     config.site_version = "3.0.0"
 
-    config.ub_site_version = "2025.0.5"
+    config.ub_site_version = "2025.1.0"
 
     # Set application host for mailer
     config.action_mailer.default_url_options = { host: "YOUR_APP_HOST" }
