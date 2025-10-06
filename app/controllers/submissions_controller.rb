@@ -304,7 +304,37 @@ class SubmissionsController < ApplicationController
     filedata = submissions.collect do |s|
       p = s.handin_file_path
       email = s.course_user_datum.user.email
-      [p, download_filename(p, email)]
+      filename = download_filename(p, email)
+
+      if params[:annotated].present?
+        annotated_path = "#{File.dirname(p)}/annotated_#{File.basename(p)}"
+        annotations = s.annotations.to_a
+
+        begin
+          Prawn::Document.generate(annotated_path, template: p) do |pdf|
+            annotations.each do |annotation|
+              next if annotation.coordinate.nil?
+              position = annotation.coordinate.split(",")
+              page = position[2].to_i
+              width = position[3].to_f * pdf.bounds.width
+              height = position[4].to_f * pdf.bounds.height
+              xCord = position[0].to_f * pdf.bounds.width
+              yCord = pdf.bounds.height - (position[1].to_f * pdf.bounds.height)
+              value = annotation.value.presence || "N/A"
+              problem_name = annotation.problem&.name || "General"
+              comment = "#{annotation.comment}\n\nProblem: #{problem_name}\nScore: #{value}"
+              pdf.go_to_page(page + 1)
+              pdf.text_annotation([xCord + 10, yCord + 55, width, height], comment)
+            end
+          end
+        rescue => e
+          flash[:error] = "Cannot export annotations: #{filename} is not a valid PDF."
+          redirect_to failure_redirect_path and return
+        end
+        [annotated_path, "annotated_#{filename}"]
+      else
+        [p, filename]
+      end
     end
 
     result = Archive.create_zip filedata # result is stringIO to be sent
