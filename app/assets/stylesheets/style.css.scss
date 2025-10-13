@@ -487,7 +487,7 @@ div#footer {
   height: 42px;
   padding: 0 10px;
   margin-top: 16px;
-  border-top: 1px solid #fafafa;
+  border-top: 1px solid #f0f0f0;
 }
 
 div#footer .right {
@@ -507,14 +507,18 @@ div#footer span.site_version {
   font-size: 12px;
 }
 
+div#footer .changelog-link {
+  padding: 0;
+  text-decoration: underline;
+}
+
 div#footer div.fb-like.fb_iframe_widget {
   vertical-align: top;
   margin-left: 8px;
 }
 
 div#footer a:hover {
-  text-decoration: none;
-  color: #428bca;
+  color: #005bbb;
 }
 
 /* used for the submission history popup on submissions#index */

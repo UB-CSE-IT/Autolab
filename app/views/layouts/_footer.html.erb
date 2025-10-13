@@ -8,5 +8,7 @@
     <% if Rails.env == "development" %>
       <span style="background-color: red;">(Development)</span>
     <% end %>
-    UB v<%= Rails.configuration.ub_site_version %> | CMU v<%= Rails.configuration.site_version %></span>
+    UB <a class="changelog-link" href="https://napps.cse.buffalo.edu/docs/autolab/Changelog/" target="_blank">
+    v<%= Rails.configuration.ub_site_version %></a>
+    | CMU v<%= Rails.configuration.site_version %></span>
 </div>
