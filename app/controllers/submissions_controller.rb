@@ -803,17 +803,23 @@ private
     versions.each do |submission|
       submission_path = submission.handin_file_path
 
-      # Find corresponding header position
-      header_position = if Archive.archive? submission_path
-                          submission_files = Archive.get_files(submission_path)
-                          matched_file = submission_files.detect { |submission_file|
-                            submission_file[:pathname] == pathname
-                          }
-                          # Skip if file doesn't exist
-                          next if matched_file.nil?
+      begin
+        # Find corresponding header position
+        header_position = if Archive.archive? submission_path
+                            submission_files = Archive.get_files(submission_path)
+                            matched_file = submission_files.detect { |submission_file|
+                              submission_file[:pathname] == pathname
+                            }
+                            # Skip if file doesn't exist
+                            next if matched_file.nil?
 
-                          matched_file[:header_position]
-                        end
+                            matched_file[:header_position]
+                          end
+      rescue StandardError
+        # Don't allow a corrupted submission archive file to prevent viewing other versions
+        next
+      end
+
       # If not an archive, we have header_position = nil
       # This means that in _version_links.html.erb, header_position is not set in the querystring
       # for the prev / next button urls
