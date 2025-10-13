@@ -16,6 +16,7 @@ $(document).ready(function () {
   retrieveSharedComments();
   resizeCodeTable();
   resizeGradeList();
+  initializeUserDefaults();
 });
 
 /* On Window Resize */
@@ -565,6 +566,15 @@ function newAnnotationFormCode() {
       );
     }
   });
+
+    // Set the default problem in the dropdown if it is valid for this assessment
+    const defaultProblem = localStorage.getItem("defaultProblem");
+    if (defaultProblem && problemNameValid(defaultProblem)) {
+        const problem = problems.find(p => p.name === defaultProblem);
+        if (problem) {
+            box.find("select").val(problem.id);
+        }
+    }
 
   box.find('.annotation-form').show();
   box.find('.annotation-cancel-button').click(function (e) {
@@ -1130,6 +1140,15 @@ var newAnnotationFormTemplatePDF = function (name, pageInd) {
     }
   });
 
+  // Set the default problem in the dropdown if it is valid for this assessment
+  const defaultProblem = localStorage.getItem("defaultProblem");
+  if (defaultProblem && problemNameValid(defaultProblem)) {
+      const problem = problems.find(p => p.name === defaultProblem);
+      if (problem) {
+            problemSelect.value = problem.id;
+      }
+  }
+
   var newForm = elt("form", {
     title: "Press <Enter> to Submit",
     class: name,
@@ -1569,6 +1588,15 @@ function renderPdf() {
         nmrPagesRendered = nmrPagesRendered + 1;
 
         if (nmrPagesRendered == nmrPages) {
+            // Scroll to the default page if specified in localStorage
+            const targetPage = localStorage.getItem("defaultPage") ?? 1;
+            if (targetPage && targetPage > 0 && targetPage <= nmrPages) {
+                const targetCanvas = document.getElementById(`page-canvas-${targetPage - 1}`);
+                if (targetCanvas) {
+                    targetCanvas.scrollIntoView();
+                }
+            }
+
           initializeAnnotationsForPDF();
         }
       });
@@ -1599,3 +1627,49 @@ function showAnnotations() {
   displayAnnotations();
   refreshAnnotations();
 }
+
+function problemNameValid(problemName) {
+    // Return true if problemName is in problems list
+    for (let i = 0; i < problems.length; i++) {
+        if (problems[i].name === problemName) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function initializeUserDefaults() {
+    const pageInput = document.getElementById("default-page-input");
+    pageInput.value = localStorage.getItem("defaultPage") || "1";
+
+    const problemInput = document.getElementById("default-problem-select");
+    const savedProblemName = localStorage.getItem("defaultProblem") || "";
+    if (savedProblemName && problemNameValid(savedProblemName)) {
+        problemInput.value = savedProblemName;
+    }
+
+    pageInput.addEventListener('input', () => {
+        defaultPageNumberUpdated();
+    });
+
+    problemInput.addEventListener('change', () => {
+        defaultProblemUpdated();
+    });
+}
+
+function defaultPageNumberUpdated() {
+    const pageInput = document.getElementById("default-page-input");
+    const pageNumber = parseInt(pageInput.value);
+    localStorage.setItem("defaultPage", pageNumber.toString());
+}
+
+function defaultProblemUpdated() {
+    const problemInput = document.getElementById("default-problem-select");
+    const problemName = problemInput.value;
+    if (problemNameValid(problemName)) {
+        localStorage.setItem("defaultProblem", problemName);
+    } else {
+        localStorage.removeItem("defaultProblem");
+    }
+}
+

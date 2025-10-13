@@ -121,7 +121,12 @@
   |
   <%= link_to "Download All Submissions".html_safe,
               downloadAll_course_assessment_submissions_path(@course, @assessment),
-              { :title => "Down all submissions from each student",
+              { :title => "Download all submissions from each student",
+                :class => "" } %>
+  |
+  <%= link_to "Download Annotated Submissions".html_safe,
+              downloadAll_course_assessment_submissions_path(@course, @assessment, annotated: true),
+              { :title => "Download all annotated submissions from each student",
                 :class => "" } %>
   |
   <%= link_to "Download Final Submissions".html_safe,

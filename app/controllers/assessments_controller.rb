@@ -726,7 +726,11 @@ class AssessmentsController < ApplicationController
     @scoreHash = parseScore(raw_score_hash) unless raw_score_hash.nil?
 
     if Archive.archive? @submission.handin_file_path
-      @files = Archive.get_files @submission.handin_file_path
+      begin
+        @files = Archive.get_files @submission.handin_file_path
+      rescue StandardError
+        flash.now[:error] = "This submission's handin file cannot be read."
+      end
     end
 
     # get_correct_filename is protected, so we wrap around controller-specific call
