@@ -126,10 +126,12 @@
       <span title="student # / total students">[<%= @curSubmissionIndex + 1 %>/<%= @latestSubmissions.length %>] <%= @submission.course_user_datum.email %>,</span>
       <%= render "version_dropdown" %>
       <%= render "version_links" %>
+      <% if @is_pdf %>
       <label style="display: inline-flex; flex-direction: row; align-items: center; flex-wrap: nowrap; gap: 4px; color: black">
         Default page:
         <input type="number" id="default-page-input" min="1" class="browser-default" style="height: 26px; width: 60px; border: 1px solid gray">
       </label>
+      <% end %>
       <label style="display: inline-flex; flex-direction: row; align-items: center; flex-wrap: nowrap; gap: 4px; color: black">
         Default problem:
         <select class="browser-default" id="default-problem-select" style="height: 26px; width: 60px; border: 1px solid gray">
