@@ -84,7 +84,6 @@ module Archive
       # exist. If it does not, create and add them
       if(!file[:directory])
         paths = file[:pathname].split("/")
-        mac_bs_file = false
         paths.each do |path|
           # note that __MACOSX is actually a folder
           # need to check whether the path includes that
@@ -92,7 +91,6 @@ module Archive
           # mac_bs_file folder paths will still be added
           if path.include?("__MACOSX") || path.include?(".DS_Store") ||
              path.include?(".metadata")
-             mac_bs_file = true
              break
           end
         end
@@ -102,7 +100,8 @@ module Archive
             cleaned_files.append({
               :pathname=>new_path,
               :header_position=>starting_header,
-              :mac_bs_file=>mac_bs_file,
+              # UB Update 2025-10-23: Don't exclude MacOS metadata files in submission preview
+              :mac_bs_file=>false,
               :directory=>true
             })
             starting_header = starting_header - 1
