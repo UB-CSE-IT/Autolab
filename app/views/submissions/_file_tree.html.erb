@@ -18,7 +18,7 @@ def renderFileTree(file, isRoot: false)
         <%= file[:pathname].split("/").last %>
     <% end %>
 <%
-  else
+  elsif file[:pathname].end_with?("/")
 %>
     <div class="folder">
       <div class="folder-name valign-wrapper noselect <%= "active" if isRoot %>  " onclick="switchFolderState($(this))">
