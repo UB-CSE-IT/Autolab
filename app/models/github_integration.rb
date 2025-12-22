@@ -168,7 +168,7 @@ class GithubIntegration < ApplicationRecord
 
 private
 
-  ALLOWED_CHARS = ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a + ['.', '-']
+  ALLOWED_CHARS = ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a + ['.', '-', '_']
 
   def check_allowed_chars(user_input)
     user_input.each_char { |c|
