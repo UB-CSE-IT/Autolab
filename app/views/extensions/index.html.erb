@@ -146,6 +146,39 @@
         }
       });
 
+      // Auto-add typed/pasted comma-separated email(s) when the field loses focus or after paste
+      $('#ac-input').on('blur paste', function(e) {
+        // paste event fires before the input value is updated, so delay a tick
+        setTimeout(() => {
+          const raw = $('#ac-input').val() || '';
+          const tokens = raw.split(',').map(s => s.trim()).filter(Boolean);
+          if (!tokens.length) return;
+
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          let added = false;
+
+          tokens.forEach(token => {
+            if (!emailRegex.test(token)) return; // only auto-add valid-looking emails
+
+            // find item by exact text match or text containing the email (case-insensitive)
+            const tokenLower = token.toLowerCase();
+            const item = multiSelectData.find(e =>
+              e.text && (e.text.toLowerCase() === tokenLower || e.text.toLowerCase().includes(tokenLower))
+            );
+
+            if (item && !autocomplete.value.some(v => v.id === item.id)) {
+              autocomplete.append(item);
+              added = true;
+            }
+          });
+
+          if (added) {
+            $('#ac-input').val(''); // clear input after successful adds
+            resizeDropdown("ac-input");
+          }
+        }, 10);
+      });
+
       /* Initialization */
       checkInfiniteExtension();
     });
