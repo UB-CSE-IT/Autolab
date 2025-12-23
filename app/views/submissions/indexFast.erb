@@ -132,15 +132,19 @@
               downloadAll_course_assessment_submissions_path(@course, @assessment),
               { :title => "Download all submissions from each student", } %>
   |
-  <%= link_to "Download Annotated Submissions".html_safe,
-              downloadAll_course_assessment_submissions_path(@course, @assessment, annotated: true),
-              { :title => "Download all annotated submissions from each student", } %>
-  |
   <%= link_to "Download Final Submissions".html_safe,
               downloadAll_course_assessment_submissions_path(@course, @assessment, final: true),
               { :title => "Download the most recent submission from each student", } %>
   |
-  <%= link_to "Missing Submissions".html_safe,
+  <%= link_to "Download Annotated Submissions".html_safe,
+              downloadAll_course_assessment_submissions_path(@course, @assessment, annotated: true),
+              { :title => "Download all annotated submissions from each student", } %>
+  |
+  <%= link_to "Download Annotations".html_safe,
+              annotations_csv_course_assessment_submissions_path(@course, @assessment),
+              { :title => "Download all annotations as a CSV file", } %>
+  |
+  <%= link_to "View Missing Submissions".html_safe,
               missing_course_assessment_submissions_path(@course, @assessment),
               { :title => "List the students who have not submitted anything. You'll be given the option to create new submissions for the missing students", } %>
   <% if @autograded %>

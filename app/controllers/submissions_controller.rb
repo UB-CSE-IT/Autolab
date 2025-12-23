@@ -3,6 +3,7 @@ require "pdf"
 require "prawn"
 require "json"
 require "tempfile"
+require "csv"
 
 class SubmissionsController < ApplicationController
   # inherited from ApplicationController
@@ -751,6 +752,54 @@ class SubmissionsController < ApplicationController
       score.save
     end
     redirect_back(fallback_location: root_path)
+  end
+
+  action_auth_level :annotations_csv, :instructor
+  def annotations_csv
+    # Load submissions with associated user and annotations (+ problem) to avoid N+1 queries
+    submissions = @assessment.submissions
+                             .includes(course_user_datum: :user, annotations: :problem)
+
+    # Flatten to pairs [submission, annotation]
+    annotation_pairs = submissions.flat_map { |s| s.annotations.map { |a| [s, a] } }
+
+    if annotation_pairs.empty?
+      flash[:error] = "There are no annotations to export for this assessment."
+      redirect_to course_assessment_submissions_path(@course, @assessment) and return
+    end
+
+    filename = "#{@course.name}_#{@assessment.name}_annotations.csv".gsub(/[^\w\.\-]/, "_")
+
+    csv_data = CSV.generate(headers: true) do |csv|
+      csv << [
+        "student_email",
+        "submission_version",
+        "problem_name",
+        "value",
+        "comment",
+        "created_at", # Keep the column name created_at even though we'll share the updated_at
+        "created_by"
+      ]
+
+      annotation_pairs.each do |submission, annotation|
+        student_email = submission.course_user_datum&.user&.email
+        problem_name = annotation.problem&.name
+
+        csv << [
+          student_email,
+          submission.version,
+          problem_name,
+          annotation.value,
+          annotation.comment,
+          annotation.updated_at, # Use updated_at instead of created at for simplicity to end-users
+          annotation.submitted_by,
+        ]
+      end
+    end
+
+    send_data csv_data,
+              type: "text/csv; charset=utf-8",
+              disposition: "attachment; filename=#{filename}"
   end
 
 private

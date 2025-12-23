@@ -173,6 +173,7 @@ Rails.application.routes.draw do
         collection do
           root action: :indexFast
           get 'legacy', action: :index
+          get :annotations_csv
         end
         resources :annotations, only: [:create, :update, :destroy] do
           collection do
