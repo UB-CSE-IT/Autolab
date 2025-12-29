@@ -34,6 +34,12 @@
   <%= f.text_field :handin_filename, help_text: "The suffix that is appended to student submission files. May only contain letters, numbers, underscores, dashes, and periods. Autolab stores submission files in the handin directory as email/version_fname.", placeholder: "E.g. mm.c" %>
 <% end %>
 <%= f.text_field :max_size, help_text: "The maximum size that a handin file can have in megabytes (MB)." %>
+
+<%= f.number_field :submission_cooldown_seconds,
+                   display_name: "Submission cooldown (seconds)",
+                   help_text: "The number of seconds students must wait between submissions",
+                   step: "1", required: true %>
+
 <%= f.check_box :disable_handins,
                 help_text: "Check this to disallow handins through Autolab. This option can be used to track scores for assignments that are not submitted through Autolab such as midterms and written assignments. It does NOT interfere with the UB Course Sections \"Only allow viewing attachments when submissions are allowed\" feature." %>
 <br>

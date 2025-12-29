@@ -24,6 +24,8 @@ class Assessment < ApplicationRecord
   validates :name, uniqueness: { case_sensitive: false, scope: :course_id }
   validates :name, format: { with: /\A[^0-9].*/, message: "can't have leading numeral" }
   validates :display_name, length: { minimum: 1 }
+  validates :submission_cooldown_seconds, numericality: { only_integer: true,
+                                                          greater_than_or_equal_to: 0 }
   validate :verify_dates_order
   validate :verify_dates_valid_for_mysql
   validate :handin_directory_and_filename_or_disable_handins, if: :active?
