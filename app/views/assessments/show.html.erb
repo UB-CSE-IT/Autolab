@@ -159,32 +159,34 @@
       <div class="handin-panel card z-depth-0">
         <div class="card-content">
           <p class="valign-wrapper">
-            <i class="material-icons valign">access_time</i>
+            <i class="material-icons valign">today</i>
             <span style="margin-left: 20px;">
-              Due<% if @extension %> (with<% if @extension.infinite? %> infinite<% else %> <%= pluralize(@extension.days, "day") %><% end %> extension)<% end %>:
+              Due on<% if @extension %> (with<% if @extension.infinite? %> infinite<% else %> <%= pluralize(@extension.days, "day") %><% end %> extension)<% end %>
               <b>
                 <% if @extension&.infinite? %>
                   <%= due_at_display @aud.due_at %>
                 <% else %>
-                  <span class="moment-date-time" data-format="MMMM Do YYYY, h:mm a z [(UTC] Z[)]"><%= due_at_display @aud.due_at %></span>
+                  <span class="moment-date-time" data-format="MMMM Do YYYY, h:mm A z [(UTC] Z[)]"><%= due_at_display @aud.due_at %></span>
                 <% end %>
               </b>
             </span>
           </p>
 
-          <p class="valign-wrapper">
-            <i class="valign material-icons">today</i>
-            <span style="margin-left: 20px;">
-            Last day to hand in:
-            <b>
-              <% if @extension&.infinite? %>
-                <%= end_at_display(@aud.end_at(false)) %>
-              <% else %>
-                <span class="moment-date-time" data-format="MMMM Do YYYY, h:mm a z [(UTC] Z[)]"><%= end_at_display(@aud.end_at(false)) %></span>
-              <% end %>
-            </b>
-            </span>
-          </p>
+          <% if @aud.end_at != @aud.due_at %>
+            <p class="valign-wrapper">
+              <i class="valign material-icons">date_range</i>
+              <span style="margin-left: 20px;">
+              Last day to hand in:
+              <b>
+                <% if @extension&.infinite? %>
+                  <%= end_at_display(@aud.end_at(false)) %>
+                <% else %>
+                  <span class="moment-date-time" data-format="MMMM Do YYYY, h:mm A z [(UTC] Z[)]"><%= end_at_display(@aud.end_at(false)) %></span>
+                <% end %>
+              </b>
+              </span>
+            </p>
+          <% end %>
 
             <% if @assessment.use_ub_section_deadlines %>
               <p class="valign-wrapper">
@@ -204,6 +206,22 @@
                   </span>
               </p>
             <% end %>
+
+          <% if @assessment.submission_cooldown_seconds > 0 %>
+            <p class="valign-wrapper">
+              <i class="material-icons valign">pause</i>
+              <span style="margin-left: 20px;">
+                  Cooldown: You must wait <b><%= @assessment.submission_cooldown_seconds %> seconds between submissions</b>
+                  <% if @assessment.cooldown_active_for?(@cud) %>
+                    <br>
+                    Next submission allowed on
+                    <b><span class="moment-date-time" data-format="MMM Do, h:mm:ss A z">
+                      <%= @assessment.cooldown_next_allowed_time(@cud) %>
+                    </span></b>
+                  <% end %>
+              </span>
+            </p>
+          <% end %>
 
             <% if @assessment.depends_on_assessment %>
               <p class="valign-wrapper">

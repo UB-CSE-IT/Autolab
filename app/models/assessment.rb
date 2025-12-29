@@ -139,6 +139,20 @@ class Assessment < ApplicationRecord
     assessment_user_data.find_by(course_user_datum: cud).latest_submission
   end
 
+  def cooldown_next_allowed_time(cud)
+    return nil if submission_cooldown_seconds <= 0
+
+    latest = latest_submission_by(cud)
+    return nil unless latest && latest.created_at
+
+    latest.created_at + submission_cooldown_seconds.seconds
+  end
+
+  def cooldown_active_for?(cud)
+    next_allowed = cooldown_next_allowed_time(cud)
+    next_allowed.present? && Time.current < next_allowed
+  end
+
   def config_file_path
     Rails.root.join("assessmentConfig", "#{course.name}-#{sanitized_name}.rb")
   end

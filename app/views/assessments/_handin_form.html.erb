@@ -89,8 +89,12 @@
     <% when :assessment_dependency_not_satisfied %>
       <h3>You must complete the prerequisite above before submitting this assessment.</h3>
 
+    <% when :cooldown_active %>
+      <h3>You made a recent submission and must wait for your cooldown to expire before submitting again.</h3>
+
     <% when :ub_course_section_not_in_progress %>
       <h3>This assessment may only be submitted during your scheduled time shown above.</h3>
+
     <% else %>
       <h3>You are not allowed to submit this assessment.</h3>
 

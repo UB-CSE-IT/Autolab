@@ -581,6 +581,8 @@ private
         errors.add(:base, "You cannot submit because your course lecture/section is not in progress.")
       when :assessment_dependency_not_satisfied
         errors.add(:base, "You cannot submit because you have not satisfied the dependency for this assessment.")
+      when :cooldown_active
+        errors.add(:base, "You cannot submit because you are in a cooldown period between submissions")
       else
         raise "FATAL: unknown reason for submission denial"
       end

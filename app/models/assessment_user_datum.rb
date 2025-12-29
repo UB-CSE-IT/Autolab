@@ -203,6 +203,8 @@ class AssessmentUserDatum < ApplicationRecord
       [false, :at_submission_limit]
     elsif !assessment_dependency_satisfied?
       [false, :assessment_dependency_not_satisfied]
+    elsif assessment.cooldown_active_for?(course_user_datum)
+      [false, :cooldown_active]
     else
       # Check if user is in a section that can submit at this time if the assessment requires it
       if assessment.use_ub_section_deadlines?
