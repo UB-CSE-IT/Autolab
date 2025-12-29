@@ -446,6 +446,19 @@ input[type="email"] {
   border-radius: 4px;
   /*padding: 18px;*/
   top: -2.8rem;
+  margin-top: 0;
+}
+
+.handin-panel .condition {
+  .text {
+    margin-left: 18px;
+  }
+
+  &:not(:first-child) {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(0, 0, 0, 0.15);
+  }
 }
 
 .handin-panel p {

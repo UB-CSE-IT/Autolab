@@ -158,9 +158,9 @@
     <% if !@assessment.disable_handins %>
       <div class="handin-panel card z-depth-0">
         <div class="card-content">
-          <p class="valign-wrapper">
+          <p class="valign-wrapper condition">
             <i class="material-icons valign">today</i>
-            <span style="margin-left: 20px;">
+            <span class="text">
               Due on<% if @extension %> (with<% if @extension.infinite? %> infinite<% else %> <%= pluralize(@extension.days, "day") %><% end %> extension)<% end %>
               <b>
                 <% if @extension&.infinite? %>
@@ -173,9 +173,9 @@
           </p>
 
           <% if @aud.end_at != @aud.due_at %>
-            <p class="valign-wrapper">
+            <p class="valign-wrapper condition">
               <i class="valign material-icons">date_range</i>
-              <span style="margin-left: 20px;">
+              <span class="text">
               Last day to hand in:
               <b>
                 <% if @extension&.infinite? %>
@@ -189,9 +189,9 @@
           <% end %>
 
             <% if @assessment.use_ub_section_deadlines %>
-              <p class="valign-wrapper">
+              <p class="valign-wrapper condition">
                 <i class="material-icons valign">alarm_on</i>
-                <span style="margin-left: 20px;">
+                <span class="text">
                 May only be submitted <b>during
                   <% if @assessment.ub_section_start_offset == 0 && @assessment.ub_section_end_offset == 0 %>
                     your scheduled <%= @assessment.ub_section_type_name %></b> time
@@ -208,9 +208,9 @@
             <% end %>
 
           <% if @assessment.submission_cooldown_seconds > 0 %>
-            <p class="valign-wrapper">
+            <p class="valign-wrapper condition condition">
               <i class="material-icons valign">pause</i>
-              <span style="margin-left: 20px;">
+              <span class="text">
                   Cooldown: You must wait <b><%= @assessment.submission_cooldown_seconds %> seconds between submissions</b>
                   <% if @assessment.cooldown_active_for?(@cud) %>
                     <br>
@@ -224,9 +224,9 @@
           <% end %>
 
             <% if @assessment.depends_on_assessment %>
-              <p class="valign-wrapper">
+              <p class="valign-wrapper condition">
                 <i class="material-icons valign">link</i>
-                <span style="margin-left: 20px;">
+                <span class="text">
                   Prerequisite: Complete
                   <b><%= link_to @assessment.depends_on_assessment.display_name, course_assessment_path(@course, @assessment.depends_on_assessment) %></b>
                   with a minimum score of <b><%= @assessment.dependency_minimum_score || 0.0 %></b>
