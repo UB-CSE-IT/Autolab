@@ -188,27 +188,27 @@
             </p>
           <% end %>
 
-            <% if @assessment.use_ub_section_deadlines %>
-              <p class="valign-wrapper condition">
-                <i class="material-icons valign">alarm_on</i>
-                <span class="text">
-                May only be submitted <b>during
-                  <% if @assessment.ub_section_start_offset == 0 && @assessment.ub_section_end_offset == 0 %>
-                    your scheduled <%= @assessment.ub_section_type_name %></b> time
-                  <% else %>
-                    a custom time window</b> based on your scheduled <%= @assessment.ub_section_type_name %>
-                  <% end %>
-                  (<%= @ub_course_section&.name || "you do not have a valid assigned section" %>)
-                  <% if @ub_course_section %>
-                    <br>
-                    <b><%= @ub_course_section&.time_to_english(@assessment) %></b>
-                  <% end %>
-                  </span>
-              </p>
-            <% end %>
+          <% if @assessment.use_ub_section_deadlines %>
+            <p class="valign-wrapper condition">
+              <i class="material-icons valign">alarm_on</i>
+              <span class="text">
+              May only be submitted <b>during
+                <% if @assessment.ub_section_start_offset == 0 && @assessment.ub_section_end_offset == 0 %>
+                  your scheduled <%= @assessment.ub_section_type_name %></b> time
+                <% else %>
+                  a custom time window</b> based on your scheduled <%= @assessment.ub_section_type_name %>
+                <% end %>
+                (<%= @ub_course_section&.name || "you do not have a valid assigned section" %>)
+                <% if @ub_course_section %>
+                  <br>
+                  <b><%= @ub_course_section&.time_to_english(@assessment) %></b>
+                <% end %>
+                </span>
+            </p>
+          <% end %>
 
           <% if @assessment.submission_cooldown_seconds > 0 %>
-            <p class="valign-wrapper condition condition">
+            <p class="valign-wrapper condition">
               <i class="material-icons valign">pause</i>
               <span class="text">
                   Cooldown: You must wait <b><%= @assessment.submission_cooldown_seconds %> seconds between submissions</b>
@@ -223,24 +223,24 @@
             </p>
           <% end %>
 
-            <% if @assessment.depends_on_assessment %>
-              <p class="valign-wrapper condition">
-                <i class="material-icons valign">link</i>
-                <span class="text">
-                  Prerequisite: Complete
-                  <b><%= link_to @assessment.depends_on_assessment.display_name, course_assessment_path(@course, @assessment.depends_on_assessment) %></b>
-                  with a minimum score of <b><%= @assessment.dependency_minimum_score || 0.0 %></b>
-                  </span>
-              </p>
-            <% end %>
+          <% if @assessment.depends_on_assessment %>
+            <p class="valign-wrapper condition">
+              <i class="material-icons valign">link</i>
+              <span class="text">
+                Prerequisite: Complete
+                <b><%= link_to @assessment.depends_on_assessment.display_name, course_assessment_path(@course, @assessment.depends_on_assessment) %></b>
+                with a minimum score of <b><%= @assessment.dependency_minimum_score || 0.0 %></b>
+                </span>
+            </p>
+          <% end %>
 
-            <% if @cud.instructor? and @assessment.exam? %>
-              <p class="attention">This is an exam. While it is in progress, please check Admin > Edit Course > Exam In
-                Progress.</p>
-            <% end %>
-          </div>
-          <%= render partial: "handin_form", locals: { modal: false, id: "handin_show_assessment" } %>
+          <% if @cud.instructor? and @assessment.exam? %>
+            <p class="attention">This is an exam. While it is in progress, please check Admin > Edit Course > Exam In
+              Progress.</p>
+          <% end %>
         </div>
+        <%= render partial: "handin_form", locals: { modal: false, id: "handin_show_assessment" } %>
+      </div>
       <% else %>
         <div class="handin-panel card z-depth-0">
           <div class="card-content">
