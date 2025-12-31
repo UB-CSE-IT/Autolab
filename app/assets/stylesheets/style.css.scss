@@ -32,6 +32,10 @@ h3 {
   font-size: 2.1rem;
 }
 
+.monospace {
+  font-family: "Monaco", "Inconsolata", "Consolas", monospace
+}
+
 /* Error Classes - for elements that display error/status messages */
 .error {
   color: red;
@@ -470,6 +474,12 @@ input[type="email"] {
   padding-left: 20px;
   padding-top: 3px;
   padding-bottom: 10px;
+
+  a {
+    color: $autolab-blue-text !important;
+    text-transform: none !important;
+    margin-right: 0 !important;
+  }
 }
 
 .handin-panel #submission_file {

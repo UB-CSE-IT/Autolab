@@ -211,7 +211,7 @@
             <p class="valign-wrapper condition">
               <i class="material-icons valign">pause</i>
               <span class="text">
-                  Cooldown: You must wait <b><%= @assessment.submission_cooldown_seconds %> seconds between submissions</b>
+                  Cooldown: You must wait <b><%= @assessment.submission_cooldown_seconds %> seconds</b> between submissions
                   <% if @assessment.cooldown_active_for?(@cud) %>
                     <br>
                     Next submission allowed on

@@ -92,6 +92,42 @@
     <% when :cooldown_active %>
       <h3>You made a recent submission and must wait for your cooldown to expire before submitting again.</h3>
 
+      <% if (next_allowed = @assessment.cooldown_next_allowed_time(@cud)) %>
+        <h3 id="cooldown-countdown" class="monospace" style="text-align: center">00:00:00</h3>
+        <div id="cooldown-over-message" style="text-align: center; display: none">
+          <p><a href="javascript:location.reload()">Refresh</a> to submit again.</p>
+        </div>
+
+        <script>
+          const NEXT_SUBMISSION_MS = new Date("<%= next_allowed.to_s %>").getTime();
+          const countdownElement = document.getElementById("cooldown-countdown");
+          const cooldownOverMessageElement = document.getElementById("cooldown-over-message");
+          function updateCountdown() {
+            const nowMs = new Date().getTime();
+            const deltaMs = NEXT_SUBMISSION_MS - nowMs;
+
+            if (deltaMs <= 0) {
+              countdownElement.innerHTML = "00:00:00";
+              clearInterval(countdownInterval);
+              cooldownOverMessageElement.style.display = "block";
+              return;
+            }
+
+            const hours = Math.floor(deltaMs / (1000 * 60 * 60));
+            const minutes = Math.floor((deltaMs % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((deltaMs % (1000 * 60)) / 1000);
+
+            countdownElement.innerHTML =
+              String(hours).padStart(2, '0') + ":" +
+              String(minutes).padStart(2, '0') + ":" +
+              String(seconds).padStart(2, '0');
+          }
+
+          const countdownInterval = setInterval(updateCountdown, 1000);
+          updateCountdown();
+        </script>
+      <% end %>
+
     <% when :ub_course_section_not_in_progress %>
       <h3>This assessment may only be submitted during your scheduled time shown above.</h3>
 
