@@ -1484,6 +1484,22 @@ table.sub td, th {
 .refresh-feedback {
   color: $autolab-blue-text;
   margin-right: 1vw;
+
+  &:is(button) {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+
+    &:focus-visible {
+      outline: auto;
+      outline-offset: 2px;
+    }
+  }
 }
 .refresh-feedback:hover {
   cursor: pointer;

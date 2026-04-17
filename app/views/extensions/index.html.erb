@@ -151,7 +151,7 @@
         // paste event fires before the input value is updated, so delay a tick
         setTimeout(() => {
           const raw = $('#ac-input').val() || '';
-          const tokens = raw.split(',').map(s => s.trim()).filter(Boolean);
+          const tokens = raw.split(/[,;\s]+/).map(s => s.trim()).filter(Boolean);
           if (!tokens.length) return;
 
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -226,8 +226,8 @@
     <%= form_for @new_extension, url: { action: "create" }, builder: FormBuilderWithDateTimeInput do |f| %>
       <div class="input-field">
         <div id="ac-users"></div>
-        <input type="text" id="ac-input" placeholder="Start typing student names or emails" data-target="ac-dropdown" data-beloworigin="true" autocomplete="off">
-        <p>Any existing extensions will be updated.</p>
+        <input type="text" id="ac-input" placeholder="Search for students by name or email address" data-target="ac-dropdown" data-beloworigin="true" autocomplete="off" autofocus>
+        <p>Any existing extensions will be updated. You can paste multiple email addresses separated by commas, semicolons, or spaces.</p>
         <ul id="ac-dropdown" class="dropdown-content"></ul>
       </div>
       <h6>Select a new due date</h6>

@@ -295,7 +295,7 @@ class Submission < ApplicationRecord
     conditions[:position] = position if position
     annotations = self.annotations.where(conditions)
 
-    result = file.lines.map { |line| [line.force_encoding("UTF-8"), nil] }
+    result = file.split(/\r?\n|\r/).map { |line| [line.force_encoding("UTF-8"), nil] }
 
     # annotation lines are one-indexed, so adjust for the zero-indexed array
     annotations.each do |a|
