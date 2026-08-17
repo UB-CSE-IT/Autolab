@@ -86,6 +86,9 @@ Rails.application.configure do
   # URL for Matomo container (g.src from tag manager)
   config.x.matomo_container_src = nil
 
+  # URL for external homepage banner retrieval
+  config.x.homepage_banner_url = nil
+
   # OAuth2 Application Configuration for Github
   # See https://docs.autolabproject.com/installation/github_integration/
   if File.size?("#{Rails.configuration.config_location}/github_config.yml")
