@@ -7,6 +7,8 @@ development:
   password: '<password>'
   socket: /var/run/mysqld/mysqld.sock
   host: localhost
+  encoding: utf8mb4
+  collation: utf8mb4_unicode_ci
   variables:
     sql_mode: NO_ENGINE_SUBSTITUTION
 
@@ -18,6 +20,8 @@ test:
   password: '<password>'
   socket: /var/run/mysqld/mysqld.sock
   host: localhost
+  encoding: utf8mb4
+  collation: utf8mb4_unicode_ci
   variables:
     sql_mode: NO_ENGINE_SUBSTITUTION
   

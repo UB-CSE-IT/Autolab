@@ -456,7 +456,7 @@ class Assessment < ApplicationRecord
   def dump_embedded_quiz
     return unless embedded_quiz
 
-    File.open(path("#{name}_embedded_quiz.html"), "w") { |f| f.write(embedded_quiz_form_data) }
+    File.open(path("#{name}_embedded_quiz.html"), "w") { |f| f.write(embedded_quiz_form_data.force_encoding("UTF-8")) }
   end
 
   def load_embedded_quiz
