@@ -1,1 +1,0 @@
-rm $(find $1 -type f -exec sh -c "file {} | grep -v text >/dev/null" \; -print)

@@ -1,6 +1,7 @@
 require "archive"
 require "csv"
 require "fileutils"
+require "mimemagic"
 require "pathname"
 require "statistics"
 
@@ -718,10 +719,6 @@ class CoursesController < ApplicationController
     # Ensure that all files in Moss tmp dir are readable
     system("chmod -R a+r #{tmp_dir}")
     ActiveRecord::Base.clear_active_connections!
-    # Remove non text files when making a moss run
-    Dir.chdir(Rails.root.join("script")) do
-      system("./cleanMoss #{tmp_dir}")
-    end
     # Now run the Moss command
     @mossCmdString = @mossCmd.join(" ")
     @mossOutput = `#{@mossCmdString} 2>&1`
@@ -1193,6 +1190,9 @@ private
 
         # Create a directory for this student
         stuDir = File.join(assDir, sub.course_user_datum.email)
+        should_copy_submission = isArchive || moss_text_file?(subFile)
+        next unless should_copy_submission
+
         Dir.mkdir(stuDir)
 
         # Copy their submission over
@@ -1210,13 +1210,16 @@ private
             pathname = Archive.get_entry_name(entry)
             next if Archive.looks_like_directory?(pathname)
 
+            entry_content = Archive.read_entry_file(entry)
+            next unless moss_text_content?(entry_content, pathname)
+
             pathname.gsub!(%r{/}, "-")
             pathname.prepend("MOSS-")
             destination = File.join(stuDir, pathname)
             # make sure all subdirectories are there
             FileUtils.mkdir_p(File.dirname(destination))
             File.open(destination, "wb") do |out|
-              out.write Archive.read_entry_file(entry)
+              out.write entry_content
               begin
                 out.fsync
               rescue StandardError
@@ -1226,6 +1229,8 @@ private
           end
         rescue StandardError
           @failures << sub.filename
+        ensure
+          File.delete(archive_path) if File.exist?(archive_path)
         end
       end
 
@@ -1283,9 +1288,13 @@ private
         # skip if the file lies outside the archive
         next unless Archive.in_dir?(Pathname(output_file), Pathname(output_dir))
 
+        entry_content = Archive.read_entry_file(entry)
+        next unless moss_text_content?(entry_content, pathname)
+
         # make sure all subdirectories are there
+        FileUtils.mkdir_p(File.dirname(output_file))
         File.open(output_file, "wb") do |out|
-          out.write Archive.read_entry_file(entry)
+          out.write entry_content
           begin
             out.fsync
           rescue StandardError
@@ -1303,6 +1312,25 @@ private
     else
       @basefiles = File.join(baseFilesDir, "*")
     end
+  end
+
+  def moss_text_content?(content, filename)
+    mime = MimeMagic.by_path(filename.to_s)
+    return true if mime&.text?
+    return false if mime.present? # known non-text type
+    return true if content.empty?
+    return false if content.include?("\x00")
+
+    true
+  end
+
+  MOSS_TEXT_SAMPLE_BYTES = 4096
+
+  def moss_text_file?(path)
+    sample = File.binread(path, MOSS_TEXT_SAMPLE_BYTES)
+    moss_text_content?(sample, path)
+  rescue StandardError
+    false
   end
 
   def get_course_from_config(tar_extract)
