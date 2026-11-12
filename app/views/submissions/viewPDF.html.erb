@@ -65,10 +65,8 @@
     PDFJS.getDocument(fileLink).then(function(pdf) {
       var nmrPages = pdf.pdfInfo.numPages;
 
-      for (var i=1; i<=nmrPages; i++) {
-        // Using promise to fetch the page
-        var nmrPagesRendered = 0;
-        pdf.getPage(i).then(function(page) {
+      function renderPage(pageNumber) {
+        return pdf.getPage(pageNumber).then(function(page) {
           var scale = 1.3;
           var viewport = page.getViewport(scale);
 
@@ -97,18 +95,21 @@
 
           canvasContainer.appendChild(div);
 
-          page.render(renderContext);
-          nmrPagesRendered = nmrPagesRendered + 1;
-
-          if (nmrPagesRendered == nmrPages) {
-            initializeAnnotationsForPDF();
+          return page.render(renderContext).promise;
+        }).then(function () {
+          if (pageNumber < nmrPages) {
+            return renderPage(pageNumber + 1);
           }
-        });
 
+          <% unless @preview_mode %>
+          initializeAnnotationsForPDF();
+          <% end %>
+        });
       }
+
+      return renderPage(1);
     }).catch(function(error){
-        //no error message is logged either
-        console.log("Error occurred", error);
+        console.error("Error rendering PDF submission", error);
     });
 
   </script>

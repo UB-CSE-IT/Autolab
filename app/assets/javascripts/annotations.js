@@ -94,6 +94,8 @@ function refreshAnnotations() {
 
 // Updates relevant elements of the speedgrader when a new file is selected
 function loadFile(newFile) {
+  $('#default-page-control').css('display', newFile.pdf ? 'inline-flex' : 'none');
+
   // Update the code viewer and symbol tree with the cached data
   $('#code-box').replaceWith(newFile.codeBox);
   $('#symbol-tree-container').replaceWith(newFile.symbolTree);
@@ -1552,10 +1554,8 @@ function renderPdf() {
   PDFJS.getDocument(renderUrl).then(function (pdf) {
     var nmrPages = pdf.pdfInfo.numPages;
 
-    for (var i = 1; i <= nmrPages; i++) {
-      // Using promise to fetch the page
-      var nmrPagesRendered = 0;
-      pdf.getPage(i).then(function (page) {
+    function renderPage(pageNumber) {
+      return pdf.getPage(pageNumber).then(function (page) {
         var scale = 1.3;
         var viewport = page.getViewport(scale);
 
@@ -1584,28 +1584,28 @@ function renderPdf() {
 
         canvasContainer.appendChild(div);
 
-        page.render(renderContext);
-        nmrPagesRendered = nmrPagesRendered + 1;
-
-        if (nmrPagesRendered == nmrPages) {
-            // Scroll to the default page if specified in localStorage
-            const targetPage = localStorage.getItem("defaultPage") ?? 1;
-            if (targetPage && targetPage > 0 && targetPage <= nmrPages) {
-                const targetCanvas = document.getElementById(`page-canvas-${targetPage - 1}`);
-                if (targetCanvas) {
-                    targetCanvas.scrollIntoView();
-                }
-            }
-
-          initializeAnnotationsForPDF();
+        return page.render(renderContext).promise;
+      }).then(function () {
+        if (pageNumber < nmrPages) {
+          return renderPage(pageNumber + 1);
         }
+
+        // Scroll to the default page if specified in localStorage
+        const targetPage = localStorage.getItem("defaultPage") ?? 1;
+        if (targetPage && targetPage > 0 && targetPage <= nmrPages) {
+          const targetCanvas = document.getElementById(`page-canvas-${targetPage - 1}`);
+          if (targetCanvas) {
+            targetCanvas.scrollIntoView();
+          }
+        }
+
+        initializeAnnotationsForPDF();
       });
-
-
     }
+
+    return renderPage(1);
   }).catch(function (error) {
-    //no error message is logged either
-    console.log("Error occurred", error);
+    console.error("Error rendering PDF submission", error);
   });
 }
 
@@ -1640,21 +1640,19 @@ function problemNameValid(problemName) {
 
 function initializeUserDefaults() {
     const pageInput = document.getElementById("default-page-input");
-    pageInput.value = localStorage.getItem("defaultPage") || "1";
-
-    const problemInput = document.getElementById("default-problem-select");
-    const savedProblemName = localStorage.getItem("defaultProblem") || "";
-    if (savedProblemName && problemNameValid(savedProblemName)) {
-        problemInput.value = savedProblemName;
+    if (pageInput) {
+        pageInput.value = localStorage.getItem("defaultPage") || "1";
+        pageInput.addEventListener('input', defaultPageNumberUpdated);
     }
 
-    pageInput.addEventListener('input', () => {
-        defaultPageNumberUpdated();
-    });
-
-    problemInput.addEventListener('change', () => {
-        defaultProblemUpdated();
-    });
+    const problemInput = document.getElementById("default-problem-select");
+    if (problemInput) {
+        const savedProblemName = localStorage.getItem("defaultProblem") || "";
+        if (savedProblemName && problemNameValid(savedProblemName)) {
+            problemInput.value = savedProblemName;
+        }
+        problemInput.addEventListener('change', defaultProblemUpdated);
+    }
 }
 
 function defaultPageNumberUpdated() {
@@ -1672,4 +1670,3 @@ function defaultProblemUpdated() {
         localStorage.removeItem("defaultProblem");
     }
 }
-
