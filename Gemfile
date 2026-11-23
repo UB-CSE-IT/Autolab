@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '3.2.2'
+ruby '3.4.13'
 
 gem 'rails', '=6.1.7.6'
 
@@ -180,3 +180,8 @@ gem 'friendly_id', '~> 5.5.0'
 
 # to sanitize CSV files
 gem 'csv-safe'
+
+# Upgrade to Ruby 3.4.13
+gem 'logger'
+gem 'mutex_m'
+gem 'bigdecimal'
