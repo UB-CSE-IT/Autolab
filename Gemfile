@@ -166,7 +166,7 @@ gem "jstz-rails3-plus", ">= 1.0"
 gem 'mimemagic', '>= 0.3.7'
 
 # For encrypting API tokens
-gem 'lockbox'
+gem 'lockbox', '1.3.1'
 
 # to decode / verify jwts for LTI Integration
 gem "jwt"
@@ -185,3 +185,4 @@ gem 'csv-safe'
 gem 'logger'
 gem 'mutex_m'
 gem 'bigdecimal'
+gem 'json', '2.7.1'

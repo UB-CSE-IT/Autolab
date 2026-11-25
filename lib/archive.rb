@@ -218,9 +218,8 @@ module Archive
     # don't create a tempfile, just stream it to client for download
     zip_stream = Zip::OutputStream.write_buffer do |zos|
       filedata.each do |(filepath, filename)|
-        ctimestamp = Zip::DOSTime.at(File.open(filepath,"r").ctime) # use creation time of submitted file
-        zip_entry = Zip::Entry.new(zos, filename, nil, nil, nil, nil, nil, nil,
-                    ctimestamp)
+        ctimestamp = Zip::DOSTime.at(File.open(filepath, "r").ctime) # use creation time of submitted file
+        zip_entry = Zip::Entry.new(zos, filename, time: ctimestamp)
         zos.put_next_entry(zip_entry)
         zos.print File.read(filepath)
       end
